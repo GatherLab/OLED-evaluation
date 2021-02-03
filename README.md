@@ -24,3 +24,4 @@ Software for easy evaluation of previously measured data in the data format of h
 - The calibration files are in the programs folder. On the long run, they must be selected within the GUI but for the beginning they can just sit in one of the program folders.
 - The calculation logic should be strictly kept in seperate functions (maybe classes but currently I don't see any point of having classes here) so that it can also be integrated directly into the measurement program.
 - The settings for the batch (e.g. photodiode gain, measurement distance etc.) can be kept in a seperate settings top menubar option. Some default parameters for this shall be provided and the costum ones saved in the folder where the data is in a seperate evaluation folder for reference.
+- How to deal with multiple measurements?

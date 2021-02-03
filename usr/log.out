@@ -1,0 +1,287 @@
+01/22/2021 04:40:05 PM - [INFO] - (core_functions.py).log_message(11) - Rigol Oscilloscope successfully initialised
+01/22/2021 04:40:08 PM - [INFO] - (core_functions.py).log_message(11) - Voltcraft Source successfully initialised
+01/22/2021 04:40:08 PM - [INFO] - (core_functions.py).log_message(11) - Initialising Program
+01/22/2021 04:41:15 PM - [INFO] - (core_functions.py).log_message(11) - Rigol Oscilloscope successfully initialised
+01/22/2021 04:41:18 PM - [INFO] - (core_functions.py).log_message(11) - Voltcraft Source successfully initialised
+01/22/2021 04:41:18 PM - [INFO] - (core_functions.py).log_message(11) - Initialising Program
+01/22/2021 04:41:30 PM - [INFO] - (core_functions.py).log_message(11) - Program closed
+01/22/2021 04:41:30 PM - [INFO] - (core_functions.py).log_message(11) - Spectrometer thread could not be killed
+01/22/2021 04:41:30 PM - [INFO] - (core_functions.py).log_message(11) - 'MainWindow' object has no attribute 'spectrum_measurement'
+01/22/2021 04:41:30 PM - [INFO] - (core_functions.py).log_message(11) - Keithley thread could not be killed
+01/22/2021 04:41:30 PM - [INFO] - (core_functions.py).log_message(11) - 'MainWindow' object has no attribute 'current_tester'
+01/22/2021 04:41:30 PM - [INFO] - (core_functions.py).log_message(11) - Arduino connection could not be savely killed
+01/22/2021 04:41:30 PM - [INFO] - (core_functions.py).log_message(11) - 'MainWindow' object has no attribute 'arduino_uno'
+01/22/2021 04:41:30 PM - [INFO] - (core_functions.py).log_message(11) - Motor could not be turned off savely
+01/22/2021 04:41:30 PM - [INFO] - (core_functions.py).log_message(11) - 'MainWindow' object has no attribute 'motor'
+01/22/2021 04:41:30 PM - [INFO] - (core_functions.py).log_message(11) - Spectrometer could not be turned off savely
+01/22/2021 04:41:30 PM - [INFO] - (core_functions.py).log_message(11) - 'MainWindow' object has no attribute 'spectrometer'
+01/22/2021 04:41:30 PM - [INFO] - (core_functions.py).log_message(11) - Connection to Keithleys could not be closed savely
+01/22/2021 04:41:30 PM - [INFO] - (core_functions.py).log_message(11) - name 'pyvisa' is not defined
+01/22/2021 04:43:19 PM - [INFO] - (core_functions.py).log_message(11) - Rigol Oscilloscope successfully initialised
+01/22/2021 04:43:21 PM - [INFO] - (core_functions.py).log_message(11) - Voltcraft Source successfully initialised
+01/22/2021 04:43:22 PM - [INFO] - (core_functions.py).log_message(11) - Initialising Program
+01/22/2021 04:45:15 PM - [INFO] - (core_functions.py).log_message(11) - Rigol Oscilloscope successfully initialised
+01/22/2021 04:45:17 PM - [INFO] - (core_functions.py).log_message(11) - Voltcraft Source successfully initialised
+01/22/2021 04:45:18 PM - [INFO] - (core_functions.py).log_message(11) - Initialising Program
+01/22/2021 04:49:04 PM - [INFO] - (core_functions.py).log_message(11) - Rigol Oscilloscope successfully initialised
+01/22/2021 04:49:06 PM - [INFO] - (core_functions.py).log_message(11) - Voltcraft Source successfully initialised
+01/22/2021 04:49:07 PM - [INFO] - (core_functions.py).log_message(11) - Initialising Program
+01/22/2021 04:49:28 PM - [INFO] - (core_functions.py).log_message(11) - Rigol Oscilloscope successfully initialised
+01/22/2021 04:49:30 PM - [INFO] - (core_functions.py).log_message(11) - Voltcraft Source successfully initialised
+01/22/2021 04:49:31 PM - [INFO] - (core_functions.py).log_message(11) - Initialising Program
+01/22/2021 04:50:37 PM - [INFO] - (core_functions.py).log_message(11) - Rigol Oscilloscope successfully initialised
+01/22/2021 04:50:39 PM - [INFO] - (core_functions.py).log_message(11) - Voltcraft Source successfully initialised
+01/22/2021 04:50:40 PM - [INFO] - (core_functions.py).log_message(11) - Initialising Program
+01/22/2021 04:52:59 PM - [INFO] - (core_functions.py).log_message(11) - Rigol Oscilloscope successfully initialised
+01/22/2021 04:53:02 PM - [INFO] - (core_functions.py).log_message(11) - Voltcraft Source successfully initialised
+01/22/2021 04:53:02 PM - [INFO] - (core_functions.py).log_message(11) - Initialising Program
+01/22/2021 04:53:13 PM - [INFO] - (core_functions.py).log_message(11) - Program closed
+01/22/2021 04:53:13 PM - [INFO] - (core_functions.py).log_message(11) - Spectrometer thread could not be killed
+01/22/2021 04:53:13 PM - [INFO] - (core_functions.py).log_message(11) - 'MainWindow' object has no attribute 'spectrum_measurement'
+01/22/2021 04:53:13 PM - [INFO] - (core_functions.py).log_message(11) - Keithley thread could not be killed
+01/22/2021 04:53:13 PM - [INFO] - (core_functions.py).log_message(11) - 'MainWindow' object has no attribute 'current_tester'
+01/22/2021 04:53:13 PM - [INFO] - (core_functions.py).log_message(11) - Arduino connection could not be savely killed
+01/22/2021 04:53:13 PM - [INFO] - (core_functions.py).log_message(11) - 'MainWindow' object has no attribute 'arduino_uno'
+01/22/2021 04:53:13 PM - [INFO] - (core_functions.py).log_message(11) - Motor could not be turned off savely
+01/22/2021 04:53:13 PM - [INFO] - (core_functions.py).log_message(11) - 'MainWindow' object has no attribute 'motor'
+01/22/2021 04:53:13 PM - [INFO] - (core_functions.py).log_message(11) - Spectrometer could not be turned off savely
+01/22/2021 04:53:13 PM - [INFO] - (core_functions.py).log_message(11) - 'MainWindow' object has no attribute 'spectrometer'
+01/22/2021 04:53:13 PM - [INFO] - (core_functions.py).log_message(11) - Connection to Keithleys could not be closed savely
+01/22/2021 04:53:13 PM - [INFO] - (core_functions.py).log_message(11) - name 'pyvisa' is not defined
+01/22/2021 04:54:30 PM - [INFO] - (core_functions.py).log_message(11) - Rigol Oscilloscope successfully initialised
+01/22/2021 04:54:32 PM - [INFO] - (core_functions.py).log_message(11) - Voltcraft Source successfully initialised
+01/22/2021 04:54:33 PM - [INFO] - (core_functions.py).log_message(11) - Initialising Program
+01/22/2021 04:55:18 PM - [INFO] - (core_functions.py).log_message(11) - Rigol Oscilloscope successfully initialised
+01/22/2021 04:55:20 PM - [INFO] - (core_functions.py).log_message(11) - Voltcraft Source successfully initialised
+01/22/2021 04:55:20 PM - [INFO] - (core_functions.py).log_message(11) - Initialising Program
+01/22/2021 04:57:13 PM - [INFO] - (core_functions.py).log_message(11) - Rigol Oscilloscope successfully initialised
+01/22/2021 04:57:15 PM - [INFO] - (core_functions.py).log_message(11) - Voltcraft Source successfully initialised
+01/22/2021 04:57:16 PM - [INFO] - (core_functions.py).log_message(11) - Initialising Program
+01/22/2021 04:58:24 PM - [INFO] - (core_functions.py).log_message(11) - Switched to tab widget no. 1
+01/22/2021 04:58:50 PM - [INFO] - (core_functions.py).log_message(11) - Switched to tab widget no. 0
+01/22/2021 04:59:39 PM - [INFO] - (core_functions.py).log_message(11) - Rigol Oscilloscope successfully initialised
+01/22/2021 04:59:41 PM - [INFO] - (core_functions.py).log_message(11) - Voltcraft Source successfully initialised
+01/22/2021 04:59:41 PM - [INFO] - (core_functions.py).log_message(11) - Initialising Program
+02/03/2021 08:38:55 am - [INFO] - (core_functions.py).log_message(14) - Initialising Program
+02/03/2021 08:39:08 am - [INFO] - (core_functions.py).log_message(14) - Initialising Program
+02/03/2021 08:39:24 am - [INFO] - (core_functions.py).log_message(14) - Switched to tab widget no. 1
+02/03/2021 08:39:25 am - [INFO] - (core_functions.py).log_message(14) - Switched to tab widget no. 0
+02/03/2021 08:39:49 am - [INFO] - (core_functions.py).log_message(14) - Initialising Program
+02/03/2021 08:39:56 am - [INFO] - (core_functions.py).log_message(14) - Switched to tab widget no. 1
+02/03/2021 08:39:57 am - [INFO] - (core_functions.py).log_message(14) - Switched to tab widget no. 0
+02/03/2021 08:40:02 am - [INFO] - (core_functions.py).log_message(14) - Switched to tab widget no. 1
+02/03/2021 08:42:46 am - [INFO] - (core_functions.py).log_message(14) - Initialising Program
+02/03/2021 08:43:04 am - [INFO] - (core_functions.py).log_message(14) - Initialising Program
+02/03/2021 08:47:39 am - [INFO] - (core_functions.py).log_message(14) - Initialising Program
+02/03/2021 08:49:04 am - [INFO] - (core_functions.py).log_message(14) - Initialising Program
+02/03/2021 08:50:48 am - [INFO] - (core_functions.py).log_message(14) - Initialising Program
+02/03/2021 09:01:13 am - [INFO] - (core_functions.py).log_message(14) - Initialising Program
+02/03/2021 09:01:17 am - [INFO] - (core_functions.py).log_message(14) - Program closed
+02/03/2021 09:01:17 am - [INFO] - (core_functions.py).log_message(14) - Spectrometer thread could not be killed
+02/03/2021 09:01:17 am - [INFO] - (core_functions.py).log_message(14) - 'MainWindow' object has no attribute 'spectrum_measurement'
+02/03/2021 09:01:17 am - [INFO] - (core_functions.py).log_message(14) - Keithley thread could not be killed
+02/03/2021 09:01:17 am - [INFO] - (core_functions.py).log_message(14) - 'MainWindow' object has no attribute 'current_tester'
+02/03/2021 09:01:17 am - [INFO] - (core_functions.py).log_message(14) - Arduino connection could not be savely killed
+02/03/2021 09:01:17 am - [INFO] - (core_functions.py).log_message(14) - 'MainWindow' object has no attribute 'arduino_uno'
+02/03/2021 09:01:17 am - [INFO] - (core_functions.py).log_message(14) - Motor could not be turned off savely
+02/03/2021 09:01:17 am - [INFO] - (core_functions.py).log_message(14) - 'MainWindow' object has no attribute 'motor'
+02/03/2021 09:01:17 am - [INFO] - (core_functions.py).log_message(14) - Spectrometer could not be turned off savely
+02/03/2021 09:01:17 am - [INFO] - (core_functions.py).log_message(14) - 'MainWindow' object has no attribute 'spectrometer'
+02/03/2021 09:01:17 am - [INFO] - (core_functions.py).log_message(14) - Connection to Keithleys could not be closed savely
+02/03/2021 09:01:17 am - [INFO] - (core_functions.py).log_message(14) - name 'pyvisa' is not defined
+02/03/2021 09:01:46 am - [INFO] - (core_functions.py).log_message(14) - Initialising Program
+02/03/2021 09:03:50 am - [INFO] - (core_functions.py).log_message(14) - Initialising Program
+02/03/2021 09:04:28 am - [INFO] - (core_functions.py).log_message(14) - Initialising Program
+02/03/2021 09:04:41 am - [INFO] - (core_functions.py).log_message(14) - Initialising Program
+02/03/2021 09:05:02 am - [INFO] - (core_functions.py).log_message(14) - Initialising Program
+02/03/2021 09:05:19 am - [INFO] - (core_functions.py).log_message(14) - Initialising Program
+02/03/2021 09:08:34 am - [INFO] - (core_functions.py).log_message(14) - Initialising Program
+02/03/2021 09:09:52 am - [INFO] - (core_functions.py).log_message(14) - Initialising Program
+02/03/2021 09:10:15 am - [INFO] - (core_functions.py).log_message(14) - Initialising Program
+02/03/2021 09:11:03 am - [INFO] - (core_functions.py).log_message(14) - Initialising Program
+02/03/2021 09:11:15 am - [INFO] - (core_functions.py).log_message(14) - Initialising Program
+02/03/2021 09:13:08 am - [INFO] - (core_functions.py).log_message(14) - Initialising Program
+02/03/2021 09:13:51 am - [INFO] - (core_functions.py).log_message(14) - Initialising Program
+02/03/2021 09:14:33 am - [INFO] - (core_functions.py).log_message(14) - Initialising Program
+02/03/2021 09:14:52 am - [INFO] - (core_functions.py).log_message(14) - Initialising Program
+02/03/2021 09:15:20 am - [INFO] - (core_functions.py).log_message(14) - Initialising Program
+02/03/2021 09:18:06 am - [INFO] - (core_functions.py).log_message(14) - Initialising Program
+02/03/2021 09:18:18 am - [INFO] - (core_functions.py).log_message(14) - Initialising Program
+02/03/2021 09:19:08 am - [INFO] - (core_functions.py).log_message(14) - Initialising Program
+02/03/2021 09:19:12 am - [INFO] - (core_functions.py).log_message(14) - Program closed
+02/03/2021 09:19:12 am - [INFO] - (core_functions.py).log_message(14) - Spectrometer thread could not be killed
+02/03/2021 09:19:12 am - [INFO] - (core_functions.py).log_message(14) - 'MainWindow' object has no attribute 'spectrum_measurement'
+02/03/2021 09:19:12 am - [INFO] - (core_functions.py).log_message(14) - Keithley thread could not be killed
+02/03/2021 09:19:12 am - [INFO] - (core_functions.py).log_message(14) - 'MainWindow' object has no attribute 'current_tester'
+02/03/2021 09:19:12 am - [INFO] - (core_functions.py).log_message(14) - Arduino connection could not be savely killed
+02/03/2021 09:19:12 am - [INFO] - (core_functions.py).log_message(14) - 'MainWindow' object has no attribute 'arduino_uno'
+02/03/2021 09:19:12 am - [INFO] - (core_functions.py).log_message(14) - Motor could not be turned off savely
+02/03/2021 09:19:12 am - [INFO] - (core_functions.py).log_message(14) - 'MainWindow' object has no attribute 'motor'
+02/03/2021 09:19:12 am - [INFO] - (core_functions.py).log_message(14) - Spectrometer could not be turned off savely
+02/03/2021 09:19:12 am - [INFO] - (core_functions.py).log_message(14) - 'MainWindow' object has no attribute 'spectrometer'
+02/03/2021 09:19:12 am - [INFO] - (core_functions.py).log_message(14) - Connection to Keithleys could not be closed savely
+02/03/2021 09:19:12 am - [INFO] - (core_functions.py).log_message(14) - name 'pyvisa' is not defined
+02/03/2021 09:19:28 am - [INFO] - (core_functions.py).log_message(14) - Initialising Program
+02/03/2021 09:19:35 am - [INFO] - (core_functions.py).log_message(14) - Program closed
+02/03/2021 09:19:35 am - [INFO] - (core_functions.py).log_message(14) - Spectrometer thread could not be killed
+02/03/2021 09:19:35 am - [INFO] - (core_functions.py).log_message(14) - 'MainWindow' object has no attribute 'spectrum_measurement'
+02/03/2021 09:19:35 am - [INFO] - (core_functions.py).log_message(14) - Keithley thread could not be killed
+02/03/2021 09:19:35 am - [INFO] - (core_functions.py).log_message(14) - 'MainWindow' object has no attribute 'current_tester'
+02/03/2021 09:19:35 am - [INFO] - (core_functions.py).log_message(14) - Arduino connection could not be savely killed
+02/03/2021 09:19:35 am - [INFO] - (core_functions.py).log_message(14) - 'MainWindow' object has no attribute 'arduino_uno'
+02/03/2021 09:19:35 am - [INFO] - (core_functions.py).log_message(14) - Motor could not be turned off savely
+02/03/2021 09:19:35 am - [INFO] - (core_functions.py).log_message(14) - 'MainWindow' object has no attribute 'motor'
+02/03/2021 09:19:35 am - [INFO] - (core_functions.py).log_message(14) - Spectrometer could not be turned off savely
+02/03/2021 09:19:35 am - [INFO] - (core_functions.py).log_message(14) - 'MainWindow' object has no attribute 'spectrometer'
+02/03/2021 09:19:35 am - [INFO] - (core_functions.py).log_message(14) - Connection to Keithleys could not be closed savely
+02/03/2021 09:19:35 am - [INFO] - (core_functions.py).log_message(14) - name 'pyvisa' is not defined
+02/03/2021 09:21:04 am - [INFO] - (core_functions.py).log_message(14) - Initialising Program
+02/03/2021 09:21:20 am - [INFO] - (core_functions.py).log_message(14) - Initialising Program
+02/03/2021 09:21:59 am - [INFO] - (core_functions.py).log_message(14) - Initialising Program
+02/03/2021 09:22:27 am - [INFO] - (core_functions.py).log_message(14) - Program closed
+02/03/2021 09:22:27 am - [INFO] - (core_functions.py).log_message(14) - Spectrometer thread could not be killed
+02/03/2021 09:22:27 am - [INFO] - (core_functions.py).log_message(14) - 'MainWindow' object has no attribute 'spectrum_measurement'
+02/03/2021 09:22:27 am - [INFO] - (core_functions.py).log_message(14) - Keithley thread could not be killed
+02/03/2021 09:22:27 am - [INFO] - (core_functions.py).log_message(14) - 'MainWindow' object has no attribute 'current_tester'
+02/03/2021 09:22:27 am - [INFO] - (core_functions.py).log_message(14) - Arduino connection could not be savely killed
+02/03/2021 09:22:27 am - [INFO] - (core_functions.py).log_message(14) - 'MainWindow' object has no attribute 'arduino_uno'
+02/03/2021 09:22:27 am - [INFO] - (core_functions.py).log_message(14) - Motor could not be turned off savely
+02/03/2021 09:22:27 am - [INFO] - (core_functions.py).log_message(14) - 'MainWindow' object has no attribute 'motor'
+02/03/2021 09:22:27 am - [INFO] - (core_functions.py).log_message(14) - Spectrometer could not be turned off savely
+02/03/2021 09:22:27 am - [INFO] - (core_functions.py).log_message(14) - 'MainWindow' object has no attribute 'spectrometer'
+02/03/2021 09:22:27 am - [INFO] - (core_functions.py).log_message(14) - Connection to Keithleys could not be closed savely
+02/03/2021 09:22:27 am - [INFO] - (core_functions.py).log_message(14) - name 'pyvisa' is not defined
+02/03/2021 09:22:42 am - [INFO] - (core_functions.py).log_message(14) - Initialising Program
+02/03/2021 09:23:20 am - [INFO] - (core_functions.py).log_message(14) - Program closed
+02/03/2021 09:23:20 am - [INFO] - (core_functions.py).log_message(14) - Spectrometer thread could not be killed
+02/03/2021 09:23:20 am - [INFO] - (core_functions.py).log_message(14) - 'MainWindow' object has no attribute 'spectrum_measurement'
+02/03/2021 09:23:20 am - [INFO] - (core_functions.py).log_message(14) - Keithley thread could not be killed
+02/03/2021 09:23:20 am - [INFO] - (core_functions.py).log_message(14) - 'MainWindow' object has no attribute 'current_tester'
+02/03/2021 09:23:20 am - [INFO] - (core_functions.py).log_message(14) - Arduino connection could not be savely killed
+02/03/2021 09:23:20 am - [INFO] - (core_functions.py).log_message(14) - 'MainWindow' object has no attribute 'arduino_uno'
+02/03/2021 09:23:20 am - [INFO] - (core_functions.py).log_message(14) - Motor could not be turned off savely
+02/03/2021 09:23:20 am - [INFO] - (core_functions.py).log_message(14) - 'MainWindow' object has no attribute 'motor'
+02/03/2021 09:23:20 am - [INFO] - (core_functions.py).log_message(14) - Spectrometer could not be turned off savely
+02/03/2021 09:23:20 am - [INFO] - (core_functions.py).log_message(14) - 'MainWindow' object has no attribute 'spectrometer'
+02/03/2021 09:23:20 am - [INFO] - (core_functions.py).log_message(14) - Connection to Keithleys could not be closed savely
+02/03/2021 09:23:20 am - [INFO] - (core_functions.py).log_message(14) - name 'pyvisa' is not defined
+02/03/2021 09:24:04 am - [INFO] - (core_functions.py).log_message(14) - Initialising Program
+02/03/2021 09:25:26 am - [INFO] - (core_functions.py).log_message(14) - Initialising Program
+02/03/2021 09:26:03 am - [INFO] - (core_functions.py).log_message(14) - Initialising Program
+02/03/2021 09:26:23 am - [INFO] - (core_functions.py).log_message(14) - Initialising Program
+02/03/2021 09:32:10 am - [INFO] - (core_functions.py).log_message(14) - Initialising Program
+02/03/2021 09:32:23 am - [INFO] - (core_functions.py).log_message(14) - Initialising Program
+02/03/2021 09:33:31 am - [INFO] - (core_functions.py).log_message(14) - Initialising Program
+02/03/2021 09:35:37 am - [INFO] - (core_functions.py).log_message(14) - Initialising Program
+02/03/2021 09:45:12 am - [INFO] - (core_functions.py).log_message(14) - Initialising Program
+02/03/2021 09:45:28 am - [INFO] - (core_functions.py).log_message(14) - Initialising Program
+02/03/2021 09:48:25 am - [INFO] - (core_functions.py).log_message(14) - Initialising Program
+02/03/2021 09:48:30 am - [INFO] - (core_functions.py).log_message(14) - Program closed
+02/03/2021 09:48:30 am - [INFO] - (core_functions.py).log_message(14) - Spectrometer thread could not be killed
+02/03/2021 09:48:30 am - [INFO] - (core_functions.py).log_message(14) - 'MainWindow' object has no attribute 'spectrum_measurement'
+02/03/2021 09:48:30 am - [INFO] - (core_functions.py).log_message(14) - Keithley thread could not be killed
+02/03/2021 09:48:30 am - [INFO] - (core_functions.py).log_message(14) - 'MainWindow' object has no attribute 'current_tester'
+02/03/2021 09:48:30 am - [INFO] - (core_functions.py).log_message(14) - Arduino connection could not be savely killed
+02/03/2021 09:48:30 am - [INFO] - (core_functions.py).log_message(14) - 'MainWindow' object has no attribute 'arduino_uno'
+02/03/2021 09:48:30 am - [INFO] - (core_functions.py).log_message(14) - Motor could not be turned off savely
+02/03/2021 09:48:30 am - [INFO] - (core_functions.py).log_message(14) - 'MainWindow' object has no attribute 'motor'
+02/03/2021 09:48:30 am - [INFO] - (core_functions.py).log_message(14) - Spectrometer could not be turned off savely
+02/03/2021 09:48:30 am - [INFO] - (core_functions.py).log_message(14) - 'MainWindow' object has no attribute 'spectrometer'
+02/03/2021 09:48:30 am - [INFO] - (core_functions.py).log_message(14) - Connection to Keithleys could not be closed savely
+02/03/2021 09:48:30 am - [INFO] - (core_functions.py).log_message(14) - name 'pyvisa' is not defined
+02/03/2021 09:49:08 am - [INFO] - (core_functions.py).log_message(14) - Initialising Program
+02/03/2021 09:49:39 am - [INFO] - (core_functions.py).log_message(14) - Initialising Program
+02/03/2021 09:50:40 am - [INFO] - (core_functions.py).log_message(14) - Initialising Program
+02/03/2021 09:53:58 am - [INFO] - (core_functions.py).log_message(14) - Initialising Program
+02/03/2021 09:55:51 am - [INFO] - (core_functions.py).log_message(14) - Initialising Program
+02/03/2021 09:57:05 am - [INFO] - (core_functions.py).log_message(16) - Initialising Program
+02/03/2021 09:57:58 am - [INFO] - (core_functions.py).log_message(17) - Initialising Program
+02/03/2021 09:58:20 am - [INFO] - (core_functions.py).log_message(17) - Program closed
+02/03/2021 09:58:20 am - [INFO] - (core_functions.py).log_message(17) - Spectrometer thread could not be killed
+02/03/2021 09:58:20 am - [INFO] - (core_functions.py).log_message(17) - 'MainWindow' object has no attribute 'spectrum_measurement'
+02/03/2021 09:58:20 am - [INFO] - (core_functions.py).log_message(17) - Keithley thread could not be killed
+02/03/2021 09:58:20 am - [INFO] - (core_functions.py).log_message(17) - 'MainWindow' object has no attribute 'current_tester'
+02/03/2021 09:58:20 am - [INFO] - (core_functions.py).log_message(17) - Arduino connection could not be savely killed
+02/03/2021 09:58:20 am - [INFO] - (core_functions.py).log_message(17) - 'MainWindow' object has no attribute 'arduino_uno'
+02/03/2021 09:58:20 am - [INFO] - (core_functions.py).log_message(17) - Motor could not be turned off savely
+02/03/2021 09:58:20 am - [INFO] - (core_functions.py).log_message(17) - 'MainWindow' object has no attribute 'motor'
+02/03/2021 09:58:20 am - [INFO] - (core_functions.py).log_message(17) - Spectrometer could not be turned off savely
+02/03/2021 09:58:20 am - [INFO] - (core_functions.py).log_message(17) - 'MainWindow' object has no attribute 'spectrometer'
+02/03/2021 09:58:20 am - [INFO] - (core_functions.py).log_message(17) - Connection to Keithleys could not be closed savely
+02/03/2021 09:58:20 am - [INFO] - (core_functions.py).log_message(17) - name 'pyvisa' is not defined
+02/03/2021 10:06:00 am - [INFO] - (core_functions.py).log_message(17) - Initialising Program
+02/03/2021 10:07:18 am - [INFO] - (core_functions.py).log_message(17) - Initialising Program
+02/03/2021 10:07:59 am - [INFO] - (core_functions.py).log_message(17) - Initialising Program
+02/03/2021 10:08:01 am - [INFO] - (core_functions.py).log_message(17) - Global Settings Read from File
+02/03/2021 10:58:11 am - [INFO] - (core_functions.py).log_message(17) - Initialising Program
+02/03/2021 10:58:13 am - [INFO] - (core_functions.py).log_message(17) - Global Settings Read from File
+02/03/2021 11:00:50 am - [INFO] - (core_functions.py).log_message(17) - Initialising Program
+02/03/2021 11:01:23 am - [INFO] - (core_functions.py).log_message(17) - Initialising Program
+02/03/2021 11:02:38 am - [INFO] - (core_functions.py).log_message(17) - Initialising Program
+02/03/2021 11:02:55 am - [INFO] - (core_functions.py).log_message(17) - Initialising Program
+02/03/2021 11:03:25 am - [INFO] - (core_functions.py).log_message(17) - Initialising Program
+02/03/2021 11:03:43 am - [INFO] - (core_functions.py).log_message(17) - Initialising Program
+02/03/2021 11:04:19 am - [INFO] - (core_functions.py).log_message(17) - Initialising Program
+02/03/2021 11:05:35 am - [INFO] - (core_functions.py).log_message(17) - Initialising Program
+02/03/2021 11:06:42 am - [INFO] - (core_functions.py).log_message(17) - Initialising Program
+02/03/2021 11:20:28 am - [INFO] - (core_functions.py).log_message(17) - Initialising Program
+02/03/2021 11:20:36 am - [INFO] - (core_functions.py).log_message(17) - Please enter device/s for your group. Try again!
+02/03/2021 11:21:39 am - [INFO] - (core_functions.py).log_message(17) - Initialising Program
+02/03/2021 11:32:08 am - [INFO] - (core_functions.py).log_message(17) - Initialising Program
+02/03/2021 11:32:32 am - [INFO] - (core_functions.py).log_message(17) - Initialising Program
+02/03/2021 11:36:40 am - [INFO] - (core_functions.py).log_message(17) - Initialising Program
+02/03/2021 11:37:04 am - [INFO] - (core_functions.py).log_message(17) - Initialising Program
+02/03/2021 11:38:48 am - [INFO] - (core_functions.py).log_message(17) - Initialising Program
+02/03/2021 11:40:24 am - [INFO] - (core_functions.py).log_message(17) - Initialising Program
+02/03/2021 11:41:06 am - [INFO] - (core_functions.py).log_message(17) - Initialising Program
+02/03/2021 11:46:20 am - [INFO] - (core_functions.py).log_message(17) - Initialising Program
+02/03/2021 11:47:37 am - [INFO] - (core_functions.py).log_message(17) - Initialising Program
+02/03/2021 11:52:15 am - [INFO] - (core_functions.py).log_message(17) - Initialising Program
+02/03/2021 11:52:22 am - [INFO] - (core_functions.py).log_message(17) - Global Settings Read from File
+02/03/2021 11:55:49 am - [INFO] - (core_functions.py).log_message(17) - Initialising Program
+02/03/2021 11:55:52 am - [INFO] - (core_functions.py).log_message(17) - Global Settings Read from File
+02/03/2021 11:56:48 am - [INFO] - (core_functions.py).log_message(17) - Initialising Program
+02/03/2021 11:56:51 am - [INFO] - (core_functions.py).log_message(17) - Global Settings Read from File
+02/03/2021 11:57:00 am - [INFO] - (core_functions.py).log_message(17) - Global Settings Read from File
+02/03/2021 11:57:04 am - [INFO] - (core_functions.py).log_message(17) - Global Settings Read from File
+02/03/2021 11:58:30 am - [INFO] - (core_functions.py).log_message(17) - Initialising Program
+02/03/2021 11:58:34 am - [INFO] - (core_functions.py).log_message(17) - Global Settings Read from File
+02/03/2021 11:59:46 am - [INFO] - (core_functions.py).log_message(17) - Initialising Program
+02/03/2021 11:59:49 am - [INFO] - (core_functions.py).log_message(17) - Global Settings Read from File
+02/03/2021 12:00:16 pm - [INFO] - (core_functions.py).log_message(17) - Initialising Program
+02/03/2021 12:00:18 pm - [INFO] - (core_functions.py).log_message(17) - Global Settings Read from File
+02/03/2021 12:01:18 pm - [INFO] - (core_functions.py).log_message(17) - Global Settings Read from File
+02/03/2021 12:02:21 pm - [INFO] - (core_functions.py).log_message(17) - Initialising Program
+02/03/2021 12:02:24 pm - [INFO] - (core_functions.py).log_message(17) - Global Settings Read from File
+02/03/2021 12:03:23 pm - [INFO] - (core_functions.py).log_message(17) - Initialising Program
+02/03/2021 12:03:26 pm - [INFO] - (core_functions.py).log_message(17) - Global Settings Read from File
+02/03/2021 12:04:19 pm - [INFO] - (core_functions.py).log_message(17) - Initialising Program
+02/03/2021 12:04:22 pm - [INFO] - (core_functions.py).log_message(17) - Global Settings Read from File
+02/03/2021 12:05:11 pm - [INFO] - (core_functions.py).log_message(17) - Global Settings Read from File
+02/03/2021 12:07:10 pm - [INFO] - (core_functions.py).log_message(17) - Initialising Program
+02/03/2021 12:07:12 pm - [INFO] - (core_functions.py).log_message(17) - Global Settings Read from File
+02/03/2021 12:07:20 pm - [INFO] - (core_functions.py).log_message(17) - Global Settings Read from File
+02/03/2021 12:08:06 pm - [INFO] - (core_functions.py).log_message(17) - Initialising Program
+02/03/2021 12:08:07 pm - [INFO] - (core_functions.py).log_message(17) - Global Settings Read from File
+02/03/2021 12:09:03 pm - [INFO] - (core_functions.py).log_message(17) - Global Settings Read from File
+02/03/2021 12:09:18 pm - [INFO] - (core_functions.py).log_message(17) - Please select a valid spectrum file path.
+02/03/2021 12:10:02 pm - [INFO] - (core_functions.py).log_message(17) - Initialising Program
+02/03/2021 12:10:05 pm - [INFO] - (core_functions.py).log_message(17) - Global Settings Read from File
+02/03/2021 12:10:11 pm - [INFO] - (core_functions.py).log_message(17) - / is not a valid file path.
+02/03/2021 12:10:15 pm - [INFO] - (core_functions.py).log_message(17) - Global Settings Read from File
+02/03/2021 12:10:54 pm - [INFO] - (core_functions.py).log_message(17) - / is not a valid file path.
+02/03/2021 12:11:04 pm - [INFO] - (core_functions.py).log_message(17) - Global Settings Read from File
+02/03/2021 12:11:35 pm - [INFO] - (core_functions.py).log_message(17) - Initialising Program
+02/03/2021 12:11:38 pm - [INFO] - (core_functions.py).log_message(17) - Global Settings Read from File
+02/03/2021 12:12:18 pm - [INFO] - (core_functions.py).log_message(17) - Initialising Program
+02/03/2021 12:12:23 pm - [INFO] - (core_functions.py).log_message(17) - Global Settings Read from File
+02/03/2021 12:14:40 pm - [INFO] - (core_functions.py).log_message(17) - Initialising Program
+02/03/2021 12:14:42 pm - [INFO] - (core_functions.py).log_message(17) - Global Settings Read from File
+02/03/2021 12:15:34 pm - [INFO] - (core_functions.py).log_message(17) - Initialising Program
+02/03/2021 12:15:37 pm - [INFO] - (core_functions.py).log_message(17) - Global Settings Read from File
+02/03/2021 12:16:03 pm - [INFO] - (core_functions.py).log_message(17) - Initialising Program
+02/03/2021 12:16:06 pm - [INFO] - (core_functions.py).log_message(17) - Global Settings Read from File
+02/03/2021 12:16:38 pm - [INFO] - (core_functions.py).log_message(17) - Initialising Program
+02/03/2021 12:16:41 pm - [INFO] - (core_functions.py).log_message(17) - Global Settings Read from File
+02/03/2021 12:17:29 pm - [INFO] - (core_functions.py).log_message(17) - Please enter device/s for your group. Try again!
+02/03/2021 12:17:37 pm - [INFO] - (core_functions.py).log_message(17) - Program closed
