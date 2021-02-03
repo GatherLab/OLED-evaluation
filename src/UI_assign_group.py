@@ -166,8 +166,7 @@ class Ui_AssignGroup(object):
             self.group_colors_PushButton_container, QtWidgets.QPushButton("")
         )
         self.group_colors_PushButton_container[0].setStyleSheet(
-            "background-color: "
-            + str(self.group_colors_PushButton_container.astype("U7")[0])
+            "background-color: " + str(self.group_color[0])
         )
         self.group_definition_gridLayout.addWidget(
             self.group_colors_PushButton_container[0], 2, 3

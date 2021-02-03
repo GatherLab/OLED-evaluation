@@ -5,6 +5,7 @@ from pathlib import Path
 import sys
 import os
 import subprocess
+import pandas as pd
 
 
 def log_message(message):
@@ -51,3 +52,49 @@ def open_file(path):
         subprocess.call(["xdg-open", path])
     else:
         os.startfile(path)
+
+
+def read_file_names(folder_path):
+    """
+    Function that returns the names of all files in a certain folder at top
+    level already sorted (does not go through all folder)
+    """
+
+    file_names = [
+        file_path
+        for file_path in os.listdir(folder_path)
+        if os.path.isfile(os.path.join(folder_path, file_path))
+    ]
+
+    return sorted(file_names)
+
+
+def read_files(
+    file_paths, column_names, file_synonyms, separator="\t", skip_row=0, skip_footer=0
+):
+    """
+    Function that allows to read in data from a single or multiple files with
+    the same column_names
+    """
+    data_frame = pd.DataFrame(columns=column_names, index=file_synonyms)
+
+    i = 0
+    for filename in file_paths:
+        file_data_list = pd.read_csv(
+            filename,
+            skiprows=skip_row,
+            skipfooter=skip_footer,
+            sep=separator,
+            names=column_names,
+            engine="python",
+            skip_blank_lines=False,
+        )
+
+        # Since we are readying in the data of multiple files, store this
+        # differently in a pandas dataframe
+        for name in column_names:
+            data_frame[name].loc[file_synonyms[i]] = file_data_list[name].to_list()
+
+        i += 1
+
+    return data_frame

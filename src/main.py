@@ -33,6 +33,12 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     """
     This class contains the logic of the program and is explicitly seperated
     from the UI classes. However, it is a child class of Ui_MainWindow.
+    Important data structures in the class:
+        - self.assigned_groups_df: dataframe that contains all information of the user assigned groups from the assign groups dialog
+        - self.data_df: dataframe that contains all relevant data for each relevant device like voltage, current and pd_voltage. Furthermore, all calculation results are simply added to this dataframe.
+        - self.files_df: dataframe that contains all relevant information to the files that is mostly extracted directly from the file names of all files present in a global folder
+
+
     """
 
     def __init__(self):
@@ -54,6 +60,12 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # Logs if folder path was already selected
         self.folder_path_selected = False
         self.groups_assigned = False
+
+        # Assigned groups that contain all information returned by the assign
+        # group dialog
+        self.assigned_groups_df = pd.DataFrame(
+            columns=["group_name", "device_numbers", "spectrum_path", "colors"]
+        )
 
         # -------------------------------------------------------------------- #
         # ------------------------------ General ----------------------------- #
@@ -125,23 +137,125 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             QtWidgets.QFileDialog.ShowDirsOnly,
         )
 
-        # Now set the folder path as selected and allow for assignment of groups
-        self.folder_path_selected = True
-        self.eval_assign_groups_pushButton.setEnabled(True)
+        # Now get the file paths for all files at top level in this folder
+        self.file_names = cf.read_file_names(self.global_path)
+
+        # Now check if there are some files and how many in the folder
+        if len(self.file_names) == 0:
+            cf.log_message("Couldn't find any files in the selected top level folder.")
+        else:
+            cf.log_message(
+                "Found "
+                + str(len(self.file_names))
+                + " files at top level in the selected folder."
+            )
+            self.investigate_file_names(self.file_names)
+
+            # Now set the folder path as selected and allow for assignment of groups
+            self.folder_path_selected = True
+            self.eval_assign_groups_pushButton.setEnabled(True)
+
+    def investigate_file_names(self, file_names):
+        """
+        Go through the names of all files in file_names and extract some
+        relevant information for the rest of the program
+        """
+        # First dissect the file names by splitting at each _
+        # This returns normally 4 fields and if there are multiple scans it
+        # returns a fifth one
+        self.files_df = pd.DataFrame()
+
+        dates = []
+        batch_names = []
+        device_numbers = []
+        pixel_numbers = []
+        scan_number = []
+        identifier = []
+
+        for name in file_names:
+            split_name = name.split("_")
+            if len(split_name) == 4:
+                # Right file name but only one scan
+                dates.append(str(split_name[0]))
+                batch_names.append(str(split_name[1]))
+                device_numbers.append(int(split_name[2][1:]))
+                pixel_numbers.append(int(split_name[3].split(".")[0][1:]))
+                scan_number.append(1)
+                identifier.append(split_name[2] + split_name[3].split(".")[0])
+            elif len(split_name) == 5:
+                # If this is > first scan
+                dates.append(str(split_name[0]))
+                batch_names.append(str(split_name[1]))
+                device_numbers.append(int(split_name[2][1:]))
+                pixel_numbers.append(int(split_name[3][1:]))
+                identifier.append(split_name[2] + split_name[3])
+                scan_number.append(int(split_name[4].split(".")[0][1:]))
+            else:
+                # File name is not in the correct format
+                cf.log_message(
+                    "The file name does not follow the naming convention date_batch-name_d<no>_p<no>_<no>.csv"
+                )
+        if np.size(np.unique(batch_names)) > 1:
+            cf.log_message(
+                "The batch name does not match for all files. If there are different OLEDs with the same device number this could lead to a problem."
+            )
+
+        self.files_df["file_name"] = file_names
+        self.files_df["device"] = device_numbers
+        self.files_df["pixel_numbers"] = pixel_numbers
+        self.files_df["scan_number"] = scan_number
+        self.files_df["identifier"] = identifier
+
+        # return the maximum scan number in the investigated batch
+        self.max_scan_number = np.max(scan_number)
+
+        # Now generate a dictionary containing the device numbers as keys and
+        # an array of the pixel numbers as values
+        # self.devices_and_pixels = {}
+
+        # for i in np.unique(device_numbers):
+        #     self.devices_and_pixels[i] = np.array(pixel_numbers)[
+        #         np.where(np.array(device_numbers, dtype=int) == i)[0]
+        #     ]
 
     def assign_groups(self):
         """
         Function that opens the assign group dialog and allows to assign groups
         """
-        parameters = {"no_of_scans": 2, "device_numbers": np.array([1, 2, 3, 4])}
+        parameters = {
+            "no_of_scans": self.max_scan_number,
+            "device_numbers": np.unique(self.files_df["device"].to_list()),
+            "assigned_groups_df": self.assigned_groups_df,
+        }
+
         self.assign_groups_dialog = AssignGroups(parameters, self)
         self.assign_groups_dialog.show()
-        self.assign_groups_dialog.exec_()
+        button = self.assign_groups_dialog.exec_()
 
-        self.groups_assigned = True
-        self.eval_plot_groups_pushButton.setEnabled(True)
-        self.eval_save_pushButton.setEnabled(True)
-        print("Assign groups")
+        # Now check if user pressed close or save
+        if button == True:
+            # Only select those files that's device numbers were entered by the user
+            selected_files = self.files_df[
+                self.files_df["device"].isin(
+                    np.concatenate(self.assigned_groups_df["device_numbers"].to_numpy())
+                )
+            ]
+            # Now read in the files for selected devices
+            self.data_df = cf.read_files(
+                [
+                    self.global_path + "/" + file_name
+                    for file_name in selected_files["file_name"]
+                ],
+                ["voltage", "current", "pd_voltage"],
+                selected_files["identifier"],
+                " ",
+                skip_row=10,
+            )
+            self.groups_assigned = True
+            self.eval_plot_groups_pushButton.setEnabled(True)
+            self.eval_save_pushButton.setEnabled(True)
+        else:
+            cf.log_message("Group assignement aborted")
 
     def plot_groups(self):
         """
