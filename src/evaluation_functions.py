@@ -170,6 +170,70 @@ def calculate_power_density(
     return power_density
 
 
+def moving_average(interval, window_size):
+    """
+    Smoothing function
+    """
+    window = np.ones(int(window_size)) / float(window_size)
+    return np.convolve(interval, window, "same")
+
+
+def calculate_angle_correction(
+    angle_resolved_spectrum_df,
+    calibration,
+    perp_intensity,
+    df_basic_data,
+    df_norm_curves,
+):
+    """
+    Function to calculate the correction factor in the case of angular
+    resolved emission spectra
+    """
+
+    # Temporal dataframe that drops the columns that might hinder calculations
+    # with background subtracted and calibration multiplied
+    temp_df = (
+        angle_resolved_spectrum_df.drop(
+            ["background", "wavelength", "0_deg"], axis=1
+        ).subtract(angle_resolved_spectrum_df["background"], axis=0)
+        * calibration
+    )
+
+    # Smoothen the data
+    temp_df = temp_df.apply(moving_average, args=(10,), axis=0)
+
+    # Determine the measurement parameters from the dataframe column names
+    minimum_angle = float(np.min(temp_df.columns))
+    maximum_angle = float(np.max(temp_df.columns))
+    step_angle = float(temp_df.columns[1]) - float(temp_df.columns[0])
+
+    perp_intensity = df_corrected_spectrum.corrected_intensity
+
+    # E-factor
+    e_factor = np.sum(
+        temp_df * angle_resolved_spectrum_df["wavelength"], axis=0
+    ) / np.sum(perp_intensity * angle_resolved_spectrum_df["wavelength"], axis=0)
+
+    eFACTOR = np.sum(
+        e_factor
+        * np.sin(np.deg2rad(np.arange(minimum_angle, maximum_angle, step_angle)))
+        * np.deg2rad(step_angle)
+    )
+
+    # V-factor
+    v_factor = np.sum(temp_df * df_basic_data.v_lambda) / np.sum(
+        perp_intensity * df_basic_data.v_lambda
+    )
+
+    vFACTOR = np.sum(
+        v_factor
+        * np.sin(np.deg2rad(np.arange(minimum_angle, maximum_angle, step_angle)))
+        * np.deg2rad(step_angle)
+    )
+
+    return eFACTOR, vFACTOR
+
+
 def generate_output_files(
     df_jvl_data,
     df_corrected_spectrum,

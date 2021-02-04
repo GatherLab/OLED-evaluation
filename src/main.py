@@ -310,17 +310,87 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             # the future this check might be moved to the assign dialog
             # directly
             if not self.assigned_groups_df["spectrum_path"].isnull().any():
-                self.spectrum_data_df = cf.read_multiple_files(
-                    self.assigned_groups_df["spectrum_path"].to_list(),
-                    ["wavelength", "background", "intensity"],
-                    self.assigned_groups_df.index.to_list(),
-                    skip_row=14,
-                )
+                # Now check if the spectra are simple spectra or angle resolved ones
+                i = 0
 
-                cf.log_message(
-                    "Spectrum data found for devices "
-                    + str(self.spectrum_data_df.index.to_list())
-                )
+                for spectrum_path in self.assigned_groups_df["spectrum_path"].to_list():
+                    if (
+                        spectrum_path.split("_")[-1].split(".")[0] == "gon-spec"
+                        or spectrum_path.split("_")[-2] == "gon-spec"
+                    ):
+                        # Goniometer file
+                        # Read in the angle resolved file
+                        angle_resolved_spectrum = pd.read_csv(
+                            spectrum_path, sep="\t", skiprows=3
+                        )
+
+                        # Extract the foward spectrum and save to self.spectrum_data_df
+                        if not hasattr(self, "spectrum_data_df"):
+                            self.spectrum_data_df = pd.DataFrame(
+                                [
+                                    [
+                                        [
+                                            angle_resolved_spectrum["wavelength"],
+                                        ],
+                                        [
+                                            angle_resolved_spectrum["background"],
+                                        ],
+                                        [
+                                            angle_resolved_spectrum["0.0"],
+                                        ],
+                                    ]
+                                ],
+                                columns=["wavelength", "background", "intensity"],
+                                index=[self.assigned_groups_df.index.to_list()[i]],
+                            )
+                        else:
+                            self.spectrum_data_df.append(
+                                pd.DataFrame(
+                                    [
+                                        [
+                                            [
+                                                angle_resolved_spectrum["wavelength"],
+                                            ],
+                                            [
+                                                angle_resolved_spectrum["background"],
+                                            ],
+                                            [
+                                                angle_resolved_spectrum["0.0"],
+                                            ],
+                                        ]
+                                    ],
+                                    columns=["wavelength", "background", "intensity"],
+                                    index=[self.assigned_groups_df.index.to_list()[i]],
+                                )
+                            )
+
+                        # Calculate correction factors
+                        correction_factors = ef.calculate_angle_correction(
+                            angle_resolved_spectrum, 1
+                        )
+                    elif (
+                        spectrum_path.split("_")[-1].split(".")[0] == "spec"
+                        or spectrum_path.split("_")[-2] == "spec"
+                    ):
+                        # Regular spectrum file
+                        self.spectrum_data_df = cf.read_multiple_files(
+                            self.assigned_groups_df["spectrum_path"].to_list(),
+                            ["wavelength", "background", "intensity"],
+                            self.assigned_groups_df.index.to_list(),
+                            skip_row=14,
+                        )
+
+                        cf.log_message(
+                            "Spectrum data found for devices "
+                            + str(self.spectrum_data_df.index.to_list())
+                        )
+
+                    else:
+                        # Not a valid spectrum name
+                        cf.log_message(
+                            "Selected spectrum file does not have a valid name"
+                        )
+                    i += 1
 
                 # Now do the evaluation and append to the data_df dataframe
                 self.evaluate_jvl()

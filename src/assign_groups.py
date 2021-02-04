@@ -235,7 +235,7 @@ class AssignGroups(QtWidgets.QDialog, Ui_AssignGroup):
             QtWidgets.QFileDialog(),
             "Select a Folder",
             initial_path,
-            "Text Files (*_spec*.csv)",
+            "Spectrum Files (*_spec*.csv, *_gon-spec*.csv)",
         )[0]
 
         # Now check if the select filepath is a valid one
