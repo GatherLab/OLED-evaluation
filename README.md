@@ -4,20 +4,35 @@ Software for easy evaluation of previously measured data in the data format of h
 
 ## User Journey
 
-- User starts the program and sees a window with a matplotlib graph place holder in the middle and two tabs. One for the autotube evaluation and the other one for the goniometer
-- On the menubar to the right, the user can press on the "Select Folder" button and select from a File dialog a folder this is the same dialog for both different tabs.
-- When the user selected a folder that shall be evaluated, the programm automatically detects the right files that match the selected evaluation (by file endings that are defined by the measurement program)
+- The user starts with the usual interface that she knows from other gatherlab programs
+- The scrollbar on the right is now used as a guide through the program with different options available that should normally be executed in order
 
-### Autotube Evaluation
+1. At the beginning only the top button that is to select a folder where the data files are contained. If a folder was selected, all file names at top level (not in the subfolders of this folder) are read in
+   - The files that are read in must obey the file naming convention that is defined by the measurement program, thus
 
-- This can be very similar to what I did during my Master's. The user can now press on the second button on the right menu bar that only now is enabled. A Pop-up dialog opens up and now the user can name different groups and assign each group their pixels as well as each group or pixel its correct spectrum. I do not know how I want to do the spectrum selection at this moment but it would be interesting to talk to Sabina about the best way here (one spectrum per device I believe). This could be done with the assignement of the groups as well if it is only one spectrum per group.
-- The third button directly yields box plots of key parameters (e.g. average or key EQE, maximum Luminance etc.) of the different groups to get an overview how they compare to each other without doing much.
-- The fourth button plots in the main graph window the four relevant graphs of standard OLED characterisation: 1. J-V-L curve, 2. EQE vs current density, 3. power over voltage and 4. spectrum. It shall only show the graphs for a single pixel and the user shall be able to click through them. There might be a point in doing this in groups as well but I am not sure about that at the moment. It could possibly make sense to mark the crappy pixels that didn't work at all at least to exclude them from the statistics. Maybe also for something else.
-- The fifth button enables to export the evaluated data (the four graphs basically) of the currently visible pixel so that it can later be easily plotted with origin or another program that facilitates makeing nice-looking graphs.
+```terminal
+<date>_<batch_name>_d<device_no>_p<pixel_no>(_<scan_no>).csv
+```
 
-### Goniometer Evaluation
+    where the scan number is only set if multiple scans for the same device and pixel exist
+    - If the file names are correct and in theory the files should be able to be read in, more buttons on the right can now be clicked.
 
-- I have to go through the program here and mainly need input from the others. Maybe it makes sense to go for the autotube evaluation first. Also maybe it makes sense to team up with someone (2 x 500 lines files is not too bad but as for now, I have never used this script before).
+2. The second button opens a dialog that allows assignment of all available devices to different groups. This is important to ensure ordering of the devices and to obtain statistics for different OLEDs. Since it is usually good practice to have several devices of the same kind.
+   - The user can now select which scan she wants to use, in case devices were scanned several times. This is done with a dropdown menu. The maximum value in the dropdown is given by the maximum scan number found in the file names.
+   - Furthermore, the user can use a slider to define how many groups she wants to define. The maximum value of the slider is the number of different devices detected from the file names. The value of the slider determines the number of lines below where the user defines the groups.
+   - A group definition comprises a group name that briefly explains what the group is, all device numbers that belong to the group, a spectrum file and a color associated with the group.
+   - The group name can be entered in a text field
+   - The group numbers as well. This is to maintain simplicity and an easy to use interface. Different device numbers are seperated by a comma.
+   - A spectrum file can be selected by clicking on a button that allows the user to browse the hard drive and select files with .csv or .txt ending. The spectrum file also has to obey the conventions set by the measurement program for spectrum files, especially when it comes to file structure (columns for wavelength, background & intensity). Otherwise, the user should be able to select a full goniometer spectrum file with which a correction factor for the emission can be calculated. This shall be done seamlessly and the program shall automatically decide if the input is a full angle resolved spectrum or a simple spectrum.
+   - The color is optional but might be used for plotting later on and can be selected from a colorpicker
+   - On saving the groups all parameters are saved in a dataframe and hand over to the main window. Furthermore, if angle resolved spectra are selected, the correction factor shall be calculated and printed to the terminal for each group (print the entire dataframe).
+   - On saving the data of all selected devices shall be read in (in a single dataframe for simplicity) and all relevant calculations shall be already done here.
+3. Now that the groups are assigned, the user shall be able to plot JVL curves for each group or each device depending on the previous definition. This is done with this dialog. The user shall go through all curves and by simply clicking on the legend in the graph he shall be able to unselect a certain device for the statistic calculations later on. Unselected devices' data is also not saved to file later on. An additional button or a right click on a graph shall allow the user to plot all four relevant graphs for the device as subplots in the main plotting area. The user can go back from this view by clicking on plot in the still open dialog.
+4. This button is to plot statistics for all selected devices. What the statistics really imply must be defined later on but current density at 4V as well as luminence at 4 V is set. The statistics shall be shown as a boxplot with each data point visible, however.
+5. Button 5 is meant for the spectrum analysis and shall allow the user to plot the selected spectra seperately. This shall be done using an additional dialog that shows buttons for the different groups. The way the spectra shall be plotted can be selected (just plot the heatmap for goniometer, the spectra for single spectra, or a angle map).
+6. Lastly the user shall be able to save the evaluated data. Each evaluation data is saved to seperate files (for each device, pixel combination). Additionally, a summary file shall be provided were all the important parameters for each pixel are summarised for future reference. From this file it shall be possible to load the status of the evaluation program (defined groups, selected pixels etc) again at a later point of time.
+
+Some important evaluation parameters can be set in a "global setting" style dialog at the top menubar, where also a logging file and the documentation here in this readme file can be selected.
 
 ## Initial Design Choices
 
