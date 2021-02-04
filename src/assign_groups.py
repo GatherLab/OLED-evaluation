@@ -235,7 +235,7 @@ class AssignGroups(QtWidgets.QDialog, Ui_AssignGroup):
             QtWidgets.QFileDialog(),
             "Select a Folder",
             initial_path,
-            "Text Files (*.csv *.txt)",
+            "Text Files (*_spec*.csv)",
         )[0]
 
         # Now check if the select filepath is a valid one
@@ -360,6 +360,9 @@ class AssignGroups(QtWidgets.QDialog, Ui_AssignGroup):
         #     0 : len(group_names)
         # ]
         # self.parent.assigned_groups_df["color"] = self.group_color[0 : len(group_names)]
+
+        # Assign scan
+        self.parent.selected_scan = int(self.select_scan_number_ComboBox.currentText())
 
         # Finally, set the indexes to the device numbers
         self.parent.assigned_groups_df = self.parent.assigned_groups_df.set_index(

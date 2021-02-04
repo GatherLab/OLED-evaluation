@@ -560,3 +560,562 @@
 02/03/2021 04:57:42 pm - [INFO] - (core_functions.py).log_message(18) - /home/julianb/Documents/01-Studium/03-Promotion/02-Data/2020-11-12_MADN-TBPe-top-bottom-TFE/spectra/d24_p4.txt is not a valid file path.
 02/03/2021 05:00:20 pm - [INFO] - (core_functions.py).log_message(18) - Initialising Program
 02/03/2021 05:00:24 pm - [INFO] - (core_functions.py).log_message(18) - Program closed
+02/03/2021 05:22:58 pm - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/03/2021 05:26:44 pm - [INFO] - (core_functions.py).log_message(18) - Program closed
+02/03/2021 05:31:11 pm - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/03/2021 05:32:57 pm - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/03/2021 05:35:20 pm - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/03/2021 05:37:15 pm - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/03/2021 05:37:31 pm - [INFO] - (core_functions.py).log_message(18) - Program closed
+02/03/2021 06:23:22 pm - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/03/2021 06:23:25 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/03/2021 06:23:28 pm - [INFO] - (core_functions.py).log_message(18) - Found 19 files at top level in the selected folder.
+02/03/2021 06:23:35 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/03/2021 06:23:40 pm - [INFO] - (core_functions.py).log_message(18) - Please only enter valid device numbers.
+02/03/2021 06:24:53 pm - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/03/2021 06:24:55 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/03/2021 06:24:58 pm - [INFO] - (core_functions.py).log_message(18) - Found 19 files at top level in the selected folder.
+02/03/2021 06:25:03 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/03/2021 06:25:49 pm - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/03/2021 06:25:51 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/03/2021 06:25:55 pm - [INFO] - (core_functions.py).log_message(18) - Found 19 files at top level in the selected folder.
+02/03/2021 06:26:00 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 10:41:40 am - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 10:41:41 am - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 10:41:45 am - [INFO] - (core_functions.py).log_message(18) - Found 19 files at top level in the selected folder.
+02/04/2021 10:42:19 am - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 10:42:20 am - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 10:42:23 am - [INFO] - (core_functions.py).log_message(18) - Found 19 files at top level in the selected folder.
+02/04/2021 10:42:30 am - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 10:50:36 am - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 10:50:46 am - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 10:50:49 am - [INFO] - (core_functions.py).log_message(18) - Found 19 files at top level in the selected folder.
+02/04/2021 10:51:01 am - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 10:51:28 am - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 10:51:30 am - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 10:51:33 am - [INFO] - (core_functions.py).log_message(18) - Found 19 files at top level in the selected folder.
+02/04/2021 10:56:47 am - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 10:56:49 am - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 10:56:53 am - [INFO] - (core_functions.py).log_message(18) - Found 19 files at top level in the selected folder.
+02/04/2021 10:58:57 am - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 10:58:58 am - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 10:59:01 am - [INFO] - (core_functions.py).log_message(18) - Found 19 files at top level in the selected folder.
+02/04/2021 10:59:52 am - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 10:59:55 am - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 10:59:58 am - [INFO] - (core_functions.py).log_message(18) - Found 19 files at top level in the selected folder.
+02/04/2021 11:00:45 am - [INFO] - (core_functions.py).log_message(18) - Group assignement aborted
+02/04/2021 11:01:20 am - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 11:01:21 am - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 11:01:24 am - [INFO] - (core_functions.py).log_message(18) - Found 19 files at top level in the selected folder.
+02/04/2021 11:02:24 am - [INFO] - (core_functions.py).log_message(18) - Program closed
+02/04/2021 11:02:31 am - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 11:02:32 am - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 11:02:35 am - [INFO] - (core_functions.py).log_message(18) - Found 19 files at top level in the selected folder.
+02/04/2021 11:04:20 am - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 11:04:21 am - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 11:04:24 am - [INFO] - (core_functions.py).log_message(18) - Found 19 files at top level in the selected folder.
+02/04/2021 11:04:55 am - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 11:04:56 am - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 11:04:59 am - [INFO] - (core_functions.py).log_message(18) - Found 19 files at top level in the selected folder.
+02/04/2021 11:06:40 am - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 11:06:42 am - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 11:06:45 am - [INFO] - (core_functions.py).log_message(18) - Found 19 files at top level in the selected folder.
+02/04/2021 11:11:31 am - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 11:11:35 am - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 11:11:38 am - [INFO] - (core_functions.py).log_message(18) - Found 19 files at top level in the selected folder.
+02/04/2021 11:11:50 am - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 11:11:53 am - [INFO] - (core_functions.py).log_message(18) - Found 19 files at top level in the selected folder.
+02/04/2021 11:12:09 am - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 11:12:12 am - [INFO] - (core_functions.py).log_message(18) - Found 19 files at top level in the selected folder.
+02/04/2021 11:15:12 am - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 11:15:25 am - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 11:15:30 am - [INFO] - (core_functions.py).log_message(18) - Found 19 files at top level in the selected folder.
+02/04/2021 11:16:07 am - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 11:16:10 am - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 11:17:08 am - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 11:17:09 am - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 11:17:12 am - [INFO] - (core_functions.py).log_message(18) - Found 19 files at top level in the selected folder.
+02/04/2021 11:17:54 am - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 11:17:57 am - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 11:18:00 am - [INFO] - (core_functions.py).log_message(18) - Found 19 files at top level in the selected folder.
+02/04/2021 11:18:53 am - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 11:18:55 am - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 11:18:58 am - [INFO] - (core_functions.py).log_message(18) - Found 19 files at top level in the selected folder.
+02/04/2021 11:32:45 am - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 11:32:46 am - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 11:32:49 am - [INFO] - (core_functions.py).log_message(18) - Found 19 files at top level in the selected folder.
+02/04/2021 11:32:54 am - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 11:33:31 am - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 11:33:32 am - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 11:33:35 am - [INFO] - (core_functions.py).log_message(18) - Found 19 files at top level in the selected folder.
+02/04/2021 11:33:37 am - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 11:35:18 am - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 11:35:20 am - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 11:35:23 am - [INFO] - (core_functions.py).log_message(18) - Found 19 files at top level in the selected folder.
+02/04/2021 11:35:28 am - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 11:41:39 am - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 11:41:40 am - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 11:41:43 am - [INFO] - (core_functions.py).log_message(18) - Found 19 files at top level in the selected folder.
+02/04/2021 11:41:50 am - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 11:47:16 am - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 11:47:17 am - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 11:47:20 am - [INFO] - (core_functions.py).log_message(18) - Found 19 files at top level in the selected folder.
+02/04/2021 11:50:33 am - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 11:50:34 am - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 11:50:36 am - [INFO] - (core_functions.py).log_message(18) - Found 19 files at top level in the selected folder.
+02/04/2021 11:50:48 am - [INFO] - (core_functions.py).log_message(18) - Spectrum file for group test could not be loaded. Please set again.
+02/04/2021 11:51:00 am - [INFO] - (core_functions.py).log_message(18) - Group assignement aborted
+02/04/2021 11:51:01 am - [INFO] - (core_functions.py).log_message(18) - Spectrum file for group test could not be loaded. Please set again.
+02/04/2021 11:51:04 am - [INFO] - (core_functions.py).log_message(18) - Group assignement aborted
+02/04/2021 11:51:05 am - [INFO] - (core_functions.py).log_message(18) - Spectrum file for group test could not be loaded. Please set again.
+02/04/2021 11:51:12 am - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 11:53:34 am - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 11:53:35 am - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 11:53:38 am - [INFO] - (core_functions.py).log_message(18) - Found 19 files at top level in the selected folder.
+02/04/2021 11:53:40 am - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 11:54:06 am - [INFO] - (core_functions.py).log_message(18) - Please only enter valid device numbers.
+02/04/2021 11:54:32 am - [INFO] - (core_functions.py).log_message(18) - Spectrum file for group test2 could not be loaded. Please set again.
+02/04/2021 11:54:48 am - [INFO] - (core_functions.py).log_message(18) - Group assignement aborted
+02/04/2021 11:57:47 am - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 11:57:48 am - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 11:57:51 am - [INFO] - (core_functions.py).log_message(18) - Found 19 files at top level in the selected folder.
+02/04/2021 11:57:58 am - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 11:58:23 am - [INFO] - (core_functions.py).log_message(18) - Please only enter valid device numbers.
+02/04/2021 11:58:35 am - [INFO] - (core_functions.py).log_message(18) - Spectrum file for group test2 could not be loaded. Please set again.
+02/04/2021 11:58:39 am - [INFO] - (core_functions.py).log_message(18) - Group assignement aborted
+02/04/2021 11:58:40 am - [INFO] - (core_functions.py).log_message(18) - Spectrum file for group test2 could not be loaded. Please set again.
+02/04/2021 11:58:49 am - [INFO] - (core_functions.py).log_message(18) - Spectrum file for group test2 could not be loaded. Please set again.
+02/04/2021 11:59:27 am - [INFO] - (core_functions.py).log_message(18) - Spectrum file for group test2 could not be loaded. Please set again.
+02/04/2021 12:02:11 pm - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 12:02:13 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 12:02:15 pm - [INFO] - (core_functions.py).log_message(18) - Found 19 files at top level in the selected folder.
+02/04/2021 12:02:22 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 12:02:38 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 12:03:06 pm - [INFO] - (core_functions.py).log_message(18) - Group assignement aborted
+02/04/2021 12:03:10 pm - [INFO] - (core_functions.py).log_message(18) - Please enter device/s for your group. Try again!
+02/04/2021 12:03:10 pm - [INFO] - (core_functions.py).log_message(18) - Group assignement aborted
+02/04/2021 12:03:19 pm - [INFO] - (core_functions.py).log_message(18) - Please only enter valid device numbers.
+02/04/2021 12:03:22 pm - [INFO] - (core_functions.py).log_message(18) - Group assignement aborted
+02/04/2021 12:03:30 pm - [INFO] - (core_functions.py).log_message(18) - Group assignement aborted
+02/04/2021 12:36:31 pm - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 12:36:33 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 12:36:37 pm - [INFO] - (core_functions.py).log_message(18) - Found 19 files at top level in the selected folder.
+02/04/2021 12:36:44 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 12:46:35 pm - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 12:46:37 pm - [INFO] - (core_functions.py).log_message(18) - Program closed
+02/04/2021 12:56:42 pm - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 12:56:43 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 12:56:46 pm - [INFO] - (core_functions.py).log_message(18) - Found 36 files at top level in the selected folder.
+02/04/2021 12:59:24 pm - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 12:59:34 pm - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 12:59:41 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 12:59:44 pm - [INFO] - (core_functions.py).log_message(18) - Found 36 files at top level in the selected folder.
+02/04/2021 12:59:56 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 12:59:58 pm - [INFO] - (core_functions.py).log_message(18) - Found 36 files at top level in the selected folder.
+02/04/2021 01:03:27 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 01:03:29 pm - [INFO] - (core_functions.py).log_message(18) - Found 36 files at top level in the selected folder.
+02/04/2021 01:03:36 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 01:03:41 pm - [INFO] - (core_functions.py).log_message(18) - Found 36 files at top level in the selected folder.
+02/04/2021 01:03:52 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 01:03:55 pm - [INFO] - (core_functions.py).log_message(18) - Found 36 files at top level in the selected folder.
+02/04/2021 01:04:57 pm - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 01:05:03 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 01:05:16 pm - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 01:05:17 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 01:05:19 pm - [INFO] - (core_functions.py).log_message(18) - Found 36 files at top level in the selected folder.
+02/04/2021 01:08:41 pm - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 01:08:42 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 01:08:47 pm - [INFO] - (core_functions.py).log_message(18) - Found 36 files at top level in the selected folder.
+02/04/2021 01:10:23 pm - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 01:10:24 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 01:10:27 pm - [INFO] - (core_functions.py).log_message(18) - Found 36 files at top level in the selected folder.
+02/04/2021 01:10:27 pm - [INFO] - (core_functions.py).log_message(18) - Found 33 jvl files at top level in selected folder.
+02/04/2021 01:10:27 pm - [INFO] - (core_functions.py).log_message(18) - Maximum scan number found: 3
+02/04/2021 01:11:10 pm - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 01:11:11 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 01:11:14 pm - [INFO] - (core_functions.py).log_message(18) - Found 36 files at top level in the selected folder.
+02/04/2021 01:11:14 pm - [INFO] - (core_functions.py).log_message(18) - Found 33 jvl files at top level in selected folder.
+02/04/2021 01:11:14 pm - [INFO] - (core_functions.py).log_message(18) - Maximum scan number found: 3
+02/04/2021 01:11:37 pm - [INFO] - (core_functions.py).log_message(18) - Spectrum file for group test could not be loaded. Please set again.
+02/04/2021 01:12:00 pm - [INFO] - (core_functions.py).log_message(18) - Spectrum file for group test could not be loaded. Please set again.
+02/04/2021 01:12:33 pm - [INFO] - (core_functions.py).log_message(18) - Spectrum file for group test could not be loaded. Please set again.
+02/04/2021 01:13:55 pm - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 01:13:56 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 01:13:58 pm - [INFO] - (core_functions.py).log_message(18) - Found 36 files at top level in the selected folder.
+02/04/2021 01:13:58 pm - [INFO] - (core_functions.py).log_message(18) - Found 33 jvl files at top level in selected folder.
+02/04/2021 01:13:58 pm - [INFO] - (core_functions.py).log_message(18) - Maximum scan number found: 3
+02/04/2021 01:14:03 pm - [INFO] - (core_functions.py).log_message(18) - Found correct data for ['d21p1s1', 'd21p1s2', 'd21p1s3', 'd21p3s1', 'd21p3s2', 'd21p5s1', 'd21p7s1', 'd24p1s1', 'd24p7s1']
+02/04/2021 01:14:36 pm - [INFO] - (core_functions.py).log_message(18) - Spectrum file for group test could not be loaded. Please set again.
+02/04/2021 01:14:38 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 01:14:45 pm - [INFO] - (core_functions.py).log_message(18) - Found correct data for ['d21p1s1', 'd21p1s2', 'd21p1s3', 'd21p3s1', 'd21p3s2', 'd21p5s1', 'd21p7s1', 'd24p1s1', 'd24p7s1']
+02/04/2021 01:14:59 pm - [INFO] - (core_functions.py).log_message(18) - Found correct data for ['d21p1s1', 'd21p1s2', 'd21p1s3', 'd21p3s1', 'd21p3s2', 'd21p5s1', 'd21p7s1', 'd24p1s1', 'd24p7s1']
+02/04/2021 01:19:05 pm - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 01:19:07 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 01:19:10 pm - [INFO] - (core_functions.py).log_message(18) - Found 36 files at top level in the selected folder.
+02/04/2021 01:19:10 pm - [INFO] - (core_functions.py).log_message(18) - Found 33 jvl files at top level in selected folder.
+02/04/2021 01:19:10 pm - [INFO] - (core_functions.py).log_message(18) - Maximum scan number found: 3
+02/04/2021 01:19:16 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 01:19:22 pm - [INFO] - (core_functions.py).log_message(18) - Found correct IV data for ['d21p1s1', 'd21p1s2', 'd21p1s3', 'd21p3s1', 'd21p3s2', 'd21p5s1', 'd21p7s1', 'd24p1s1', 'd24p7s1']
+02/04/2021 01:20:08 pm - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 01:20:10 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 01:20:12 pm - [INFO] - (core_functions.py).log_message(18) - Found 36 files at top level in the selected folder.
+02/04/2021 01:20:12 pm - [INFO] - (core_functions.py).log_message(18) - Found 33 jvl files at top level in selected folder.
+02/04/2021 01:20:12 pm - [INFO] - (core_functions.py).log_message(18) - Maximum scan number found: 3
+02/04/2021 01:20:17 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 01:20:22 pm - [INFO] - (core_functions.py).log_message(18) - Found correct IV data for ['d21p1s1', 'd21p1s2', 'd21p1s3', 'd21p3s1', 'd21p3s2', 'd21p5s1', 'd21p7s1', 'd24p1s1', 'd24p7s1']
+02/04/2021 01:21:28 pm - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 01:21:30 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 01:21:32 pm - [INFO] - (core_functions.py).log_message(18) - Found 36 files at top level in the selected folder.
+02/04/2021 01:21:32 pm - [INFO] - (core_functions.py).log_message(18) - Found 33 jvl files at top level in selected folder.
+02/04/2021 01:21:32 pm - [INFO] - (core_functions.py).log_message(18) - Maximum scan number found: 3
+02/04/2021 01:21:37 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 01:21:43 pm - [INFO] - (core_functions.py).log_message(18) - Please only enter valid device numbers.
+02/04/2021 01:21:47 pm - [INFO] - (core_functions.py).log_message(18) - Found correct IV data for ['d22p1s1', 'd22p3s1', 'd22p5s1', 'd22p7s1', 'd24p1s1', 'd24p7s1']
+02/04/2021 01:21:47 pm - [INFO] - (core_functions.py).log_message(18) - Spectrum data found for devices Int64Index([22, 24], dtype='int64')
+02/04/2021 01:24:00 pm - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 01:24:01 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 01:24:03 pm - [INFO] - (core_functions.py).log_message(18) - Found 36 files at top level in the selected folder.
+02/04/2021 01:24:03 pm - [INFO] - (core_functions.py).log_message(18) - Found 33 jvl files at top level in selected folder.
+02/04/2021 01:24:03 pm - [INFO] - (core_functions.py).log_message(18) - Maximum scan number found: 3
+02/04/2021 01:26:47 pm - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 01:26:48 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 01:26:50 pm - [INFO] - (core_functions.py).log_message(18) - Found 36 files at top level in the selected folder.
+02/04/2021 01:26:50 pm - [INFO] - (core_functions.py).log_message(18) - Found 33 jvl files at top level in selected folder.
+02/04/2021 01:26:50 pm - [INFO] - (core_functions.py).log_message(18) - Maximum scan number found: 3
+02/04/2021 01:28:23 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 01:28:55 pm - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 01:28:56 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 01:28:58 pm - [INFO] - (core_functions.py).log_message(18) - Found 36 files at top level in the selected folder.
+02/04/2021 01:28:58 pm - [INFO] - (core_functions.py).log_message(18) - Found 33 jvl files at top level in selected folder.
+02/04/2021 01:28:58 pm - [INFO] - (core_functions.py).log_message(18) - Maximum scan number found: 3
+02/04/2021 01:29:00 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 01:29:37 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 01:29:40 pm - [INFO] - (core_functions.py).log_message(18) - Found correct IV data for ['d22p1s1', 'd22p3s1', 'd22p5s1', 'd22p7s1', 'd24p1s1', 'd24p7s1']
+02/04/2021 01:29:40 pm - [INFO] - (core_functions.py).log_message(18) - Spectrum data found for devices [22, 24]
+02/04/2021 01:30:03 pm - [INFO] - (core_functions.py).log_message(18) - Found correct IV data for []
+02/04/2021 01:30:03 pm - [INFO] - (core_functions.py).log_message(18) - Spectrum data found for devices [22, 24]
+02/04/2021 01:30:19 pm - [INFO] - (core_functions.py).log_message(18) - Found correct IV data for ['d21p1s1', 'd21p1s2', 'd21p1s3', 'd21p3s1', 'd21p3s2', 'd21p5s1', 'd21p7s1', 'd24p1s1', 'd24p7s1']
+02/04/2021 01:30:19 pm - [INFO] - (core_functions.py).log_message(18) - Spectrum data found for devices [21, 24]
+02/04/2021 01:36:33 pm - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 01:36:35 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 01:36:42 pm - [INFO] - (core_functions.py).log_message(18) - Found 36 files at top level in the selected folder.
+02/04/2021 01:36:42 pm - [INFO] - (core_functions.py).log_message(18) - Found 33 jvl files at top level in selected folder.
+02/04/2021 01:36:42 pm - [INFO] - (core_functions.py).log_message(18) - Maximum scan number found: 3
+02/04/2021 01:36:49 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 01:37:03 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 01:37:11 pm - [INFO] - (core_functions.py).log_message(18) - Found correct IVL data for ['d21p1s1', 'd21p2s1', 'd21p3s1', 'd21p4s1', 'd21p5s1', 'd21p6s1', 'd21p7s1', 'd21p8s1', 'd22p1s1', 'd22p2s1', 'd22p3s1', 'd22p4s1', 'd22p5s1', 'd22p6s1', 'd22p7s1', 'd22p8s1', 'd24p1s1', 'd24p4s1', 'd24p7s1', 'd34p2s1', 'd34p5s1', 'd34p8s1']
+02/04/2021 01:37:11 pm - [INFO] - (core_functions.py).log_message(18) - Spectrum data found for devices [21, 22, 24, 34]
+02/04/2021 01:37:26 pm - [INFO] - (core_functions.py).log_message(18) - Found correct IVL data for ['d21p1s2', 'd21p3s2', 'd21p4s2', 'd21p6s2', 'd21p8s2']
+02/04/2021 01:37:26 pm - [INFO] - (core_functions.py).log_message(18) - Spectrum data found for devices [21, 22, 24, 34]
+02/04/2021 01:43:58 pm - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 01:44:00 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 01:44:02 pm - [INFO] - (core_functions.py).log_message(18) - Found 36 files at top level in the selected folder.
+02/04/2021 01:44:02 pm - [INFO] - (core_functions.py).log_message(18) - Found 33 jvl files at top level in selected folder.
+02/04/2021 01:44:02 pm - [INFO] - (core_functions.py).log_message(18) - Maximum scan number found: 3
+02/04/2021 01:44:06 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 01:44:14 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 01:44:17 pm - [INFO] - (core_functions.py).log_message(18) - Found correct IVL data for ['d21p1s1', 'd21p2s1', 'd21p3s1', 'd21p4s1', 'd21p5s1', 'd21p6s1', 'd21p7s1', 'd21p8s1', 'd24p1s1', 'd24p4s1', 'd24p7s1']
+02/04/2021 01:44:17 pm - [INFO] - (core_functions.py).log_message(18) - Spectrum data found for devices [21, 24]
+02/04/2021 01:44:33 pm - [INFO] - (core_functions.py).log_message(18) - Found correct IVL data for ['d21p1s1', 'd21p2s1', 'd21p3s1', 'd21p4s1', 'd21p5s1', 'd21p6s1', 'd21p7s1', 'd21p8s1', 'd24p1s1', 'd24p4s1', 'd24p7s1']
+02/04/2021 01:44:33 pm - [INFO] - (core_functions.py).log_message(18) - Spectrum data found for devices [21, 24]
+02/04/2021 01:44:57 pm - [INFO] - (core_functions.py).log_message(18) - Found correct IVL data for ['d21p1s1', 'd21p2s1', 'd21p3s1', 'd21p4s1', 'd21p5s1', 'd21p6s1', 'd21p7s1', 'd21p8s1', 'd24p1s1', 'd24p4s1', 'd24p7s1']
+02/04/2021 01:44:57 pm - [INFO] - (core_functions.py).log_message(18) - Spectrum data found for devices [21, 24]
+02/04/2021 01:45:50 pm - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 01:45:51 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 01:45:53 pm - [INFO] - (core_functions.py).log_message(18) - Found 36 files at top level in the selected folder.
+02/04/2021 01:45:53 pm - [INFO] - (core_functions.py).log_message(18) - Found 33 jvl files at top level in selected folder.
+02/04/2021 01:45:53 pm - [INFO] - (core_functions.py).log_message(18) - Maximum scan number found: 3
+02/04/2021 01:45:57 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 01:46:00 pm - [INFO] - (core_functions.py).log_message(18) - Found correct IVL data for ['d21p1s1', 'd21p2s1', 'd21p3s1', 'd21p4s1', 'd21p5s1', 'd21p6s1', 'd21p7s1', 'd21p8s1']
+02/04/2021 01:46:00 pm - [INFO] - (core_functions.py).log_message(18) - Spectrum data found for devices [21]
+02/04/2021 01:47:16 pm - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 01:47:18 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 01:47:21 pm - [INFO] - (core_functions.py).log_message(18) - Found 36 files at top level in the selected folder.
+02/04/2021 01:47:21 pm - [INFO] - (core_functions.py).log_message(18) - Found 33 jvl files at top level in selected folder.
+02/04/2021 01:47:21 pm - [INFO] - (core_functions.py).log_message(18) - Maximum scan number found: 3
+02/04/2021 01:47:24 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 01:47:27 pm - [INFO] - (core_functions.py).log_message(18) - Found correct IVL data for ['d21p1s1', 'd21p2s1', 'd21p3s1', 'd21p4s1', 'd21p5s1', 'd21p6s1', 'd21p7s1', 'd21p8s1']
+02/04/2021 01:47:27 pm - [INFO] - (core_functions.py).log_message(18) - Spectrum data found for devices [21]
+02/04/2021 02:31:57 pm - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 02:32:02 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 02:32:05 pm - [INFO] - (core_functions.py).log_message(18) - Found 36 files at top level in the selected folder.
+02/04/2021 02:32:05 pm - [INFO] - (core_functions.py).log_message(18) - Found 33 jvl files at top level in selected folder.
+02/04/2021 02:32:05 pm - [INFO] - (core_functions.py).log_message(18) - Maximum scan number found: 3
+02/04/2021 02:32:08 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 02:32:12 pm - [INFO] - (core_functions.py).log_message(18) - Found correct IVL data for ['d21p1s1', 'd21p2s1', 'd21p3s1', 'd21p4s1', 'd21p5s1', 'd21p6s1', 'd21p7s1', 'd21p8s1']
+02/04/2021 02:32:12 pm - [INFO] - (core_functions.py).log_message(18) - Spectrum data found for devices [21]
+02/04/2021 02:32:36 pm - [INFO] - (core_functions.py).log_message(18) - Found correct IVL data for ['d21p1s1', 'd21p2s1', 'd21p3s1', 'd21p4s1', 'd21p5s1', 'd21p6s1', 'd21p7s1', 'd21p8s1']
+02/04/2021 02:32:36 pm - [INFO] - (core_functions.py).log_message(18) - Spectrum data found for devices [21]
+02/04/2021 02:37:07 pm - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 02:37:10 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 02:37:13 pm - [INFO] - (core_functions.py).log_message(18) - Found 36 files at top level in the selected folder.
+02/04/2021 02:37:13 pm - [INFO] - (core_functions.py).log_message(18) - Found 33 jvl files at top level in selected folder.
+02/04/2021 02:37:13 pm - [INFO] - (core_functions.py).log_message(18) - Maximum scan number found: 3
+02/04/2021 02:37:19 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 02:37:22 pm - [INFO] - (core_functions.py).log_message(18) - Found correct IVL data for ['d21p1s1', 'd21p2s1', 'd21p3s1', 'd21p4s1', 'd21p5s1', 'd21p6s1', 'd21p7s1', 'd21p8s1', 'd24p1s1', 'd24p4s1', 'd24p7s1']
+02/04/2021 02:37:22 pm - [INFO] - (core_functions.py).log_message(18) - Spectrum data found for devices [21, 24]
+02/04/2021 02:37:48 pm - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 02:37:50 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 02:37:52 pm - [INFO] - (core_functions.py).log_message(18) - Found 36 files at top level in the selected folder.
+02/04/2021 02:37:52 pm - [INFO] - (core_functions.py).log_message(18) - Found 33 jvl files at top level in selected folder.
+02/04/2021 02:37:52 pm - [INFO] - (core_functions.py).log_message(18) - Maximum scan number found: 3
+02/04/2021 02:37:56 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 02:37:59 pm - [INFO] - (core_functions.py).log_message(18) - Found correct IVL data for ['d21p1s1', 'd21p2s1', 'd21p3s1', 'd21p4s1', 'd21p5s1', 'd21p6s1', 'd21p7s1', 'd21p8s1', 'd24p1s1', 'd24p4s1', 'd24p7s1']
+02/04/2021 02:37:59 pm - [INFO] - (core_functions.py).log_message(18) - Spectrum data found for devices [21, 24]
+02/04/2021 02:38:46 pm - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 02:38:48 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 02:38:50 pm - [INFO] - (core_functions.py).log_message(18) - Found 36 files at top level in the selected folder.
+02/04/2021 02:38:50 pm - [INFO] - (core_functions.py).log_message(18) - Found 33 jvl files at top level in selected folder.
+02/04/2021 02:38:50 pm - [INFO] - (core_functions.py).log_message(18) - Maximum scan number found: 3
+02/04/2021 02:38:57 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 02:39:00 pm - [INFO] - (core_functions.py).log_message(18) - Found correct IVL data for ['d21p1s1', 'd21p2s1', 'd21p3s1', 'd21p4s1', 'd21p5s1', 'd21p6s1', 'd21p7s1', 'd21p8s1', 'd24p1s1', 'd24p4s1', 'd24p7s1']
+02/04/2021 02:39:00 pm - [INFO] - (core_functions.py).log_message(18) - Spectrum data found for devices [21, 24]
+02/04/2021 02:39:24 pm - [INFO] - (core_functions.py).log_message(18) - Found correct IVL data for ['d21p1s1', 'd21p2s1', 'd21p3s1', 'd21p4s1', 'd21p5s1', 'd21p6s1', 'd21p7s1', 'd21p8s1', 'd24p1s1', 'd24p4s1', 'd24p7s1']
+02/04/2021 02:39:24 pm - [INFO] - (core_functions.py).log_message(18) - Spectrum data found for devices [21, 24]
+02/04/2021 02:39:46 pm - [INFO] - (core_functions.py).log_message(18) - Found correct IVL data for ['d21p1s1', 'd21p2s1', 'd21p3s1', 'd21p4s1', 'd21p5s1', 'd21p6s1', 'd21p7s1', 'd21p8s1', 'd24p1s1', 'd24p4s1', 'd24p7s1']
+02/04/2021 02:39:46 pm - [INFO] - (core_functions.py).log_message(18) - Spectrum data found for devices [21, 24]
+02/04/2021 02:39:58 pm - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 02:40:00 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 02:40:06 pm - [INFO] - (core_functions.py).log_message(18) - Found 36 files at top level in the selected folder.
+02/04/2021 02:40:06 pm - [INFO] - (core_functions.py).log_message(18) - Found 33 jvl files at top level in selected folder.
+02/04/2021 02:40:06 pm - [INFO] - (core_functions.py).log_message(18) - Maximum scan number found: 3
+02/04/2021 02:40:12 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 02:40:14 pm - [INFO] - (core_functions.py).log_message(18) - Found correct IVL data for ['d21p1s1', 'd21p2s1', 'd21p3s1', 'd21p4s1', 'd21p5s1', 'd21p6s1', 'd21p7s1', 'd21p8s1', 'd24p1s1', 'd24p4s1', 'd24p7s1']
+02/04/2021 02:40:14 pm - [INFO] - (core_functions.py).log_message(18) - Spectrum data found for devices [21, 24]
+02/04/2021 02:40:24 pm - [INFO] - (core_functions.py).log_message(18) - Found correct IVL data for ['d21p1s1', 'd21p2s1', 'd21p3s1', 'd21p4s1', 'd21p5s1', 'd21p6s1', 'd21p7s1', 'd21p8s1', 'd24p1s1', 'd24p4s1', 'd24p7s1']
+02/04/2021 02:40:24 pm - [INFO] - (core_functions.py).log_message(18) - Spectrum data found for devices [21, 24]
+02/04/2021 02:45:23 pm - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 02:45:24 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 02:45:26 pm - [INFO] - (core_functions.py).log_message(18) - Found 36 files at top level in the selected folder.
+02/04/2021 02:45:26 pm - [INFO] - (core_functions.py).log_message(18) - Found 33 jvl files at top level in selected folder.
+02/04/2021 02:45:26 pm - [INFO] - (core_functions.py).log_message(18) - Maximum scan number found: 3
+02/04/2021 02:45:33 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 02:45:36 pm - [INFO] - (core_functions.py).log_message(18) - Found correct IVL data for ['d21p1s1', 'd21p2s1', 'd21p3s1', 'd21p4s1', 'd21p5s1', 'd21p6s1', 'd21p7s1', 'd21p8s1', 'd22p1s1', 'd22p2s1', 'd22p3s1', 'd22p4s1', 'd22p5s1', 'd22p6s1', 'd22p7s1', 'd22p8s1']
+02/04/2021 02:45:36 pm - [INFO] - (core_functions.py).log_message(18) - Spectrum data found for devices [21, 22]
+02/04/2021 02:47:06 pm - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 02:47:08 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 02:47:11 pm - [INFO] - (core_functions.py).log_message(18) - Found 36 files at top level in the selected folder.
+02/04/2021 02:47:11 pm - [INFO] - (core_functions.py).log_message(18) - Found 33 jvl files at top level in selected folder.
+02/04/2021 02:47:11 pm - [INFO] - (core_functions.py).log_message(18) - Maximum scan number found: 3
+02/04/2021 02:47:18 pm - [INFO] - (core_functions.py).log_message(18) - Found correct IVL data for ['d21p1s1', 'd21p2s1', 'd21p3s1', 'd21p4s1', 'd21p5s1', 'd21p6s1', 'd21p7s1', 'd21p8s1', 'd24p1s1', 'd24p4s1', 'd24p7s1']
+02/04/2021 02:47:18 pm - [INFO] - (core_functions.py).log_message(18) - Can not evaluate data without spectrum files for all groups.
+02/04/2021 02:47:21 pm - [INFO] - (core_functions.py).log_message(18) - Spectrum file for group test could not be loaded. Please set again.
+02/04/2021 02:47:22 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 02:47:25 pm - [INFO] - (core_functions.py).log_message(18) - Found correct IVL data for ['d21p1s1', 'd21p2s1', 'd21p3s1', 'd21p4s1', 'd21p5s1', 'd21p6s1', 'd21p7s1', 'd21p8s1', 'd24p1s1', 'd24p4s1', 'd24p7s1']
+02/04/2021 02:47:25 pm - [INFO] - (core_functions.py).log_message(18) - Spectrum data found for devices [21, 24]
+02/04/2021 02:48:58 pm - [INFO] - (core_functions.py).log_message(18) - Found correct IVL data for ['d21p1s1', 'd21p2s1', 'd21p3s1', 'd21p4s1', 'd21p5s1', 'd21p6s1', 'd21p7s1', 'd21p8s1', 'd24p1s1', 'd24p4s1', 'd24p7s1']
+02/04/2021 02:48:58 pm - [INFO] - (core_functions.py).log_message(18) - Spectrum data found for devices [21, 24]
+02/04/2021 02:51:41 pm - [INFO] - (core_functions.py).log_message(18) - Found correct IVL data for ['d21p1s1', 'd21p2s1', 'd21p3s1', 'd21p4s1', 'd21p5s1', 'd21p6s1', 'd21p7s1', 'd21p8s1', 'd24p1s1', 'd24p4s1', 'd24p7s1']
+02/04/2021 02:51:41 pm - [INFO] - (core_functions.py).log_message(18) - Spectrum data found for devices [21, 24]
+02/04/2021 02:51:46 pm - [INFO] - (core_functions.py).log_message(18) - Found correct IVL data for ['d21p1s1', 'd21p2s1', 'd21p3s1', 'd21p4s1', 'd21p5s1', 'd21p6s1', 'd21p7s1', 'd21p8s1', 'd24p1s1', 'd24p4s1', 'd24p7s1']
+02/04/2021 02:51:46 pm - [INFO] - (core_functions.py).log_message(18) - Spectrum data found for devices [21, 24]
+02/04/2021 03:00:40 pm - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 03:00:42 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 03:00:45 pm - [INFO] - (core_functions.py).log_message(18) - Found 36 files at top level in the selected folder.
+02/04/2021 03:00:45 pm - [INFO] - (core_functions.py).log_message(18) - Found 33 jvl files at top level in selected folder.
+02/04/2021 03:00:45 pm - [INFO] - (core_functions.py).log_message(18) - Maximum scan number found: 3
+02/04/2021 03:00:50 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 03:00:53 pm - [INFO] - (core_functions.py).log_message(18) - Found correct IVL data for ['d21p1s1', 'd21p2s1', 'd21p3s1', 'd21p4s1', 'd21p5s1', 'd21p6s1', 'd21p7s1', 'd21p8s1', 'd24p1s1', 'd24p4s1', 'd24p7s1']
+02/04/2021 03:00:53 pm - [INFO] - (core_functions.py).log_message(18) - Spectrum data found for devices [21, 24]
+02/04/2021 03:01:28 pm - [INFO] - (core_functions.py).log_message(18) - Found correct IVL data for ['d21p1s1', 'd21p2s1', 'd21p3s1', 'd21p4s1', 'd21p5s1', 'd21p6s1', 'd21p7s1', 'd21p8s1', 'd24p1s1', 'd24p4s1', 'd24p7s1']
+02/04/2021 03:01:28 pm - [INFO] - (core_functions.py).log_message(18) - Spectrum data found for devices [21, 24]
+02/04/2021 03:03:37 pm - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 03:03:38 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 03:03:40 pm - [INFO] - (core_functions.py).log_message(18) - Found 36 files at top level in the selected folder.
+02/04/2021 03:03:40 pm - [INFO] - (core_functions.py).log_message(18) - Found 33 jvl files at top level in selected folder.
+02/04/2021 03:03:40 pm - [INFO] - (core_functions.py).log_message(18) - Maximum scan number found: 3
+02/04/2021 03:03:45 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 03:03:48 pm - [INFO] - (core_functions.py).log_message(18) - Found correct IVL data for ['d21p1s1', 'd21p2s1', 'd21p3s1', 'd21p4s1', 'd21p5s1', 'd21p6s1', 'd21p7s1', 'd21p8s1', 'd22p1s1', 'd22p2s1', 'd22p3s1', 'd22p4s1', 'd22p5s1', 'd22p6s1', 'd22p7s1', 'd22p8s1']
+02/04/2021 03:03:48 pm - [INFO] - (core_functions.py).log_message(18) - Spectrum data found for devices [21, 22]
+02/04/2021 03:04:46 pm - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 03:04:48 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 03:04:50 pm - [INFO] - (core_functions.py).log_message(18) - Found 36 files at top level in the selected folder.
+02/04/2021 03:04:50 pm - [INFO] - (core_functions.py).log_message(18) - Found 33 jvl files at top level in selected folder.
+02/04/2021 03:04:50 pm - [INFO] - (core_functions.py).log_message(18) - Maximum scan number found: 3
+02/04/2021 03:04:55 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 03:04:58 pm - [INFO] - (core_functions.py).log_message(18) - Please only enter valid device numbers.
+02/04/2021 03:05:05 pm - [INFO] - (core_functions.py).log_message(18) - Found correct IVL data for ['d22p1s1', 'd22p2s1', 'd22p3s1', 'd22p4s1', 'd22p5s1', 'd22p6s1', 'd22p7s1', 'd22p8s1', 'd24p1s1', 'd24p4s1', 'd24p7s1']
+02/04/2021 03:05:05 pm - [INFO] - (core_functions.py).log_message(18) - Spectrum data found for devices [22, 24]
+02/04/2021 03:05:42 pm - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 03:07:36 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 03:07:38 pm - [INFO] - (core_functions.py).log_message(18) - Found 36 files at top level in the selected folder.
+02/04/2021 03:07:38 pm - [INFO] - (core_functions.py).log_message(18) - Found 33 jvl files at top level in selected folder.
+02/04/2021 03:07:38 pm - [INFO] - (core_functions.py).log_message(18) - Maximum scan number found: 3
+02/04/2021 03:07:45 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 03:07:48 pm - [INFO] - (core_functions.py).log_message(18) - Found correct IVL data for ['d21p1s1', 'd21p2s1', 'd21p3s1', 'd21p4s1', 'd21p5s1', 'd21p6s1', 'd21p7s1', 'd21p8s1', 'd24p1s1', 'd24p4s1', 'd24p7s1']
+02/04/2021 03:07:48 pm - [INFO] - (core_functions.py).log_message(18) - Spectrum data found for devices [21, 24]
+02/04/2021 03:08:23 pm - [INFO] - (core_functions.py).log_message(18) - Found correct IVL data for ['d21p1s1', 'd21p2s1', 'd21p3s1', 'd21p4s1', 'd21p5s1', 'd21p6s1', 'd21p7s1', 'd21p8s1', 'd24p1s1', 'd24p4s1', 'd24p7s1']
+02/04/2021 03:08:23 pm - [INFO] - (core_functions.py).log_message(18) - Spectrum data found for devices [21, 24]
+02/04/2021 03:08:32 pm - [INFO] - (core_functions.py).log_message(18) - Found correct IVL data for ['d21p1s1', 'd21p2s1', 'd21p3s1', 'd21p4s1', 'd21p5s1', 'd21p6s1', 'd21p7s1', 'd21p8s1', 'd24p1s1', 'd24p4s1', 'd24p7s1']
+02/04/2021 03:08:32 pm - [INFO] - (core_functions.py).log_message(18) - Spectrum data found for devices [21, 24]
+02/04/2021 03:09:27 pm - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 03:09:28 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 03:09:32 pm - [INFO] - (core_functions.py).log_message(18) - Found 36 files at top level in the selected folder.
+02/04/2021 03:09:32 pm - [INFO] - (core_functions.py).log_message(18) - Found 33 jvl files at top level in selected folder.
+02/04/2021 03:09:32 pm - [INFO] - (core_functions.py).log_message(18) - Maximum scan number found: 3
+02/04/2021 03:09:38 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 03:09:41 pm - [INFO] - (core_functions.py).log_message(18) - Found correct IVL data for ['d21p1s1', 'd21p2s1', 'd21p3s1', 'd21p4s1', 'd21p5s1', 'd21p6s1', 'd21p7s1', 'd21p8s1', 'd24p1s1', 'd24p4s1', 'd24p7s1']
+02/04/2021 03:09:41 pm - [INFO] - (core_functions.py).log_message(18) - Spectrum data found for devices [21, 24]
+02/04/2021 03:12:26 pm - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 03:12:33 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 03:12:36 pm - [INFO] - (core_functions.py).log_message(18) - Found 36 files at top level in the selected folder.
+02/04/2021 03:12:36 pm - [INFO] - (core_functions.py).log_message(18) - Found 33 jvl files at top level in selected folder.
+02/04/2021 03:12:36 pm - [INFO] - (core_functions.py).log_message(18) - Maximum scan number found: 3
+02/04/2021 03:12:40 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 03:12:48 pm - [INFO] - (core_functions.py).log_message(18) - Please only enter valid device numbers.
+02/04/2021 03:12:51 pm - [INFO] - (core_functions.py).log_message(18) - Please only enter valid device numbers.
+02/04/2021 03:12:56 pm - [INFO] - (core_functions.py).log_message(18) - Found correct IVL data for ['d21p1s1', 'd21p2s1', 'd21p3s1', 'd21p4s1', 'd21p5s1', 'd21p6s1', 'd21p7s1', 'd21p8s1', 'd24p1s1', 'd24p4s1', 'd24p7s1']
+02/04/2021 03:12:56 pm - [INFO] - (core_functions.py).log_message(18) - Spectrum data found for devices [21, 24]
+02/04/2021 03:16:48 pm - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 03:17:41 pm - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 03:17:43 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 03:17:45 pm - [INFO] - (core_functions.py).log_message(18) - Found 36 files at top level in the selected folder.
+02/04/2021 03:17:45 pm - [INFO] - (core_functions.py).log_message(18) - Found 33 jvl files at top level in selected folder.
+02/04/2021 03:17:45 pm - [INFO] - (core_functions.py).log_message(18) - Maximum scan number found: 3
+02/04/2021 03:17:50 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 03:17:53 pm - [INFO] - (core_functions.py).log_message(18) - Found correct IVL data for ['d21p1s1', 'd21p2s1', 'd21p3s1', 'd21p4s1', 'd21p5s1', 'd21p6s1', 'd21p7s1', 'd21p8s1', 'd24p1s1', 'd24p4s1', 'd24p7s1']
+02/04/2021 03:17:53 pm - [INFO] - (core_functions.py).log_message(18) - Spectrum data found for devices [21, 24]
+02/04/2021 03:18:41 pm - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 03:18:55 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 03:18:57 pm - [INFO] - (core_functions.py).log_message(18) - Found 36 files at top level in the selected folder.
+02/04/2021 03:18:57 pm - [INFO] - (core_functions.py).log_message(18) - Found 33 jvl files at top level in selected folder.
+02/04/2021 03:18:57 pm - [INFO] - (core_functions.py).log_message(18) - Maximum scan number found: 3
+02/04/2021 03:19:01 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 03:19:04 pm - [INFO] - (core_functions.py).log_message(18) - Found correct IVL data for ['d21p1s1', 'd21p2s1', 'd21p3s1', 'd21p4s1', 'd21p5s1', 'd21p6s1', 'd21p7s1', 'd21p8s1', 'd24p1s1', 'd24p4s1', 'd24p7s1']
+02/04/2021 03:19:04 pm - [INFO] - (core_functions.py).log_message(18) - Spectrum data found for devices [21, 24]
+02/04/2021 03:20:12 pm - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 03:20:14 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 03:20:16 pm - [INFO] - (core_functions.py).log_message(18) - Found 36 files at top level in the selected folder.
+02/04/2021 03:20:16 pm - [INFO] - (core_functions.py).log_message(18) - Found 33 jvl files at top level in selected folder.
+02/04/2021 03:20:16 pm - [INFO] - (core_functions.py).log_message(18) - Maximum scan number found: 3
+02/04/2021 03:20:18 pm - [INFO] - (core_functions.py).log_message(18) - Group assignement aborted
+02/04/2021 03:20:23 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 03:20:26 pm - [INFO] - (core_functions.py).log_message(18) - Found correct IVL data for ['d21p1s1', 'd21p2s1', 'd21p3s1', 'd21p4s1', 'd21p5s1', 'd21p6s1', 'd21p7s1', 'd21p8s1', 'd24p1s1', 'd24p4s1', 'd24p7s1']
+02/04/2021 03:20:26 pm - [INFO] - (core_functions.py).log_message(18) - Spectrum data found for devices [21, 24]
+02/04/2021 03:22:30 pm - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 03:22:32 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 03:22:34 pm - [INFO] - (core_functions.py).log_message(18) - Found 36 files at top level in the selected folder.
+02/04/2021 03:22:34 pm - [INFO] - (core_functions.py).log_message(18) - Found 33 jvl files at top level in selected folder.
+02/04/2021 03:22:34 pm - [INFO] - (core_functions.py).log_message(18) - Maximum scan number found: 3
+02/04/2021 03:22:39 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 03:22:42 pm - [INFO] - (core_functions.py).log_message(18) - Found correct IVL data for ['d21p1s1', 'd21p2s1', 'd21p3s1', 'd21p4s1', 'd21p5s1', 'd21p6s1', 'd21p7s1', 'd21p8s1', 'd24p1s1', 'd24p4s1', 'd24p7s1']
+02/04/2021 03:22:42 pm - [INFO] - (core_functions.py).log_message(18) - Spectrum data found for devices [21, 24]
+02/04/2021 03:24:08 pm - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 03:24:10 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 03:24:13 pm - [INFO] - (core_functions.py).log_message(18) - Found 36 files at top level in the selected folder.
+02/04/2021 03:24:13 pm - [INFO] - (core_functions.py).log_message(18) - Found 33 jvl files at top level in selected folder.
+02/04/2021 03:24:13 pm - [INFO] - (core_functions.py).log_message(18) - Maximum scan number found: 3
+02/04/2021 03:24:19 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 03:24:21 pm - [INFO] - (core_functions.py).log_message(18) - Found correct IVL data for ['d21p1s1', 'd21p2s1', 'd21p3s1', 'd21p4s1', 'd21p5s1', 'd21p6s1', 'd21p7s1', 'd21p8s1', 'd24p1s1', 'd24p4s1', 'd24p7s1']
+02/04/2021 03:24:21 pm - [INFO] - (core_functions.py).log_message(18) - Spectrum data found for devices [21, 24]
+02/04/2021 03:29:11 pm - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 03:29:18 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 03:29:20 pm - [INFO] - (core_functions.py).log_message(18) - Found 15 files at top level in the selected folder.
+02/04/2021 03:29:20 pm - [INFO] - (core_functions.py).log_message(18) - Found 14 jvl files at top level in selected folder.
+02/04/2021 03:29:20 pm - [INFO] - (core_functions.py).log_message(18) - Maximum scan number found: 3
+02/04/2021 03:29:24 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 03:29:28 pm - [INFO] - (core_functions.py).log_message(18) - Found correct IVL data for ['d21p1s1', 'd21p2s1', 'd24p1s1', 'd24p4s1', 'd24p7s1']
+02/04/2021 03:29:28 pm - [INFO] - (core_functions.py).log_message(18) - Spectrum data found for devices [21, 24]
+02/04/2021 03:30:05 pm - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 03:30:07 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 03:30:09 pm - [INFO] - (core_functions.py).log_message(18) - Found 15 files at top level in the selected folder.
+02/04/2021 03:30:09 pm - [INFO] - (core_functions.py).log_message(18) - Found 14 jvl files at top level in selected folder.
+02/04/2021 03:30:09 pm - [INFO] - (core_functions.py).log_message(18) - Maximum scan number found: 3
+02/04/2021 03:30:14 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 03:30:18 pm - [INFO] - (core_functions.py).log_message(18) - Found correct IVL data for ['d21p1s1', 'd21p2s1', 'd24p1s1', 'd24p4s1', 'd24p7s1']
+02/04/2021 03:30:18 pm - [INFO] - (core_functions.py).log_message(18) - Spectrum data found for devices [21, 24]
+02/04/2021 03:30:56 pm - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 03:30:57 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 03:30:59 pm - [INFO] - (core_functions.py).log_message(18) - Found 15 files at top level in the selected folder.
+02/04/2021 03:30:59 pm - [INFO] - (core_functions.py).log_message(18) - Found 14 jvl files at top level in selected folder.
+02/04/2021 03:30:59 pm - [INFO] - (core_functions.py).log_message(18) - Maximum scan number found: 3
+02/04/2021 03:31:04 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 03:31:07 pm - [INFO] - (core_functions.py).log_message(18) - Found correct IVL data for ['d21p1s1', 'd21p2s1', 'd24p1s1', 'd24p4s1', 'd24p7s1']
+02/04/2021 03:31:07 pm - [INFO] - (core_functions.py).log_message(18) - Spectrum data found for devices [21, 24]
+02/04/2021 03:31:51 pm - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 03:31:52 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 03:31:54 pm - [INFO] - (core_functions.py).log_message(18) - Found 15 files at top level in the selected folder.
+02/04/2021 03:31:54 pm - [INFO] - (core_functions.py).log_message(18) - Found 14 jvl files at top level in selected folder.
+02/04/2021 03:31:54 pm - [INFO] - (core_functions.py).log_message(18) - Maximum scan number found: 3
+02/04/2021 03:31:58 pm - [INFO] - (core_functions.py).log_message(18) - Found correct IVL data for ['d21p1s1', 'd21p2s1', 'd34p2s1', 'd34p5s1', 'd34p8s1']
+02/04/2021 03:31:58 pm - [INFO] - (core_functions.py).log_message(18) - Can not evaluate data without spectrum files for all groups.
+02/04/2021 03:32:02 pm - [INFO] - (core_functions.py).log_message(18) - Spectrum file for group test could not be loaded. Please set again.
+02/04/2021 03:32:02 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 03:32:05 pm - [INFO] - (core_functions.py).log_message(18) - Found correct IVL data for ['d21p1s1', 'd21p2s1', 'd34p2s1', 'd34p5s1', 'd34p8s1']
+02/04/2021 03:32:05 pm - [INFO] - (core_functions.py).log_message(18) - Spectrum data found for devices [21, 34]
+02/04/2021 03:32:32 pm - [INFO] - (core_functions.py).log_message(18) - Found correct IVL data for ['d21p1s1', 'd21p2s1', 'd34p2s1', 'd34p5s1', 'd34p8s1']
+02/04/2021 03:32:32 pm - [INFO] - (core_functions.py).log_message(18) - Spectrum data found for devices [21, 34]
+02/04/2021 03:33:34 pm - [INFO] - (core_functions.py).log_message(18) - Found correct IVL data for ['d21p1s1', 'd21p2s1', 'd34p2s1', 'd34p5s1', 'd34p8s1']
+02/04/2021 03:33:34 pm - [INFO] - (core_functions.py).log_message(18) - Spectrum data found for devices [21, 34]
+02/04/2021 03:35:31 pm - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 03:35:32 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 03:35:36 pm - [INFO] - (core_functions.py).log_message(18) - Found 15 files at top level in the selected folder.
+02/04/2021 03:35:36 pm - [INFO] - (core_functions.py).log_message(18) - Found 14 jvl files at top level in selected folder.
+02/04/2021 03:35:36 pm - [INFO] - (core_functions.py).log_message(18) - Maximum scan number found: 3
+02/04/2021 03:35:41 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 03:35:44 pm - [INFO] - (core_functions.py).log_message(18) - Found correct IVL data for ['d21p1s1', 'd21p2s1', 'd24p1s1', 'd24p4s1', 'd24p7s1']
+02/04/2021 03:35:45 pm - [INFO] - (core_functions.py).log_message(18) - Spectrum data found for devices [21, 24]
+02/04/2021 03:36:53 pm - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 03:36:55 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 03:36:57 pm - [INFO] - (core_functions.py).log_message(18) - Found 15 files at top level in the selected folder.
+02/04/2021 03:36:57 pm - [INFO] - (core_functions.py).log_message(18) - Found 14 jvl files at top level in selected folder.
+02/04/2021 03:36:57 pm - [INFO] - (core_functions.py).log_message(18) - Maximum scan number found: 3
+02/04/2021 03:37:01 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 03:37:04 pm - [INFO] - (core_functions.py).log_message(18) - Found correct IVL data for ['d21p1s1', 'd21p2s1', 'd24p1s1', 'd24p4s1', 'd24p7s1']
+02/04/2021 03:37:04 pm - [INFO] - (core_functions.py).log_message(18) - Spectrum data found for devices [21, 24]
+02/04/2021 03:52:41 pm - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 03:52:42 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 03:52:45 pm - [INFO] - (core_functions.py).log_message(18) - Found 15 files at top level in the selected folder.
+02/04/2021 03:52:45 pm - [INFO] - (core_functions.py).log_message(18) - Found 14 jvl files at top level in selected folder.
+02/04/2021 03:52:45 pm - [INFO] - (core_functions.py).log_message(18) - Maximum scan number found: 3
+02/04/2021 03:52:49 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 03:52:52 pm - [INFO] - (core_functions.py).log_message(18) - Found correct IVL data for ['d21p1s1', 'd21p2s1', 'd24p1s1', 'd24p4s1', 'd24p7s1']
+02/04/2021 03:52:52 pm - [INFO] - (core_functions.py).log_message(18) - Spectrum data found for devices [21, 24]
+02/04/2021 03:53:16 pm - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 03:53:18 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 03:53:21 pm - [INFO] - (core_functions.py).log_message(18) - Found 15 files at top level in the selected folder.
+02/04/2021 03:53:21 pm - [INFO] - (core_functions.py).log_message(18) - Found 14 jvl files at top level in selected folder.
+02/04/2021 03:53:21 pm - [INFO] - (core_functions.py).log_message(18) - Maximum scan number found: 3
+02/04/2021 03:53:27 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 03:53:30 pm - [INFO] - (core_functions.py).log_message(18) - Found correct IVL data for ['d21p1s1', 'd21p2s1', 'd24p1s1', 'd24p4s1', 'd24p7s1']
+02/04/2021 03:53:30 pm - [INFO] - (core_functions.py).log_message(18) - Spectrum data found for devices [21, 24]
+02/04/2021 03:53:34 pm - [INFO] - (core_functions.py).log_message(18) - File evaluated
+02/04/2021 03:53:36 pm - [INFO] - (core_functions.py).log_message(18) - File evaluated
+02/04/2021 03:53:37 pm - [INFO] - (core_functions.py).log_message(18) - File evaluated
+02/04/2021 03:53:38 pm - [INFO] - (core_functions.py).log_message(18) - File evaluated
+02/04/2021 03:53:39 pm - [INFO] - (core_functions.py).log_message(18) - File evaluated
+02/04/2021 03:55:41 pm - [INFO] - (core_functions.py).log_message(18) - Initialising Program
+02/04/2021 03:55:43 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 03:55:45 pm - [INFO] - (core_functions.py).log_message(18) - Found 15 files at top level in the selected folder.
+02/04/2021 03:55:45 pm - [INFO] - (core_functions.py).log_message(18) - Found 14 jvl files at top level in selected folder.
+02/04/2021 03:55:45 pm - [INFO] - (core_functions.py).log_message(18) - Maximum scan number found: 3
+02/04/2021 03:55:50 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 03:55:53 pm - [INFO] - (core_functions.py).log_message(18) - Found correct IVL data for ['d21p1s1', 'd21p2s1', 'd24p1s1', 'd24p4s1', 'd24p7s1']
+02/04/2021 03:55:53 pm - [INFO] - (core_functions.py).log_message(18) - Spectrum data found for devices [21, 24]
+02/04/2021 03:55:57 pm - [INFO] - (core_functions.py).log_message(18) - Data for d21p1s1 successfully evaluated.
+02/04/2021 03:55:59 pm - [INFO] - (core_functions.py).log_message(18) - Data for d21p2s1 successfully evaluated.
+02/04/2021 03:56:04 pm - [INFO] - (core_functions.py).log_message(18) - Data for d24p1s1 successfully evaluated.
+02/04/2021 03:56:52 pm - [INFO] - (core_functions.py).log_message(18) - Data for d24p4s1 successfully evaluated.
+02/04/2021 03:56:55 pm - [INFO] - (core_functions.py).log_message(18) - Data for d24p7s1 successfully evaluated.
+02/04/2021 03:57:38 pm - [INFO] - (core_functions.py).log_message(18) - Group assignement aborted
+02/04/2021 04:01:06 pm - [INFO] - (core_functions.py).log_message(18) - Found correct IVL data for ['d21p1s1', 'd21p2s1', 'd24p1s1', 'd24p4s1', 'd24p7s1']
+02/04/2021 04:01:06 pm - [INFO] - (core_functions.py).log_message(18) - Spectrum data found for devices [21, 24]
+02/04/2021 04:01:06 pm - [INFO] - (core_functions.py).log_message(18) - Data for d21p1s1 successfully evaluated.
+02/04/2021 04:01:06 pm - [INFO] - (core_functions.py).log_message(18) - Data for d21p2s1 successfully evaluated.
+02/04/2021 04:01:06 pm - [INFO] - (core_functions.py).log_message(18) - Data for d24p1s1 successfully evaluated.
+02/04/2021 04:01:06 pm - [INFO] - (core_functions.py).log_message(18) - Data for d24p4s1 successfully evaluated.
+02/04/2021 04:01:06 pm - [INFO] - (core_functions.py).log_message(18) - Data for d24p7s1 successfully evaluated.
+02/04/2021 04:01:16 pm - [INFO] - (core_functions.py).log_message(18) - Global Settings Read from File
+02/04/2021 04:01:20 pm - [INFO] - (core_functions.py).log_message(18) - Found correct IVL data for ['d21p1s1', 'd21p2s1', 'd24p1s1', 'd24p4s1', 'd24p7s1', 'd34p2s1', 'd34p5s1', 'd34p8s1', 'd41p1s1', 'd41p4s1', 'd41p7s1']
+02/04/2021 04:01:20 pm - [INFO] - (core_functions.py).log_message(18) - Spectrum data found for devices [21, 24, 34, 41]
+02/04/2021 04:01:20 pm - [INFO] - (core_functions.py).log_message(18) - Data for d21p1s1 successfully evaluated.
+02/04/2021 04:01:20 pm - [INFO] - (core_functions.py).log_message(18) - Data for d21p2s1 successfully evaluated.
+02/04/2021 04:01:20 pm - [INFO] - (core_functions.py).log_message(18) - Data for d24p1s1 successfully evaluated.
+02/04/2021 04:01:20 pm - [INFO] - (core_functions.py).log_message(18) - Data for d24p4s1 successfully evaluated.
+02/04/2021 04:01:20 pm - [INFO] - (core_functions.py).log_message(18) - Data for d24p7s1 successfully evaluated.
+02/04/2021 04:01:20 pm - [INFO] - (core_functions.py).log_message(18) - Data for d34p2s1 successfully evaluated.
+02/04/2021 04:01:20 pm - [INFO] - (core_functions.py).log_message(18) - Data for d34p5s1 successfully evaluated.
+02/04/2021 04:01:20 pm - [INFO] - (core_functions.py).log_message(18) - Data for d34p8s1 successfully evaluated.
+02/04/2021 04:01:20 pm - [INFO] - (core_functions.py).log_message(18) - Data for d41p1s1 successfully evaluated.
+02/04/2021 04:01:20 pm - [INFO] - (core_functions.py).log_message(18) - Data for d41p4s1 successfully evaluated.
+02/04/2021 04:01:20 pm - [INFO] - (core_functions.py).log_message(18) - Data for d41p7s1 successfully evaluated.

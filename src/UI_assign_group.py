@@ -110,6 +110,9 @@ class Ui_AssignGroup(object):
 
         self.verticalLayout.addWidget(self.no_groups_LabeledSlider)
 
+        self.available_devices_label = QtWidgets.QLabel()
+        self.verticalLayout.addWidget(self.available_devices_label)
+
         # if np.size(self.paths) == 1:
         # verticalLayout.addWidget(self.no_groups_LabeledSlider)
 
@@ -196,6 +199,13 @@ class Ui_AssignGroup(object):
         self.select_scan_number_label.setText(_translate("AssignGroups", "Select Scan"))
         self.no_groups_label.setText(
             _translate("AssignGroups", "Select Number of Groups")
+        )
+        self.available_devices_label.setText(
+            _translate(
+                "AssignGroups",
+                "Available Devices for Assignment "
+                + str(self.parameters["device_number"]),
+            )
         )
         self.group_name_label.setText(_translate("AssignGroups", "Group Name"))
         self.device_assignment_label.setText(

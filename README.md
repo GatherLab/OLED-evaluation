@@ -8,14 +8,12 @@ Software for easy evaluation of previously measured data in the data format of h
 - The scrollbar on the right is now used as a guide through the program with different options available that should normally be executed in order
 
 1. At the beginning only the top button that is to select a folder where the data files are contained. If a folder was selected, all file names at top level (not in the subfolders of this folder) are read in
+   - If the file names are correct and in theory the files should be able to be read in, more buttons on the right can now be clicked.
    - The files that are read in must obey the file naming convention that is defined by the measurement program, thus
 
 ```terminal
-<date>_<batch_name>_d<device_no>_p<pixel_no>(_<scan_no>).csv
+<date>_<batch_name>_d<device_no>_p<pixel_no>_jvl(_<scan_no>).csv
 ```
-
-    where the scan number is only set if multiple scans for the same device and pixel exist
-    - If the file names are correct and in theory the files should be able to be read in, more buttons on the right can now be clicked.
 
 2. The second button opens a dialog that allows assignment of all available devices to different groups. This is important to ensure ordering of the devices and to obtain statistics for different OLEDs. Since it is usually good practice to have several devices of the same kind.
    - The user can now select which scan she wants to use, in case devices were scanned several times. This is done with a dropdown menu. The maximum value in the dropdown is given by the maximum scan number found in the file names.

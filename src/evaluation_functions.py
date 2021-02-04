@@ -10,60 +10,21 @@ import pandas as pd
 import scipy.constants as sc  # natural constants
 
 """
-User Input
-"""
-pixel_area = 16  # in mm^2
-batch_name = "2020-11-13_MADN-TBPe-glass"
-root_directory = "/home/julianb/Documents/01-Studium/03-Promotion/02-Data/2020-10-28_MADN-TBPe-glass-encapsulation/"
-threshold_pd_voltage = 0.0005
-# Select df_spectrum that shall be taken as reference. If the parameter is set to
-# None, the individual df_spectrum of each device is taken. The df_spectrum files
-# have to contain _d1_ e.g. for device 1
-spectrum_file = None  # "d21_p2.txt"
-
-"""
-Copy files from folders and rename them
-"""
-# Walk through folders and copy files to top directory
-# and rename them for better readability
-# gc.copy_files(root_directory + "JVL-data/", batch_name)
-
-"""
-Define Geometrical Parameters
-"""
-
-# it is in mm here, this is the fixed distance in the autotube
-distance = 196
-# m2; pixel_area of the photodiode
-photodiode_area = 0.000075
-# Ohm; resistance of the transimpedance amplifier used to amplify and convert PD current into voltage
-photodiode_resistance = 4.75e5
-# lm/W; peak response
-photodiode_peak_response = 683
-# Photodiode radius
-photodiode_radius = math.sqrt(photodiode_area / math.pi)
-# Sinus square of the opening angle between OLED and photodiode, which
-# resembles the light detected by the PD assuming Lambertian emission
-sq_sin_alpha = photodiode_radius ** 2 / (
-    (distance * 1e-3) ** 2 + photodiode_radius ** 2
-)
-
-"""
 Define Functions for calculations
 """
 
 
-def calculate_cie_coordinates(df_corrected_spectrum):
+def calculate_cie_coordinates(df_corrected_spectrum, df_norm_curves):
     """
     Calculates wavelength of maximum spectral intensity and the CIE color coordinates
     """
-    for i, j in enumerate(df_corrected_spectrum.spectrum_intensity):
-        if j == max(df_corrected_spectrum.spectrum_intensity):
-            max_intensity_wavelength = df_spectrum.wavelength[i]
+    for i, j in enumerate(df_corrected_spectrum.interpolated_intensity):
+        if j == max(df_corrected_spectrum.interpolated_intensity):
+            max_intensity_wavelength = df_corrected_spectrum.wavelength[i]
 
-    X = sum(df_corrected_spectrum.intensity * df_norm_curves.xcie)
-    Y = sum(df_corrected_spectrum.intensity * df_norm_curves.ycie)
-    Z = sum(df_corrected_spectrum.intensity * df_norm_curves.zcie)
+    X = sum(df_corrected_spectrum.corrected_intensity * df_norm_curves.xcie)
+    Y = sum(df_corrected_spectrum.corrected_intensity * df_norm_curves.ycie)
+    Z = sum(df_corrected_spectrum.corrected_intensity * df_norm_curves.zcie)
 
     CIE = np.array([X / (X + Y + Z), Y / (X + Y + Z)])
     # CIE[0] = X / (X + Y + Z)
@@ -74,7 +35,9 @@ def calculate_cie_coordinates(df_corrected_spectrum):
     )
 
 
-def calculate_eqe(df_corrected_spectrum, df_jvl_data):
+def calculate_eqe(
+    df_corrected_spectrum, df_jvl_data, df_basic_data, measurement_parameters
+):
     """
     Calculate external quantum efficiency
     """
@@ -84,22 +47,22 @@ def calculate_eqe(df_corrected_spectrum, df_jvl_data):
         * sc.c
         / sc.e
         * np.sum(
-            df_corrected_spectrum.intensity
+            df_corrected_spectrum.corrected_intensity
             * df_basic_data.photodiode_sensitivity
             / df_basic_data.wavelength
         )
-        / np.sum(df_corrected_spectrum.intensity)
+        / np.sum(df_corrected_spectrum.corrected_intensity)
         * 1e9
     )
-    eqe = np.zeros(df_jvl_data.photodiode_voltage.shape)
-    for v in range(len(df_jvl_data.photodiode_voltage)):
+    eqe = np.zeros(len(df_jvl_data.pd_voltage))
+    for v in range(len(df_jvl_data.pd_voltage)):
         # eqe is only calculated if the photodiode detects a reasonable response
-        if df_jvl_data.photodiode_voltage[v] > 0.00005:
+        if df_jvl_data.pd_voltage[v] > 0.00005:
             eqe[v] = (
                 100
-                * df_jvl_data.photodiode_voltage[v]
-                / photodiode_resistance
-                / sq_sin_alpha
+                * df_jvl_data.pd_voltage[v]
+                / measurement_parameters["pd_resistance"]
+                / measurement_parameters["sq_sin_alpha"]
                 / df_jvl_data.current[v]
                 / detector_quantum_efficiency
             )  # calculate eqe in %
@@ -107,95 +70,101 @@ def calculate_eqe(df_corrected_spectrum, df_jvl_data):
     return eqe
 
 
-def calculate_luminance(df_corrected_spectrum, df_jvl_data):
+def calculate_luminance(
+    df_corrected_spectrum, df_jvl_data, df_basic_data, measurement_parameters
+):
     """
     Calculate luminance
     """
     # A/lm; photopic response
     photopic_response = (
         np.sum(
-            df_corrected_spectrum.intensity
+            df_corrected_spectrum.corrected_intensity
             * df_basic_data.photodiode_sensitivity
             / df_basic_data.wavelength
         )
         / np.sum(
             df_basic_data.v_lambda
-            * df_corrected_spectrum.intensity
+            * df_corrected_spectrum.corrected_intensity
             / df_basic_data.wavelength
         )
-        / photodiode_peak_response
+        / measurement_parameters["pd_peak_response"]
     )
-    luminance = np.zeros(df_jvl_data.photodiode_voltage.shape)
-    for v in range(len(df_jvl_data.photodiode_voltage)):
+    luminance = np.zeros(len(df_jvl_data.pd_voltage))
+    for v in range(len(df_jvl_data.pd_voltage)):
         # luminance is only calculated if the photodiode detects a reasonable response
-        if df_jvl_data.photodiode_voltage[v] > threshold_pd_voltage:
+        if df_jvl_data.pd_voltage[v] > measurement_parameters["threshold_pd_voltage"]:
             luminance[v] = (
                 1
                 / math.pi
-                / sq_sin_alpha
+                / measurement_parameters["sq_sin_alpha"]
                 / photopic_response
-                * df_jvl_data.photodiode_voltage[v]
-                / photodiode_resistance
-                / (pixel_area * 1e-6)
+                * df_jvl_data.pd_voltage[v]
+                / measurement_parameters["pd_resistance"]
+                / (measurement_parameters["pixel_area"] * 1e-6)
             )  # cd/m2; luminace
 
     return photopic_response, luminance
 
 
-def calculate_luminous_efficacy(df_jvl_data, photopic_response):
+def calculate_luminous_efficacy(df_jvl_data, photopic_response, measurement_parameters):
     """
     Calculate luminous efficacy
     """
-    luminous_efficiency = np.zeros(df_jvl_data.photodiode_voltage.shape)
-    for v in range(len(df_jvl_data.photodiode_voltage)):
+    luminous_efficiency = np.zeros(len(df_jvl_data.pd_voltage))
+    for v in range(len(df_jvl_data.pd_voltage)):
         # luminous_efficiency is only calculated if the photodiode detects a reasonable response
-        if df_jvl_data.photodiode_voltage[v] > threshold_pd_voltage:
+        if df_jvl_data.pd_voltage[v] > measurement_parameters["threshold_pd_voltage"]:
             luminous_efficiency[v] = (
                 1
-                / sq_sin_alpha
+                / measurement_parameters["sq_sin_alpha"]
                 / photopic_response
-                * df_jvl_data.photodiode_voltage[v]
-                / photodiode_resistance
+                * df_jvl_data.pd_voltage[v]
+                / measurement_parameters["pd_resistance"]
                 / df_jvl_data.voltage[v]
                 / df_jvl_data.current[v]
             )  # lm/W; luminous efficacy
     return luminous_efficiency
 
 
-def calculate_current_efficiency(df_jvl_data, luminance):
+def calculate_current_efficiency(df_jvl_data, measurement_parameters):
     """
     Calculate current efficiency
     """
-    current_efficiency = np.zeros(df_jvl_data.photodiode_voltage.shape)
-    for v in range(len(df_jvl_data.photodiode_voltage)):
+    current_efficiency = np.zeros(len(df_jvl_data.pd_voltage))
+    for v in range(len(df_jvl_data.pd_voltage)):
         # current_efficiency is only calculated if the photodiode detects a reasonable response
-        if df_jvl_data.photodiode_voltage[v] > threshold_pd_voltage:
+        if df_jvl_data.pd_voltage[v] > measurement_parameters["threshold_pd_voltage"]:
             # cd/A; current efficiency
             current_efficiency[v] = (
-                luminance[v] * (pixel_area * 1e-6) / df_jvl_data.current[v]
+                df_jvl_data.luminance[v]
+                * (measurement_parameters["pixel_area"] * 1e-6)
+                / df_jvl_data.current[v]
             )
     return current_efficiency
 
 
-def calculate_power_density(df_corrected_spectrum, df_jvl_data):
+def calculate_power_density(
+    df_corrected_spectrum, df_jvl_data, df_basic_data, measurement_parameters
+):
     """
     Calculate power density
     """
     Rfl = np.sum(
-        df_corrected_spectrum.intensity
+        df_corrected_spectrum.corrected_intensity
         * df_basic_data.photodiode_sensitivity
         / df_basic_data.wavelength
-    ) / np.sum(df_corrected_spectrum.intensity / df_basic_data.wavelength)
-    power_density = np.zeros(df_jvl_data.photodiode_voltage.shape)
-    for v in range(len(df_jvl_data.photodiode_voltage)):
-        if df_jvl_data.photodiode_voltage[v] > threshold_pd_voltage:
+    ) / np.sum(df_corrected_spectrum.corrected_intensity / df_basic_data.wavelength)
+    power_density = np.zeros(len(df_jvl_data.pd_voltage))
+    for v in range(len(df_jvl_data.pd_voltage)):
+        if df_jvl_data.pd_voltage[v] > measurement_parameters["threshold_pd_voltage"]:
             power_density[v] = (
                 1
-                / sq_sin_alpha
+                / measurement_parameters["sq_sin_alpha"]
                 / Rfl
-                * df_jvl_data.photodiode_voltage[v]
-                / photodiode_resistance
-                / pixel_area
+                * df_jvl_data.pd_voltage[v]
+                / measurement_parameters["pd_resistance"]
+                / measurement_parameters["pixel_area"]
                 * 1e3
             )  # mW/mm2; Power density (Radiant Flux density)
     return power_density
