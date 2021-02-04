@@ -22,6 +22,18 @@
      id="defs2">
     <linearGradient
        inkscape:collect="always"
+       id="linearGradient1054">
+      <stop
+         style="stop-color:#ff2257;stop-opacity:0.68627453"
+         offset="0"
+         id="stop1050" />
+      <stop
+         style="stop-color:#ffffff;stop-opacity:1"
+         offset="1"
+         id="stop1052" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
        id="linearGradient1428">
       <stop
          style="stop-color:#ff000a;stop-opacity:1"
@@ -1069,6 +1081,16 @@
          stdDeviation="0.27548328"
          id="feGaussianBlur4012" />
     </filter>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient1054"
+       id="linearGradient1056"
+       x1="10.707777"
+       y1="-10.902012"
+       x2="97.494164"
+       y2="110.65717"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(1.9928089,1.1436196)" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -1077,9 +1099,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.7"
-     inkscape:cx="-16.3392"
-     inkscape:cy="223.48825"
+     inkscape:zoom="0.98994949"
+     inkscape:cx="106.02215"
+     inkscape:cy="665.95908"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      inkscape:document-rotation="0"
@@ -1383,17 +1405,17 @@
        inkscape:export-filename="/run/media/julianb/Data-SSD/Eigene Dateien/Dokumente/04-Programming/OLED-evaluation/icons/program_icon.png" />
     <text
        xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:175.664px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:4.3916"
-       x="32.89249"
-       y="113.85319"
+       style="font-style:normal;font-weight:normal;font-size:175.664px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:url(#linearGradient1056);fill-opacity:1;stroke:none;stroke-width:4.3916"
+       x="34.8853"
+       y="114.99681"
        id="text1054"
        inkscape:export-filename="/run/media/julianb/Data-SSD/Eigene Dateien/Dokumente/04-Programming/OLED-evaluation/icons/program_icon.png"
        inkscape:export-xdpi="100"
        inkscape:export-ydpi="100"><tspan
          sodipodi:role="line"
          id="tspan1052"
-         x="32.89249"
-         y="113.85319"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Symbol;-inkscape-font-specification:Symbol;fill:#ffffff;fill-opacity:1;stroke-width:4.3916">e</tspan></text>
+         x="34.8853"
+         y="114.99681"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Symbol;-inkscape-font-specification:Symbol;fill:url(#linearGradient1056);fill-opacity:1;stroke-width:4.3916">e</tspan></text>
   </g>
 </svg>

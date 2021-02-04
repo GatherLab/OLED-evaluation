@@ -27,13 +27,11 @@ class AssignGroups(QtWidgets.QDialog, Ui_AssignGroup):
         rand_color = randomcolor.RandomColor()
 
         self.group_color = np.array(
-            rand_color.generate(
-                hue="blue", count=np.size(parameters["device_numbers"])
-            ),
+            rand_color.generate(hue="blue", count=np.size(parameters["device_number"])),
             dtype=object,
         )
         self.group_spectrum_path = np.empty(
-            np.size(parameters["device_numbers"]), dtype=object
+            np.size(parameters["device_number"]), dtype=object
         )
 
         # The manual group count is needed to keep track of the number of
@@ -55,54 +53,60 @@ class AssignGroups(QtWidgets.QDialog, Ui_AssignGroup):
 
         # In case groups were already assigned the dialog should be directly
         # initalised with those groups
-        no_groups = self.parameters["assigned_groups_df"]["group_name"].size
-        if no_groups > 0:
+        groups = self.parameters["assigned_groups_df"]["group_name"].unique()
+        if len(groups) > 0:
 
-            self.no_groups_LabeledSlider.setValue(no_groups)
+            self.no_groups_LabeledSlider.setValue(len(groups))
             self.no_groups_slider_changed()
+            i = 0
 
-            for group_number in range(no_groups):
-                self.group_name_LineEdit_container[group_number].setText(
-                    self.parameters["assigned_groups_df"]["group_name"].astype("U13")[
-                        group_number
-                    ]
-                )
+            for group in groups:
+                self.group_name_LineEdit_container[i].setText(group)
 
-                self.device_assignment_LineEdit_container[group_number].setText(
+                self.device_assignment_LineEdit_container[i].setText(
                     ",".join(
                         map(
                             str,
-                            self.parameters["assigned_groups_df"][
-                                "device_numbers"
-                            ].to_numpy()[group_number],
+                            self.parameters["assigned_groups_df"]
+                            .loc[
+                                self.parameters["assigned_groups_df"]["group_name"]
+                                == group
+                            ]
+                            .index.to_list(),
                         )
                     )
                 )
-                self.group_spectrum_path[group_number] = self.parameters[
-                    "assigned_groups_df"
-                ]["spectrum_path"][group_number]
-                self.group_color[group_number] = self.parameters["assigned_groups_df"][
-                    "colors"
-                ][group_number]
+                self.group_spectrum_path[i] = (
+                    self.parameters["assigned_groups_df"]
+                    .loc[self.parameters["assigned_groups_df"]["group_name"] == group][
+                        "spectrum_path"
+                    ]
+                    .to_list()[0]
+                )
+
+                self.group_color[i] = (
+                    self.parameters["assigned_groups_df"]
+                    .loc[self.parameters["assigned_groups_df"]["group_name"] == group][
+                        "color"
+                    ]
+                    .to_list()[0]
+                )
                 try:
-                    if os.path.isfile(self.group_spectrum_path[group_number]):
-                        self.group_spectrum_PushButton_container[
-                            group_number
-                        ].setStyleSheet("background-color: green")
+                    if os.path.isfile(self.group_spectrum_path[i]):
+                        self.group_spectrum_PushButton_container[i].setStyleSheet(
+                            "background-color: green"
+                        )
                 except:
                     cf.log_message(
                         "Spectrum file for group "
-                        + str(
-                            self.parameters["assigned_groups_df"]["group_name"][
-                                group_number
-                            ]
-                        )
+                        + str(group)
                         + " could not be loaded. Please set again."
                     )
 
-                self.group_colors_PushButton_container[group_number].setStyleSheet(
-                    "background-color: " + str(self.group_color[group_number])
+                self.group_colors_PushButton_container[i].setStyleSheet(
+                    "background-color: " + str(self.group_color[i])
                 )
+                i += 1
 
     def no_groups_slider_changed(self):
         """
@@ -295,7 +299,9 @@ class AssignGroups(QtWidgets.QDialog, Ui_AssignGroup):
         Saves the assigned groups
         """
 
-        group_names = []
+        # Empty the relevant dataframe first so that no multiple entries are made
+        self.parent.assigned_groups_df = self.parent.assigned_groups_df[0:0]
+
         device_numbers_store = []
 
         for group_index in range(np.size(self.group_name_LineEdit_container)):
@@ -308,6 +314,7 @@ class AssignGroups(QtWidgets.QDialog, Ui_AssignGroup):
                     "Please do not end your numbers with a comma. Try again!"
                 )
                 return
+
             # Now split the numbers that were entered in the QLineEdit for each group
             device_numbers = np.array(
                 [
@@ -319,9 +326,7 @@ class AssignGroups(QtWidgets.QDialog, Ui_AssignGroup):
             )
             if (
                 np.all(
-                    np.in1d(
-                        device_numbers, np.unique(self.parameters["device_numbers"])
-                    )
+                    np.in1d(device_numbers, np.unique(self.parameters["device_number"]))
                 )
                 == False
             ):
@@ -333,17 +338,32 @@ class AssignGroups(QtWidgets.QDialog, Ui_AssignGroup):
                 return
 
             group_name = self.group_name_LineEdit_container[group_index].text()
-            group_names.append(group_name)
+
+            # Now generate for each device a seperate row in our pandas dataframe
+            for number in device_numbers:
+                self.parent.assigned_groups_df = self.parent.assigned_groups_df.append(
+                    {
+                        "group_name": group_name,
+                        "spectrum_path": self.group_spectrum_path[group_index],
+                        "color": self.group_color[group_index],
+                    },
+                    ignore_index=True,
+                )
+
+            # group_names.append(group_name)
             device_numbers_store.append(device_numbers)
 
         # Assign the variables that were calculated in this dialog
-        self.parent.assigned_groups_df["group_name"] = group_names
-        self.parent.assigned_groups_df["device_numbers"] = device_numbers_store
-        self.parent.assigned_groups_df["spectrum_path"] = self.group_spectrum_path[
-            0 : len(group_names)
-        ]
-        self.parent.assigned_groups_df["colors"] = self.group_color[
-            0 : len(group_names)
-        ]
+        # self.parent.assigned_groups_df.set_index(group_names)
+        # self.parent.assigned_groups_df["device_number"] = device_numbers_store
+        # self.parent.assigned_groups_df["spectrum_path"] = self.group_spectrum_path[
+        #     0 : len(group_names)
+        # ]
+        # self.parent.assigned_groups_df["color"] = self.group_color[0 : len(group_names)]
+
+        # Finally, set the indexes to the device numbers
+        self.parent.assigned_groups_df = self.parent.assigned_groups_df.set_index(
+            np.concatenate(np.array(device_numbers_store)).flatten()
+        )
 
         self.accept()

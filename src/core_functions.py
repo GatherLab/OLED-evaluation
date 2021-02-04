@@ -69,7 +69,7 @@ def read_file_names(folder_path):
     return sorted(file_names)
 
 
-def read_files(
+def read_multiple_files(
     file_paths, column_names, file_synonyms, separator="\t", skip_row=0, skip_footer=0
 ):
     """

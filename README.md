@@ -40,3 +40,50 @@ Some important evaluation parameters can be set in a "global setting" style dial
 - The calculation logic should be strictly kept in seperate functions (maybe classes but currently I don't see any point of having classes here) so that it can also be integrated directly into the measurement program.
 - The settings for the batch (e.g. photodiode gain, measurement distance etc.) can be kept in a seperate settings top menubar option. Some default parameters for this shall be provided and the costum ones saved in the folder where the data is in a seperate evaluation folder for reference.
 - How to deal with multiple measurements?
+
+## Data Structures
+
+In general data is organised in pandas dataframe in a relational database manner. One key defines the relationship of the dataframe to others. However, the relationship can be 1:n. The primary key is for all dataframes the index that shall allow to relate the dataframes among eachother and is marked with (PM) in the following.
+
+- data_df: Contains the JVl data for all selected devices. The scan in the index should be the same for all of them since this is only after the user selected the relevant scan. Importantly, not all contained lists have the same length. For instance voltage, current and pd_voltage have the same length but 
+
+| index (PM) | device_number | voltage   | current   | current_density | pd_voltage | luminance | eqe      | luminous_efficiency | current_efficiency | power_density |
+| ---------- | ------------- | --------- | --------- | --------------- | ---------- | --------- | -------- | ------------------- | ------------------ | ------------- |
+| d21p1s1    | 21            | [1,2,3, ] | [2,3,4, ] | [2,3,4, ]       | [5,6,7, ]  | [1, 2, ]  | [1, 2, ] | [1, 2, ]            | [1, 2, ]           | [1, 2, ]      |
+| d21p4s1    | 21            | [1,2,3, ] | [2,3,4, ] | [2,3,4, ]       | [5,6,7, ]  | [1, 2, ]  | [1, 2, ] | [1, 2, ]            | [1, 2, ]           | [1, 2, ]      |
+| d24p6s1    | 24            | [1,2,3, ] | [2,3,4, ] | [2,3,4, ]       | [5,6,7, ]  | [1, 2, ]  | [1, 2, ] | [1, 2, ]            | [1, 2, ]           | [1, 2, ]      |
+
+- spectrum_data_df: Contains all the spectrum data for the different groups
+
+| index (PM) | wavelength     | background     | intensity      |
+| ---------- | -------------- | -------------- | -------------- |
+| 21         | [1, 2, 3, ...] | [3, 4, 5, ...] | [6, 7, 8, ...] |
+| 24         | [1, 2, 3, ...] | [3, 4, 5, ...] | [6, 7, 8, ...] |
+| 31         | [1, 2, 3, ...] | [3, 4, 5, ...] | [6, 7, 8, ...] |
+| 34         | [1, 2, 3, ...] | [3, 4, 5, ...] | [6, 7, 8, ...] |
+| 41         | [1, 2, 3, ...] | [3, 4, 5, ...] | [6, 7, 8, ...] |
+| 44         | [1, 2, 3, ...] | [3, 4, 5, ...] | [6, 7, 8, ...] |
+
+- files_df: Contains the file names and all relevant information extracted from them for all files in the selected folder
+
+| index (PM) | file_name                                          | device_number | pixel_number | scan_number |
+| ---------- | -------------------------------------------------- | ------------- | ------------ | ----------- |
+| d1p2s1     | "user/documents/data/2021-02-04_test_d1_p2.csv     | 1             | 2            | 1           |
+| d1p2s2     | "user/documents/data/2021-02-04_test_d1_p2_02.csv  | 1             | 2            | 2           |
+| d2p6s1     | "user/documents/data/2021-02-04_test_d2_p6.csv     | 2             | 6            | 1           |
+| d11p5s5    | "user/documents/data/2021-02-04_test_d11_p5_05.csv | 5             | 5            | 5           | d11p5s5 |
+
+- assigned_groups_df: Contains all information that was provided in the assigned groups dialog (except for the scan number)
+
+| index (PM) | group_name | spectrum_path                                         | color   |
+| ---------- | ---------- | ----------------------------------------------------- | ------- |
+| 21         | Bphen      | "user/documents/data/2021-02-04_test_d21_p2_spec.csv" | #FFFFFF |
+| 24         | Bphen      | "user/documents/data/2021-02-04_test_d21_p2_spec.csv" | #FFFFFF |
+| 31         | Bphen:Cs   | "user/documents/data/2021-02-04_test_d31_p2_spec.csv" | #FFFFF0 |
+| 34         | Bphen:Cs   | "user/documents/data/2021-02-04_test_d31_p2_spec.csv" | #FFFFF0 |
+| 41         | Bphen:CsC  | "user/documents/data/2021-02-04_test_d41_p2_spec.csv" | #FFFFF1 |
+| 44         | Bphen:CsC  | "user/documents/data/2021-02-04_test_d41_p2_spec.csv" | #FFFFF1 |
+
+
+- spectrum_data_df and assigned_groups_df have a 1:1 relationship and are only kept seperate for logical reasons but could in principle be merged in a single dataframe.
+- files_df and data_df have the same primary key and can be directly related with eachother. However, the primary keys of data_df are a subset of files_df since only the data of selected files is read in by the program and not all present in the folder. Device, pixel and scan number can be easily found out for each row by comparing to the files_df dataframe (join the dataframes basically).

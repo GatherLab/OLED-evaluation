@@ -2,6 +2,7 @@ from UI_main_window import Ui_MainWindow
 from settings import Settings
 from assign_groups import AssignGroups
 
+
 # from loading_window import LoadingWindow
 
 # from spectrum_measurement import SpectrumMeasurement
@@ -9,6 +10,7 @@ from assign_groups import AssignGroups
 # from hardware import RigolOscilloscope, VoltcraftSource
 
 import core_functions as cf
+import evaluation_functions as ef
 
 from PySide2 import QtCore, QtGui, QtWidgets
 
@@ -64,7 +66,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # Assigned groups that contain all information returned by the assign
         # group dialog
         self.assigned_groups_df = pd.DataFrame(
-            columns=["group_name", "device_numbers", "spectrum_path", "colors"]
+            columns=["group_name", "spectrum_path", "color"]
         )
 
         # -------------------------------------------------------------------- #
@@ -181,14 +183,19 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 device_numbers.append(int(split_name[2][1:]))
                 pixel_numbers.append(int(split_name[3].split(".")[0][1:]))
                 scan_number.append(1)
-                identifier.append(split_name[2] + split_name[3].split(".")[0])
+                identifier.append(split_name[2] + split_name[3].split(".")[0] + "s1")
             elif len(split_name) == 5:
                 # If this is > first scan
                 dates.append(str(split_name[0]))
                 batch_names.append(str(split_name[1]))
                 device_numbers.append(int(split_name[2][1:]))
                 pixel_numbers.append(int(split_name[3][1:]))
-                identifier.append(split_name[2] + split_name[3])
+                identifier.append(
+                    split_name[2]
+                    + split_name[3]
+                    + "s"
+                    + split_name[4].split(".")[0][1:]
+                )
                 scan_number.append(int(split_name[4].split(".")[0][1:]))
             else:
                 # File name is not in the correct format
@@ -201,10 +208,12 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             )
 
         self.files_df["file_name"] = file_names
-        self.files_df["device"] = device_numbers
-        self.files_df["pixel_numbers"] = pixel_numbers
+        self.files_df["device_number"] = device_numbers
+        self.files_df["pixel_number"] = pixel_numbers
         self.files_df["scan_number"] = scan_number
-        self.files_df["identifier"] = identifier
+
+        # Now set the identifier as index
+        self.files_df = self.files_df.set_index(np.array(identifier))
 
         # return the maximum scan number in the investigated batch
         self.max_scan_number = np.max(scan_number)
@@ -224,7 +233,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """
         parameters = {
             "no_of_scans": self.max_scan_number,
-            "device_numbers": np.unique(self.files_df["device"].to_list()),
+            "device_number": np.unique(self.files_df["device_number"].to_list()),
             "assigned_groups_df": self.assigned_groups_df,
         }
 
@@ -236,26 +245,172 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         if button == True:
             # Only select those files that's device numbers were entered by the user
             selected_files = self.files_df[
-                self.files_df["device"].isin(
-                    np.concatenate(self.assigned_groups_df["device_numbers"].to_numpy())
+                self.files_df["device_number"].isin(
+                    self.assigned_groups_df.index.to_numpy()
                 )
             ]
-            # Now read in the files for selected devices
-            self.data_df = cf.read_files(
+            # Now read in the jvl files for selected devices
+            self.data_df = cf.read_multiple_files(
                 [
                     self.global_path + "/" + file_name
                     for file_name in selected_files["file_name"]
                 ],
                 ["voltage", "current", "pd_voltage"],
-                selected_files["identifier"],
+                selected_files.index.to_list(),
                 " ",
                 skip_row=10,
             )
+
+            # Do a left join on the files_df to obtain the device numbers
+            self.data_df["device_number"] = self.data_df.join(self.files_df)[
+                "device_number"
+            ]
+
+            # Only read in spectra if they were selected for all groups
+            # The evaluation can also be only done if spectra were selected. In
+            # the future this check might be moved to the assign dialog
+            # directly
+            if not self.assigned_groups_df["spectrum_path"].isnull().any():
+                self.spectrum_data_df = cf.read_multiple_files(
+                    self.assigned_groups_df["spectrum_path"].to_list(),
+                    ["wavelength", "background", "intensity"],
+                    self.assigned_groups_df.index.to_list(),
+                    " ",
+                    skip_row=14,
+                )
+
+                # Now do the evaluation and append to the data_df dataframe
+                self.evaluate_jvl()
+
+            # Set variables that define the program's state
             self.groups_assigned = True
             self.eval_plot_groups_pushButton.setEnabled(True)
             self.eval_save_pushButton.setEnabled(True)
         else:
             cf.log_message("Group assignement aborted")
+
+    def evaluate_jvl(self):
+        """
+        Do the jvl evaluation calculations
+        """
+
+        # Reading V(lambda), photodiode sensitivity, and CIE normcurves
+        df_basic_data = pd.read_csv(
+            "./calibration/BasicData - PDA100A2.txt",
+            names=["wavelength", "v_lambda", "photodiode_sensitivity"],
+            sep="\t",
+        )
+        df_norm_curves = pd.read_csv(
+            "./calibration/NormCurves_400-800.txt",
+            names=["wavelength", "na", "xcie", "ycie", "zcie"],
+            sep="\t",
+        )
+        df_correction_data = pd.read_csv(
+            "./calibration/CorrectionData.txt",
+            names=["wavelength", "correction"],
+            sep="\t",
+        )
+        df_basic_data["interpolated"] = np.interp(
+            df_basic_data.wavelength,
+            df_correction_data.wavelength,
+            df_correction_data.correction,
+        )
+
+        for identifier in self.data_df.index:
+            # Read in the file
+            df_jvl_data = self.data_df.loc[identifier]
+            device_number = int(identifier.split("d")[1].split("p")[0])
+
+            # Transform to SI units for calculations
+            df_jvl_data["current"] = df_jvl_data["current"] / 1000
+            df_jvl_data["current_density"] = df_jvl_data.current / (pixel_area * 1e-2)
+            df_jvl_data["absolute_current_density"] = abs(df_jvl_data.current_density)
+
+            # Load spectral data and df_background. The idea is  that if there is no specific df_spectrum file given, the program searches for files containing d<no> in their name that matches the d<no> in the jvl data file name
+            if not spectrum_file:
+                dev_number = np.array(file_name.split("_"))[
+                    [
+                        bool(re.match("^[0123456789d]+$", i))
+                        for i in file_name.split("_")
+                    ]
+                ][0]
+                spectrum_file_name = np.array(spectra_file_names)[
+                    [dev_number in str_ for str_ in spectra_file_names]
+                ][0]
+                spectrum_file_path = root_directory + "spectra/" + spectrum_file_name
+            else:
+                spectrum_file_path = root_directory + "spectra/" + spectrum_file
+
+            # The df_background path is always the same
+            background_file_path = root_directory + "spectra/background.txt"
+
+            # Load background file
+            df_background = pd.read_csv(
+                background_file_path,
+                header=12,
+                names=["wavelength", "counts"],
+                sep="\t",
+            )
+
+            # Load actual spectrum file
+            df_spectrum = pd.read_csv(
+                spectrum_file_path,
+                header=12,
+                names=["wavelength", "counts"],
+                sep="\t",
+            )
+
+            # Interpolate this data on basic data and save in separate data frame
+            df_corrected_spectrum = pd.DataFrame()
+
+            # interpolate df_spectrum and df_background onto correct axis
+            df_corrected_spectrum["spectrum_intensity"] = np.interp(
+                df_basic_data.wavelength, df_spectrum.wavelength, df_spectrum.counts
+            )
+            df_corrected_spectrum["background_int"] = background_int = np.interp(
+                df_basic_data.wavelength, df_background.wavelength, df_background.counts
+            )
+
+            # Do df_background subtraction
+            df_corrected_spectrum["spectrum_m_background"] = (
+                df_corrected_spectrum.spectrum_intensity
+                - df_corrected_spectrum.background_int
+            )
+
+            # multiply by spectrometer df_correction_data.correction factor to get intensity
+            df_corrected_spectrum["intensity"] = (
+                df_corrected_spectrum["spectrum_m_background"]
+                * df_basic_data.interpolated
+            )
+
+            # Now do the real calculations
+            max_intensity_wavelength, cie_color_coordinates = calculate_cie_coordinates(
+                df_corrected_spectrum
+            )
+            eqe = calculate_eqe(df_corrected_spectrum, df_jvl_data)
+            photopic_response, luminance = calculate_luminance(
+                df_corrected_spectrum, df_jvl_data
+            )
+            luminous_efficiency = calculate_luminous_efficacy(
+                df_jvl_data, photopic_response
+            )
+            current_efficiency = calculate_current_efficiency(df_jvl_data, luminance)
+            power_density = calculate_power_density(df_corrected_spectrum, df_jvl_data)
+
+            # Generate output files
+            generate_output_files(
+                df_jvl_data,
+                df_corrected_spectrum,
+                luminance,
+                eqe,
+                luminous_efficiency,
+                current_efficiency,
+                power_density,
+                max_intensity_wavelength,
+                cie_color_coordinates,
+            )
+
+            print(file_name + " successfully evaluated and evaluation files saved.")
 
     def plot_groups(self):
         """

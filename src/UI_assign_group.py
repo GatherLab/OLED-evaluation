@@ -103,7 +103,7 @@ class Ui_AssignGroup(object):
 
         self.no_groups_LabeledSlider = LabeledSlider(
             1,
-            int(np.size(np.unique(self.parameters["device_numbers"]))),
+            int(np.size(np.unique(self.parameters["device_number"]))),
             interval=1,
             orientation=QtCore.Qt.Horizontal,
         )
