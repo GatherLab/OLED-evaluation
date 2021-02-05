@@ -43,13 +43,13 @@ Some important evaluation parameters can be set in a "global setting" style dial
 
 In general data is organised in pandas dataframe in a relational database manner. One key defines the relationship of the dataframe to others. However, the relationship can be 1:n. The primary key is for all dataframes the index that shall allow to relate the dataframes among eachother and is marked with (PM) in the following.
 
-- data_df: Contains the JVl data for all selected devices. The scan in the index should be the same for all of them since this is only after the user selected the relevant scan. Importantly, not all contained lists have the same length. For instance voltage, current and pd_voltage have the same length but 
+- data_df: Contains the JVl data for all selected devices. The scan in the index should be the same for all of them since this is only after the user selected the relevant scan. Importantly, not all contained lists have the same length. The "masked" variable serves to check if a curve was masked by the user or not. 
 
-| index (PM) | device_number | voltage   | current   | current_density | pd_voltage | luminance | eqe      | luminous_efficiency | current_efficiency | power_density |
-| ---------- | ------------- | --------- | --------- | --------------- | ---------- | --------- | -------- | ------------------- | ------------------ | ------------- |
-| d21p1s1    | 21            | [1,2,3, ] | [2,3,4, ] | [2,3,4, ]       | [5,6,7, ]  | [1, 2, ]  | [1, 2, ] | [1, 2, ]            | [1, 2, ]           | [1, 2, ]      |
-| d21p4s1    | 21            | [1,2,3, ] | [2,3,4, ] | [2,3,4, ]       | [5,6,7, ]  | [1, 2, ]  | [1, 2, ] | [1, 2, ]            | [1, 2, ]           | [1, 2, ]      |
-| d24p6s1    | 24            | [1,2,3, ] | [2,3,4, ] | [2,3,4, ]       | [5,6,7, ]  | [1, 2, ]  | [1, 2, ] | [1, 2, ]            | [1, 2, ]           | [1, 2, ]      |
+| index (PM) | device_number | voltage   | current   | current_density | pd_voltage | luminance | eqe      | luminous_efficiency | current_efficiency | power_density | masked |
+| ---------- | ------------- | --------- | --------- | --------------- | ---------- | --------- | -------- | ------------------- | ------------------ | ------------- | ------ |
+| d21p1s1    | 21            | [1,2,3, ] | [2,3,4, ] | [2,3,4, ]       | [5,6,7, ]  | [1, 2, ]  | [1, 2, ] | [1, 2, ]            | [1, 2, ]           | [1, 2, ]      | False  |
+| d21p4s1    | 21            | [1,2,3, ] | [2,3,4, ] | [2,3,4, ]       | [5,6,7, ]  | [1, 2, ]  | [1, 2, ] | [1, 2, ]            | [1, 2, ]           | [1, 2, ]      | False  |
+| d24p6s1    | 24            | [1,2,3, ] | [2,3,4, ] | [2,3,4, ]       | [5,6,7, ]  | [1, 2, ]  | [1, 2, ] | [1, 2, ]            | [1, 2, ]           | [1, 2, ]      | False  |
 
 - spectrum_data_df: Contains all the spectrum data for the different groups
 

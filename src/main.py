@@ -1,13 +1,7 @@
 from UI_main_window import Ui_MainWindow
 from settings import Settings
 from assign_groups import AssignGroups
-
-
-# from loading_window import LoadingWindow
-
-# from spectrum_measurement import SpectrumMeasurement
-
-# from hardware import RigolOscilloscope, VoltcraftSource
+from show_group import ShowGroup
 
 import core_functions as cf
 import evaluation_functions as ef
@@ -29,6 +23,7 @@ import pandas as pd
 import math
 
 import webbrowser
+import randomcolor
 
 
 class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
@@ -440,6 +435,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.data_df["luminous_efficiency"] = np.empty((len(self.data_df), 0)).tolist()
         self.data_df["current_efficiency"] = np.empty((len(self.data_df), 0)).tolist()
         self.data_df["power_density"] = np.empty((len(self.data_df), 0)).tolist()
+        self.data_df["masked"] = np.repeat(False, len(self.data_df))
 
         self.spectrum_data_df["interpolated_intensity"] = np.empty(
             (len(self.spectrum_data_df), 0)
@@ -611,7 +607,192 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """
         Function that allows the plotting of previously assigned groups
         """
-        print("Plot groups")
+
+        parameters = {
+            "device_number": self.assigned_groups_df.index,
+            "group_name": self.assigned_groups_df["group_name"].unique(),
+        }
+
+        self.show_group_dialog = ShowGroup(parameters, self)
+        self.show_group_dialog.show()
+        button = self.show_group_dialog.exec_()
+
+    @QtCore.Slot(int)
+    def plot_device(self, device_number):
+        """
+        Plot all graphs for a given device number
+        """
+        # Only get data that has the right device number
+        temp_df = self.data_df.loc[self.data_df["device_number"] == device_number]
+
+        # Clear figure and define axis
+        self.eval_fig.figure.clf()
+        self.eval_ax1 = self.eval_fig.figure.subplots()
+        self.eval_ax2 = self.eval_ax1.twinx()
+
+        # Change axis to log and add labels
+        self.eval_ax1.set_yscale("log")
+        self.eval_ax1.set_xlim(
+            [min(temp_df.iloc[0]["voltage"]), max(temp_df.iloc[0]["voltage"])]
+        )
+        self.eval_ax2.set_yscale("log")
+        self.eval_ax1.set_xlabel("Voltage (V)")
+        self.eval_ax1.set_ylabel("Current Density (mA cm$^{-2}$)")
+        self.eval_ax2.set_ylabel("Luminance (cd m$^{-2}$)")
+
+        # Some more visuals
+        self.eval_ax1.set_facecolor("#E0E0E0")
+        # self.eval_ax1.tick_params(axis="x", direction="in", length=8)
+
+        # Generate random colors
+        rand_color = randomcolor.RandomColor()
+
+        device_color = np.array(
+            rand_color.generate(hue="blue", count=temp_df.shape[0]),
+            dtype=object,
+        )
+        self.luminence_lines = []
+        self.current_lines = []
+
+        for index in range(temp_df.shape[0]):
+
+            self.current_lines.append(
+                self.eval_ax1.plot(
+                    temp_df.iloc[index]["voltage"],
+                    temp_df.iloc[index]["current_density"],
+                    label=temp_df.index[0],
+                    color=device_color[index],
+                )
+            )
+            self.luminence_lines.append(
+                self.eval_ax2.plot(
+                    temp_df.iloc[index]["voltage"],
+                    temp_df.iloc[index]["luminance"],
+                    linestyle="--",
+                    label=temp_df.index[0],
+                    color=device_color[index],
+                )
+            )
+
+        # Define legend which shall be draggable and by pressing on elements they hide
+        self.current_lines_dict = dict()
+        self.luminence_lines_dict = dict()
+        self.lineLabel = dict()
+
+        leg = self.eval_ax2.legend(loc="best")
+        leg.get_frame().set_alpha(0.4)
+
+        # Make it draggable
+        # leg.set_draggable(True)
+
+        # Set the legend's lines thickness
+        for legline, curline, lumline, linelabel in zip(
+            leg.get_lines(),
+            self.current_lines,
+            self.luminence_lines,
+            self.eval_ax2.get_legend_handles_labels()[1],
+        ):
+            legline.set_pickradius(5)  # 5 pts tolerance
+            legline.set_picker(True)
+
+            self.current_lines_dict[legline] = curline
+            self.luminence_lines_dict[legline] = lumline
+            self.lineLabel[legline] = linelabel
+
+        # Connect the pick event to the function onpick()
+        self.eval_fig.mpl_connect("pick_event", self.onpick)
+        self.eval_fig.draw()
+
+    @QtCore.Slot(str)
+    def plot_group(self, group_name):
+        """
+        Plot a series of graphs from a group name
+        """
+        # Only get data that has the right device number
+        temp_df = self.data_df.loc[
+            self.data_df.join(self.assigned_groups_df, on="device_number")["group_name"]
+            == "test"
+        ]
+
+        # Clear figure and define axis
+        self.eval_fig.figure.clf()
+        self.eval_ax1 = self.eval_fig.figure.subplots()
+        self.eval_ax2 = self.eval_ax1.twinx()
+
+        # Change axis to log and add labels
+        self.eval_ax1.set_yscale("log")
+        self.eval_ax1.set_xlim(
+            [min(temp_df.iloc[0]["voltage"]), max(temp_df.iloc[0]["voltage"])]
+        )
+        self.eval_ax2.set_yscale("log")
+        self.eval_ax1.set_xlabel("Voltage (V)")
+        self.eval_ax1.set_ylabel("Current Density (mA cm$^{-2}$)")
+        self.eval_ax2.set_ylabel("Luminance (cd m$^{-2}$)")
+
+        # Some more visuals
+        self.eval_ax1.set_facecolor("#E0E0E0")
+        # self.eval_ax1.tick_params(axis="x", direction="in", length=8)
+
+        # Generate random colors
+        rand_color = randomcolor.RandomColor()
+
+        device_color = np.array(
+            rand_color.generate(hue="blue", count=temp_df.shape[0]),
+            dtype=object,
+        )
+
+        for index in range(temp_df.shape[0]):
+            self.eval_ax1.plot(
+                temp_df.iloc[index]["voltage"],
+                temp_df.iloc[index]["current_density"],
+                label=temp_df.index[0],
+                color=device_color[index],
+            )
+            self.eval_ax2.plot(
+                temp_df.iloc[index]["voltage"],
+                temp_df.iloc[index]["luminance"],
+                linestyle="--",
+                label=temp_df.index[0],
+                color=device_color[index],
+            )
+
+        self.eval_ax1.legend(frameon=False)
+        self.eval_fig.draw()
+
+    def onpick(self, event):
+        """
+        Function that deals with whatever happens when somebody clicks on a
+        item in the legend
+        """
+
+        # Now distinguish between left mouse button and mouse wheel press
+        if event.mouseevent.button == 1:
+            # Get the pressed line
+            legline = event.artist
+
+            # Translate to the actual graph
+            lumline = self.luminence_lines_dict[legline][0]
+            curline = self.current_lines_dict[legline][0]
+
+            # Get visibility and set it otherwise
+            vis = not lumline.get_visible()
+            lumline.set_visible(vis)
+            curline.set_visible(vis)
+
+            # Now in the data containing dataframe, set masked as checked (for later stats)
+            if not lumline.get_visible():
+                legline.set_alpha(0.2)
+                self.data_df.loc[self.lineLabel[legline], "masked"] = True
+            else:
+                legline.set_alpha(1)
+                self.data_df.loc[self.lineLabel[legline], "masked"] = False
+
+            # Now redraw diagram
+            self.eval_fig.draw()
+
+        elif event.mouseevent.button == 2:
+            # On mouse wheel press, plot the four relevant graphs of that pixel
+            print("Mouse wheel pressed")
 
     def save_evaluated_data(self):
         """
