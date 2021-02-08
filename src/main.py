@@ -2,6 +2,7 @@ from UI_main_window import Ui_MainWindow
 from settings import Settings
 from assign_groups import AssignGroups
 from show_group import ShowGroup
+from statistics import Statistics
 
 import core_functions as cf
 import evaluation_functions as ef
@@ -23,7 +24,9 @@ import pandas as pd
 import math
 
 import webbrowser
-import randomcolor
+
+# import randomcolor
+import matplotlib as mpl
 
 
 class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
@@ -82,6 +85,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             (self.measurement_parameters["pd_distance"] * 1e-3) ** 2
             + self.measurement_parameters["pd_radius"] ** 2
         )
+        self.current_plot_type = "none"
 
         # -------------------------------------------------------------------- #
         # ------------------------------ General ----------------------------- #
@@ -115,13 +119,16 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.eval_change_path_pushButton.clicked.connect(self.browse_folder)
         self.eval_assign_groups_pushButton.clicked.connect(self.assign_groups)
         self.eval_plot_groups_pushButton.clicked.connect(self.plot_groups)
+        self.eval_plot_statistics_pushButton.clicked.connect(self.plot_statistics)
         self.eval_save_pushButton.clicked.connect(self.save_evaluated_data)
 
         # Set all buttons except for the change path pushButton to disable
         # until a folder was selected
-        # self.eval_assign_groups_pushButton.setEnabled(False)
-        # self.eval_plot_groups_pushButton.setEnabled(False)
-        # self.eval_save_pushButton.setEnabled(False)
+        self.eval_assign_groups_pushButton.setEnabled(False)
+        self.eval_plot_groups_pushButton.setEnabled(False)
+        self.eval_plot_statistics_pushButton.setEnabled(False)
+        self.eval_spectrum_analysis_pushButton.setEnabled(False)
+        self.eval_save_pushButton.setEnabled(False)
 
         # -------------------------------------------------------------------- #
         # --------------------------- Setup Widget --------------------------- #
@@ -138,7 +145,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # self.aw_max_voltage_spinBox.setValue(5)
 
     # -------------------------------------------------------------------- #
-    # ------------------------- Global Functions ------------------------- #
+    # ---------------------------- Load Folder --------------------------- #
     # -------------------------------------------------------------------- #
     def browse_folder(self):
         """
@@ -254,6 +261,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         #     self.devices_and_pixels[i] = np.array(pixel_numbers)[
         #         np.where(np.array(device_numbers, dtype=int) == i)[0]
         #     ]
+
+    # -------------------------------------------------------------------- #
+    # -------------------------- Assign Groups --------------------------- #
+    # -------------------------------------------------------------------- #
 
     def assign_groups(self):
         """
@@ -397,6 +408,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             # Set variables that define the program's state
             self.groups_assigned = True
             self.eval_plot_groups_pushButton.setEnabled(True)
+            self.eval_plot_statistics_pushButton.setEnabled(True)
+            self.eval_spectrum_analysis_pushButton.setEnabled(True)
             self.eval_save_pushButton.setEnabled(True)
         else:
             cf.log_message("Group assignement aborted")
@@ -603,6 +616,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
             # print(file_name + " successfully evaluated and evaluation files saved.")
 
+    # -------------------------------------------------------------------- #
+    # ------------------------ Show/plot Groups -------------------------- #
+    # -------------------------------------------------------------------- #
+
     def plot_groups(self):
         """
         Function that allows the plotting of previously assigned groups
@@ -618,22 +635,43 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         button = self.show_group_dialog.exec_()
 
     @QtCore.Slot(int)
-    def plot_device(self, device_number):
+    def plot_from_device_number(self, device_number):
+        """
+        Transform device number into a dataframe
+        """
+
+        temp_df = self.data_df.loc[self.data_df["device_number"] == device_number]
+        self.plot_jvl(temp_df)
+
+    @QtCore.Slot(str)
+    def plot_from_group_name(self, group_name):
+        """
+        Transform group name to df
+        """
+        temp_df = self.data_df.loc[
+            self.data_df.join(self.assigned_groups_df, on="device_number")["group_name"]
+            == group_name
+        ]
+        self.plot_jvl(temp_df)
+
+    def plot_jvl(self, df_to_plot):
         """
         Plot all graphs for a given device number
         """
-        # Only get data that has the right device number
-        temp_df = self.data_df.loc[self.data_df["device_number"] == device_number]
 
-        # Clear figure and define axis
-        self.eval_fig.figure.clf()
-        self.eval_ax1 = self.eval_fig.figure.subplots()
-        self.eval_ax2 = self.eval_ax1.twinx()
+        if not self.current_plot_type == "jvl":
+            # Clear figure and define axis
+            self.eval_fig.figure.clf()
+            self.eval_ax1 = self.eval_fig.figure.subplots()
+            self.eval_ax2 = self.eval_ax1.twinx()
+        else:
+            self.eval_ax1.cla()
+            self.eval_ax2.cla()
 
         # Change axis to log and add labels
         self.eval_ax1.set_yscale("log")
         self.eval_ax1.set_xlim(
-            [min(temp_df.iloc[0]["voltage"]), max(temp_df.iloc[0]["voltage"])]
+            [min(df_to_plot.iloc[0]["voltage"]), max(df_to_plot.iloc[0]["voltage"])]
         )
         self.eval_ax2.set_yscale("log")
         self.eval_ax1.set_xlabel("Voltage (V)")
@@ -645,31 +683,30 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # self.eval_ax1.tick_params(axis="x", direction="in", length=8)
 
         # Generate random colors
-        rand_color = randomcolor.RandomColor()
-
+        cmap = mpl.cm.get_cmap("Dark2", df_to_plot.shape[0])
         device_color = np.array(
-            rand_color.generate(hue="blue", count=temp_df.shape[0]),
-            dtype=object,
+            [mpl.colors.rgb2hex(cmap(i)) for i in range(cmap.N)], dtype=object
         )
+
         self.luminence_lines = []
         self.current_lines = []
 
-        for index in range(temp_df.shape[0]):
+        for index in range(df_to_plot.shape[0]):
 
             self.current_lines.append(
                 self.eval_ax1.plot(
-                    temp_df.iloc[index]["voltage"],
-                    temp_df.iloc[index]["current_density"],
-                    label=temp_df.index[0],
+                    df_to_plot.iloc[index]["voltage"],
+                    df_to_plot.iloc[index]["current_density"],
+                    label=df_to_plot.index[index],
                     color=device_color[index],
                 )
             )
             self.luminence_lines.append(
                 self.eval_ax2.plot(
-                    temp_df.iloc[index]["voltage"],
-                    temp_df.iloc[index]["luminance"],
+                    df_to_plot.iloc[index]["voltage"],
+                    df_to_plot.iloc[index]["luminance"],
                     linestyle="--",
-                    label=temp_df.index[0],
+                    label=df_to_plot.index[index],
                     color=device_color[index],
                 )
             )
@@ -699,65 +736,91 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.luminence_lines_dict[legline] = lumline
             self.lineLabel[legline] = linelabel
 
+            # If the line was already masked, mask it on plot
+            if self.data_df.loc[self.data_df.index == linelabel, "masked"][0]:
+                legline.set_alpha(0.2)
+                lumline[0].set_visible(False)
+                curline[0].set_visible(False)
+
         # Connect the pick event to the function onpick()
         self.eval_fig.mpl_connect("pick_event", self.onpick)
+
+        self.eval_fig.figure.tight_layout()
         self.eval_fig.draw()
 
-    @QtCore.Slot(str)
-    def plot_group(self, group_name):
-        """
-        Plot a series of graphs from a group name
-        """
-        # Only get data that has the right device number
-        temp_df = self.data_df.loc[
-            self.data_df.join(self.assigned_groups_df, on="device_number")["group_name"]
-            == "test"
-        ]
+        self.current_plot_type = "jvl"
 
-        # Clear figure and define axis
-        self.eval_fig.figure.clf()
-        self.eval_ax1 = self.eval_fig.figure.subplots()
-        self.eval_ax2 = self.eval_ax1.twinx()
+    def plot_single_pixel(self, identifier):
+        """
+        Plot all graphs for a given device number
+        """
+
+        temp_df = self.data_df.loc[self.data_df.index == identifier]
+
+        if not self.current_plot_type == "single":
+            # Clear figure and define axis
+            self.eval_fig.figure.clf()
+            self.eval_ax = self.eval_fig.figure.subplots(2, 2)
+
+            # Some more visuals
+            self.eval_ax[0, 0].set_facecolor("#E0E0E0")
+            self.eval_ax[0, 1].set_facecolor("#E0E0E0")
+            self.eval_ax[1, 0].set_facecolor("#E0E0E0")
+            self.eval_ax[1, 1].set_facecolor("#E0E0E0")
+        else:
+            self.eval_ax[0, 0].cla()
+            self.eval_ax[0, 1].cla()
+            self.eval_ax[1, 0].cla()
+            self.eval_ax[1, 1].cla()
+
+        # Plot absolute current density and luminance over voltage
+        self.eval_ax5 = self.eval_ax[0, 0].twinx()
 
         # Change axis to log and add labels
-        self.eval_ax1.set_yscale("log")
-        self.eval_ax1.set_xlim(
+        self.eval_ax[0, 0].set_yscale("log")
+        self.eval_ax[0, 0].set_xlim(
             [min(temp_df.iloc[0]["voltage"]), max(temp_df.iloc[0]["voltage"])]
         )
-        self.eval_ax2.set_yscale("log")
-        self.eval_ax1.set_xlabel("Voltage (V)")
-        self.eval_ax1.set_ylabel("Current Density (mA cm$^{-2}$)")
-        self.eval_ax2.set_ylabel("Luminance (cd m$^{-2}$)")
+        self.eval_ax5.set_yscale("log")
+        self.eval_ax[0, 0].set_xlabel("Voltage (V)")
+        self.eval_ax[0, 0].set_ylabel("Current Density (mA cm$^{-2}$)")
+        self.eval_ax5.set_ylabel("Luminance (cd m$^{-2}$)")
 
-        # Some more visuals
-        self.eval_ax1.set_facecolor("#E0E0E0")
-        # self.eval_ax1.tick_params(axis="x", direction="in", length=8)
-
-        # Generate random colors
-        rand_color = randomcolor.RandomColor()
-
-        device_color = np.array(
-            rand_color.generate(hue="blue", count=temp_df.shape[0]),
-            dtype=object,
+        self.eval_ax[0, 0].plot(temp_df["voltage"][0], temp_df["current_density"][0])
+        self.eval_ax5.plot(
+            temp_df["voltage"][0],
+            temp_df["luminance"][0],
+            linestyle="--",
         )
 
-        for index in range(temp_df.shape[0]):
-            self.eval_ax1.plot(
-                temp_df.iloc[index]["voltage"],
-                temp_df.iloc[index]["current_density"],
-                label=temp_df.index[0],
-                color=device_color[index],
-            )
-            self.eval_ax2.plot(
-                temp_df.iloc[index]["voltage"],
-                temp_df.iloc[index]["luminance"],
-                linestyle="--",
-                label=temp_df.index[0],
-                color=device_color[index],
-            )
+        # Plot eqe over absolute current density
+        self.eval_ax[0, 1].plot(temp_df["current_density"][0], temp_df["eqe"][0])
+        self.eval_ax[0, 1].set_xscale("log")
+        self.eval_ax[0, 1].set_xlabel("Current Density (mA cm$^{-2}$)")
+        self.eval_ax[0, 1].set_ylabel("External Quantum Efficiency (%)")
 
-        self.eval_ax1.legend(frameon=False)
+        # Plot power density over voltage
+        self.eval_ax[1, 0].plot(temp_df["voltage"][0], temp_df["power_density"][0])
+        self.eval_ax[1, 0].set_yscale("log")
+        self.eval_ax[1, 0].set_xlabel("Voltage (V)")
+        self.eval_ax[1, 0].set_ylabel("Power Density (mW mm$^{-2}$)")
+
+        # Plot spectrum over wavelength
+        spectrum_data = temp_df.join(self.spectrum_data_df, on="device_number")
+        self.eval_ax[1, 1].plot(
+            spectrum_data["wavelength"][0],
+            np.array(spectrum_data["intensity"][0])
+            - np.array(spectrum_data["background"][0]),
+        )
+        self.eval_ax[1, 1].set_xlabel("Wavelength (nm)")
+        self.eval_ax[1, 1].set_ylabel("Spectrum (a.u.)")
+
+        # Draw figure
+        self.eval_fig.figure.tight_layout()
         self.eval_fig.draw()
+
+        # Set the current plot type for speed enhancement
+        self.current_plot_type = "single"
 
     def onpick(self, event):
         """
@@ -765,10 +828,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         item in the legend
         """
 
+        # Get the pressed line
+        legline = event.artist
+
         # Now distinguish between left mouse button and mouse wheel press
         if event.mouseevent.button == 1:
-            # Get the pressed line
-            legline = event.artist
 
             # Translate to the actual graph
             lumline = self.luminence_lines_dict[legline][0]
@@ -792,13 +856,134 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         elif event.mouseevent.button == 2:
             # On mouse wheel press, plot the four relevant graphs of that pixel
-            print("Mouse wheel pressed")
+            self.plot_single_pixel(self.lineLabel[legline])
+
+    # -------------------------------------------------------------------- #
+    # ------------------------ Show Statistics --------------------------- #
+    # -------------------------------------------------------------------- #
+    def plot_statistics(self):
+        """
+        Function that opens dialog to plot statistisc
+        """
+        self.show_group_dialog = Statistics(self)
+        self.show_group_dialog.show()
+        button = self.show_group_dialog.exec_()
+
+    def show_statistics(self, groupby):
+        """
+        Function that calculates the device statistics for all different,
+        non-masked pixels and plots them in a
+        box plot
+        """
+
+        # Unfortunately, a helper dataframe is needed here to extract the
+        # statistical parameters. A simple groupby of the data_df does not lead
+        # to the right result because one first has to deal with the list
+        # inside the lists
+        # First get the index of the arrays at 4 V (that is where we do all the
+        # stats)
+        idx_4v = np.where(np.array(self.data_df["voltage"][0]) == 4.0)[0][0]
+
+        current_density_4v = np.array(
+            self.data_df["current_density"]
+            .loc[self.data_df["masked"] == False]
+            .to_list()
+        )[:, idx_4v]
+        luminance_4v = np.array(
+            self.data_df["luminance"].loc[self.data_df["masked"] == False].to_list()
+        )[:, idx_4v]
+
+        device_numbers = (
+            self.data_df["device_number"]
+            .loc[self.data_df["masked"] == False]
+            .to_numpy()
+        )
+        group_names = (
+            self.data_df.loc[self.data_df["masked"] == False]
+            .join(self.assigned_groups_df, on="device_number")["group_name"]
+            .to_numpy()
+        )
+
+        # Now construct a stats dataframe from the above array with which we
+        # can easily do the statistics we want
+        stats_df = pd.DataFrame(
+            np.array(
+                [
+                    device_numbers.astype(int),
+                    group_names,
+                    current_density_4v.astype(float),
+                    luminance_4v.astype(float),
+                ]
+            ).T,
+            columns=[
+                "device_number",
+                "group_name",
+                "current_density_4v",
+                "luminance_4v",
+            ],
+            index=self.data_df.loc[self.data_df["masked"] == False].index,
+        )
+
+        # Convert the dataframe to numeric value and get back the mean of all
+        # numeric columns (basically, group_name can not be converted)
+        avg_values = stats_df.apply(pd.to_numeric, errors="ignore").groupby(by=groupby)
+        current_density_4v_grouped = (
+            avg_values["current_density_4v"].apply(list).to_list()
+        )
+
+        self.boxplot_statistics(
+            current_density_4v_grouped,
+            labels=stats_df[groupby].unique(),
+        )
+
+    def boxplot_statistics(self, avg_current_density, labels):
+        """
+        Does the plotting for the device statistics calculations
+        """
+        # self._ax[0, 0].boxplot(Voc_dev, labels=labels_, showfliers=False
+
+        if not self.current_plot_type == "boxplot_stats":
+            # Clear figure and define axis
+            self.eval_fig.figure.clf()
+            self.eval_ax = self.eval_fig.figure.subplots(2, 2)
+
+            # Some more visuals
+            self.eval_ax[0, 0].set_facecolor("#E0E0E0")
+            self.eval_ax[0, 1].set_facecolor("#E0E0E0")
+            self.eval_ax[1, 0].set_facecolor("#E0E0E0")
+            self.eval_ax[1, 1].set_facecolor("#E0E0E0")
+        else:
+            self.eval_ax[0, 0].cla()
+            self.eval_ax[0, 1].cla()
+            self.eval_ax[1, 0].cla()
+            self.eval_ax[1, 1].cla()
+
+        # Current at 4 V
+        self.eval_ax[0, 0].boxplot(
+            avg_current_density, labels=labels.astype(str).tolist(), showfliers=False
+        )
+        for i in range(len(avg_current_density)):
+            temp_y = avg_current_density[i]
+            temp_x = np.random.normal(1 + i, 0.04, size=len(temp_y))
+
+            self.eval_ax[0, 0].plot(temp_x, temp_y, "b.")
+
+        self.eval_fig.draw()
+        self.current_plot_type = "boxplot_stats"
+
+    # -------------------------------------------------------------------- #
+    # ---------------------------- Save Data ----------------------------- #
+    # -------------------------------------------------------------------- #
 
     def save_evaluated_data(self):
         """
         Function that saves the evaluated data to files
         """
         print("Save data to files")
+
+    # -------------------------------------------------------------------- #
+    # ------------------------- Global Functions ------------------------- #
+    # -------------------------------------------------------------------- #
 
     def show_settings(self):
         """
@@ -819,27 +1004,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         result = self.settings_window.exec()
 
-    # def open_file(self, path):
-    #     """
-    #     Opens a file on the machine with the standard program
-    #     https://stackoverflow.com/questions/6045679/open-file-with-pyqt
-    #     """
-    #     if sys.platform.startswith("linux"):
-    #         subprocess.call(["xdg-open", path])
-    #     else:
-    #         os.startfile(path)
-
-    # @QtCore.Slot(str)
-    # def cf.log_message(self, message):
-    #     """
-    #     Function that manages the logging, in the sense that everything is
-    #     directly logged into statusbar and the log file at once as well as
-    #     printed to the console instead of having to call multiple functions.
-    #     """
-    #     self.statusbar.showMessage(message, 10000000)
-    #     logging.info(message)
-    #     print(message)
-
     def changed_tab_widget(self):
         """
         Function that shall manage the threads that are running when we are
@@ -854,26 +1018,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         )
 
         return
-
-    @QtCore.Slot(list, list)
-    def update_spectrum(self, wavelength, intensity):
-        """
-        Function that is continuously evoked when the spectrum is updated by
-        the other thread
-        """
-        # Clear plot
-        # self.eval_ax.cla()
-        del self.eval_ax.lines[0]
-
-        # Plot current
-        self.eval_ax.plot(
-            wavelength,
-            intensity,
-            color=(68 / 255, 188 / 255, 65 / 255),
-            marker="o",
-        )
-
-        self.eval_fig.draw()
 
     def closeEvent(self, event):
         """

@@ -10,9 +10,9 @@ import functools
 import numpy as np
 import pandas as pd
 
-import randomcolor
+import matplotlib as mpl
 
-from UI_assign_group import Ui_AssignGroup
+from UI_assign_group_window import Ui_AssignGroup
 
 
 class AssignGroups(QtWidgets.QDialog, Ui_AssignGroup):
@@ -24,12 +24,16 @@ class AssignGroups(QtWidgets.QDialog, Ui_AssignGroup):
         QtWidgets.QDialog.__init__(self)
         self.parent = parent
         self.parameters = parameters
-        rand_color = randomcolor.RandomColor()
 
+        cmap = mpl.cm.get_cmap("Dark2", np.size(parameters["device_number"]))
         self.group_color = np.array(
-            rand_color.generate(hue="blue", count=np.size(parameters["device_number"])),
-            dtype=object,
+            [mpl.colors.rgb2hex(cmap(i)) for i in range(cmap.N)], dtype=object
         )
+
+        # self.group_color = np.array(
+        # rand_color.generate(hue="blue", count=np.size(parameters["device_number"])),
+        # dtype=object,
+        # )
         self.group_spectrum_path = np.empty(
             np.size(parameters["device_number"]), dtype=object
         )

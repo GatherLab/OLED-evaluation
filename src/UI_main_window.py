@@ -568,6 +568,46 @@ class Ui_MainWindow(object):
         self.eval_plot_groups_pushButton.setToolTip("Plot Groups")
         self.eval_scrollArea_VBoxLayout.addWidget(self.eval_plot_groups_pushButton)
 
+        # Plot Statistics
+        self.eval_plot_statistics_pushButton = QtWidgets.QPushButton(
+            self.eval_scrollAreaWidgetContents
+        )
+        self.eval_plot_statistics_pushButton.setObjectName(
+            "eval_plot_statistics_pushButton"
+        )
+        self.eval_plot_statistics_pushButton.setIcon(
+            QtGui.QIcon("./icons/show_overview")
+        )
+        self.eval_plot_statistics_pushButton.setIconSize(QtCore.QSize(50, 50))
+        self.eval_plot_statistics_pushButton.setSizePolicy(
+            QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Expanding
+        )
+        self.eval_plot_statistics_pushButton.setMinimumWidth(58)
+        self.eval_plot_statistics_pushButton.setMinimumHeight(58)
+        self.eval_plot_statistics_pushButton.setToolTip("Plot Statistics")
+        self.eval_scrollArea_VBoxLayout.addWidget(self.eval_plot_statistics_pushButton)
+
+        # Spectrum Analysis
+        self.eval_spectrum_analysis_pushButton = QtWidgets.QPushButton(
+            self.eval_scrollAreaWidgetContents
+        )
+        self.eval_spectrum_analysis_pushButton.setObjectName(
+            "eval_spectrum_analysis_pushButton"
+        )
+        self.eval_spectrum_analysis_pushButton.setIcon(
+            QtGui.QIcon("./icons/show_overview")
+        )
+        self.eval_spectrum_analysis_pushButton.setIconSize(QtCore.QSize(50, 50))
+        self.eval_spectrum_analysis_pushButton.setSizePolicy(
+            QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Expanding
+        )
+        self.eval_spectrum_analysis_pushButton.setMinimumWidth(58)
+        self.eval_spectrum_analysis_pushButton.setMinimumHeight(58)
+        self.eval_spectrum_analysis_pushButton.setToolTip("Spectrum Analysis")
+        self.eval_scrollArea_VBoxLayout.addWidget(
+            self.eval_spectrum_analysis_pushButton
+        )
+
         # Save Pushbutton
         self.eval_save_pushButton = QtWidgets.QPushButton(
             self.eval_scrollAreaWidgetContents

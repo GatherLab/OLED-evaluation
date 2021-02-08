@@ -12,10 +12,10 @@ import pandas as pd
 
 import randomcolor
 
-from UI_show_group_window import Ui_ShowGroup
+from UI_spectrum_window import Ui_EvaluateSpectrum
 
 
-class ShowGroup(QtWidgets.QDialog, Ui_ShowGroup):
+class EvaluateSpectrum(QtWidgets.QDialog, Ui_EvaluateSpectrum):
     """
     Settings window
     """
