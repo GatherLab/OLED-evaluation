@@ -115,6 +115,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.eval_assign_groups_pushButton.clicked.connect(self.assign_groups)
         self.eval_plot_groups_pushButton.clicked.connect(self.plot_groups)
         self.eval_plot_statistics_pushButton.clicked.connect(self.plot_statistics)
+        self.eval_spectrum_analysis_pushButton.clicked.connect(self.plot_spectrum)
         self.eval_save_pushButton.clicked.connect(self.save_evaluated_data)
 
         # Set all buttons except for the change path pushButton to disable
@@ -415,26 +416,26 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """
 
         # Reading V(lambda), photodiode sensitivity, and CIE normcurves
-        df_basic_data = pd.read_csv(
-            "./calibration/BasicData - PDA100A2.txt",
-            names=["wavelength", "v_lambda", "photodiode_sensitivity"],
-            sep="\t",
-        )
-        df_norm_curves = pd.read_csv(
-            "./calibration/NormCurves_400-800.txt",
-            names=["wavelength", "na", "xcie", "ycie", "zcie"],
-            sep="\t",
-        )
-        df_correction_data = pd.read_csv(
-            "./calibration/CorrectionData.txt",
-            names=["wavelength", "correction"],
-            sep="\t",
-        )
-        df_basic_data["interpolated"] = np.interp(
-            df_basic_data.wavelength,
-            df_correction_data.wavelength,
-            df_correction_data.correction,
-        )
+        # df_basic_data = pd.read_csv(
+        #     "./calibration/BasicData - PDA100A2.txt",
+        #     names=["wavelength", "v_lambda", "photodiode_sensitivity"],
+        #     sep="\t",
+        # )
+        # df_norm_curves = pd.read_csv(
+        #     "./calibration/NormCurves_400-800.txt",
+        #     names=["wavelength", "na", "xcie", "ycie", "zcie"],
+        #     sep="\t",
+        # )
+        # df_correction_data = pd.read_csv(
+        #     "./calibration/CorrectionData.txt",
+        #     names=["wavelength", "correction"],
+        #     sep="\t",
+        # )
+        # df_basic_data["interpolated"] = np.interp(
+        #     df_basic_data.wavelength,
+        #     df_correction_data.wavelength,
+        #     df_correction_data.correction,
+        # )
 
         # Add empty columns to our basic dataframes
         self.data_df["current_density"] = np.empty((len(self.data_df), 0)).tolist()
@@ -455,161 +456,161 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             (len(self.spectrum_data_df), 0)
         ).tolist()
 
-        for index, row in self.data_df.iterrows():
+        # for index, row in self.data_df.iterrows():
 
-            # Transform to SI units for calculations
-            # df_jvl_data["current"] = df_jvl_data["current"] / 1000
-            # df_jvl_data["current_density"] = df_jvl_data.current / (pixel_area * 1e-2)
-            # df_jvl_data["absolute_current_density"] = abs(df_jvl_data.current_density)
-            self.data_df.at[index, "current"] = list(np.array(row["current"]) / 1000)
-            self.data_df.at[index, "current_density"] = list(
-                np.array(row["current"])
-                / (self.measurement_parameters["pixel_area"] * 1e-2)
-            )
+        #     # Transform to SI units for calculations
+        #     # df_jvl_data["current"] = df_jvl_data["current"] / 1000
+        #     # df_jvl_data["current_density"] = df_jvl_data.current / (pixel_area * 1e-2)
+        #     # df_jvl_data["absolute_current_density"] = abs(df_jvl_data.current_density)
+        #     self.data_df.at[index, "current"] = list(np.array(row["current"]) / 1000)
+        #     self.data_df.at[index, "current_density"] = list(
+        #         np.array(row["current"])
+        #         / (self.measurement_parameters["pixel_area"] * 1e-2)
+        #     )
 
-            # Load spectral data and df_background. The idea is  that if there is no specific df_spectrum file given, the program searches for files containing d<no> in their name that matches the d<no> in the jvl data file name
-            # if not spectrum_file:
-            #     dev_number = np.array(file_name.split("_"))[
-            #         [
-            #             bool(re.match("^[0123456789d]+$", i))
-            #             for i in file_name.split("_")
-            #         ]
-            #     ][0]
-            #     spectrum_file_name = np.array(spectra_file_names)[
-            #         [dev_number in str_ for str_ in spectra_file_names]
-            #     ][0]
-            #     spectrum_file_path = root_directory + "spectra/" + spectrum_file_name
-            # else:
-            #     spectrum_file_path = root_directory + "spectra/" + spectrum_file
+        #     # Load spectral data and df_background. The idea is  that if there is no specific df_spectrum file given, the program searches for files containing d<no> in their name that matches the d<no> in the jvl data file name
+        #     # if not spectrum_file:
+        #     #     dev_number = np.array(file_name.split("_"))[
+        #     #         [
+        #     #             bool(re.match("^[0123456789d]+$", i))
+        #     #             for i in file_name.split("_")
+        #     #         ]
+        #     #     ][0]
+        #     #     spectrum_file_name = np.array(spectra_file_names)[
+        #     #         [dev_number in str_ for str_ in spectra_file_names]
+        #     #     ][0]
+        #     #     spectrum_file_path = root_directory + "spectra/" + spectrum_file_name
+        #     # else:
+        #     #     spectrum_file_path = root_directory + "spectra/" + spectrum_file
 
-            # The df_background path is always the same
-            # background_file_path = root_directory + "spectra/background.txt"
+        #     # The df_background path is always the same
+        #     # background_file_path = root_directory + "spectra/background.txt"
 
-            # # Load background file
-            # df_background = pd.read_csv(
-            #     background_file_path,
-            #     header=12,
-            #     names=["wavelength", "counts"],
-            #     sep="\t",
-            # )
+        #     # # Load background file
+        #     # df_background = pd.read_csv(
+        #     #     background_file_path,
+        #     #     header=12,
+        #     #     names=["wavelength", "counts"],
+        #     #     sep="\t",
+        #     # )
 
-            # # Load actual spectrum file
-            # df_spectrum = pd.read_csv(
-            #     spectrum_file_path,
-            #     header=12,
-            #     names=["wavelength", "counts"],
-            #     sep="\t",
-            # )
+        #     # # Load actual spectrum file
+        #     # df_spectrum = pd.read_csv(
+        #     #     spectrum_file_path,
+        #     #     header=12,
+        #     #     names=["wavelength", "counts"],
+        #     #     sep="\t",
+        #     # )
 
-            # Interpolate this data on basic data and save in separate data frame
-            # df_corrected_spectrum = pd.DataFrame()
+        #     # Interpolate this data on basic data and save in separate data frame
+        #     # df_corrected_spectrum = pd.DataFrame()
 
-            # Interpolate spectra onto correct axis and subtract background
-            self.spectrum_data_df.at[
-                row["device_number"],
-                "interpolated_intensity",
-            ] = np.interp(
-                df_basic_data.wavelength.to_list(),
-                self.spectrum_data_df.loc[row["device_number"], "wavelength"],
-                self.spectrum_data_df.loc[row["device_number"], "intensity"],
-            )
+        #     # Interpolate spectra onto correct axis and subtract background
+        #     self.spectrum_data_df.at[
+        #         row["device_number"],
+        #         "interpolated_intensity",
+        #     ] = np.interp(
+        #         df_basic_data.wavelength.to_list(),
+        #         self.spectrum_data_df.loc[row["device_number"], "wavelength"],
+        #         self.spectrum_data_df.loc[row["device_number"], "intensity"],
+        #     )
 
-            self.spectrum_data_df.at[
-                row["device_number"],
-                "minus_background",
-            ] = self.spectrum_data_df.at[
-                row["device_number"], "interpolated_intensity"
-            ] - np.interp(
-                df_basic_data.wavelength.to_list(),
-                self.spectrum_data_df.loc[row["device_number"], "wavelength"],
-                self.spectrum_data_df.loc[row["device_number"], "background"],
-            )
+        #     self.spectrum_data_df.at[
+        #         row["device_number"],
+        #         "minus_background",
+        #     ] = self.spectrum_data_df.at[
+        #         row["device_number"], "interpolated_intensity"
+        #     ] - np.interp(
+        #         df_basic_data.wavelength.to_list(),
+        #         self.spectrum_data_df.loc[row["device_number"], "wavelength"],
+        #         self.spectrum_data_df.loc[row["device_number"], "background"],
+        #     )
 
-            self.spectrum_data_df.at[row["device_number"], "corrected_intensity",] = (
-                self.spectrum_data_df.loc[
-                    row["device_number"],
-                    "minus_background",
-                ]
-                * df_basic_data.interpolated
-            )
-            # df_corrected_spectrum["spectrum_intensity"] = np.interp(
-            #     df_basic_data.wavelength, df_spectrum.wavelength, df_spectrum.counts
-            # )
-            # df_corrected_spectrum["background_int"] = background_int = np.interp(
-            #     df_basic_data.wavelength, df_background.wavelength, df_background.counts
-            # )
+        #     self.spectrum_data_df.at[row["device_number"], "corrected_intensity",] = (
+        #         self.spectrum_data_df.loc[
+        #             row["device_number"],
+        #             "minus_background",
+        #         ]
+        #         * df_basic_data.interpolated
+        #     )
+        #     # df_corrected_spectrum["spectrum_intensity"] = np.interp(
+        #     #     df_basic_data.wavelength, df_spectrum.wavelength, df_spectrum.counts
+        #     # )
+        #     # df_corrected_spectrum["background_int"] = background_int = np.interp(
+        #     #     df_basic_data.wavelength, df_background.wavelength, df_background.counts
+        #     # )
 
-            # Do df_background subtraction
-            # df_corrected_spectrum["spectrum_m_background"] = (
-            #     df_corrected_spectrum.spectrum_intensity
-            #     - df_corrected_spectrum.background_int
-            # )
+        #     # Do df_background subtraction
+        #     # df_corrected_spectrum["spectrum_m_background"] = (
+        #     #     df_corrected_spectrum.spectrum_intensity
+        #     #     - df_corrected_spectrum.background_int
+        #     # )
 
-            # multiply by spectrometer df_correction_data.correction factor to get intensity
-            # df_corrected_spectrum["intensity"] = (
-            #     df_corrected_spectrum["spectrum_m_background"]
-            #     * df_basic_data.interpolated
-            # )
+        #     # multiply by spectrometer df_correction_data.correction factor to get intensity
+        #     # df_corrected_spectrum["intensity"] = (
+        #     #     df_corrected_spectrum["spectrum_m_background"]
+        #     #     * df_basic_data.interpolated
+        #     # )
 
-            # Now do the real calculations
-            (
-                max_intensity_wavelength,
-                cie_color_coordinates,
-            ) = ef.calculate_cie_coordinates(
-                self.spectrum_data_df.loc[row["device_number"]], df_norm_curves
-            )
+        #     # Now do the real calculations
+        #     (
+        #         max_intensity_wavelength,
+        #         cie_color_coordinates,
+        #     ) = ef.calculate_cie_coordinates(
+        #         self.spectrum_data_df.loc[row["device_number"]], df_norm_curves
+        #     )
 
-            self.data_df.at[index, "eqe"] = ef.calculate_eqe(
-                self.spectrum_data_df.loc[row["device_number"]],
-                self.data_df.loc[index],
-                df_basic_data,
-                self.measurement_parameters,
-            )
-            (
-                photopic_response,
-                self.data_df.at[index, "luminance"],
-            ) = ef.calculate_luminance(
-                self.spectrum_data_df.loc[row["device_number"]],
-                self.data_df.loc[index],
-                df_basic_data,
-                self.measurement_parameters,
-            )
+        #     self.data_df.at[index, "eqe"] = ef.calculate_eqe(
+        #         self.spectrum_data_df.loc[row["device_number"]],
+        #         self.data_df.loc[index],
+        #         df_basic_data,
+        #         self.measurement_parameters,
+        #     )
+        #     (
+        #         photopic_response,
+        #         self.data_df.at[index, "luminance"],
+        #     ) = ef.calculate_luminance(
+        #         self.spectrum_data_df.loc[row["device_number"]],
+        #         self.data_df.loc[index],
+        #         df_basic_data,
+        #         self.measurement_parameters,
+        #     )
 
-            self.data_df.at[
-                index, "luminous_efficiency"
-            ] = ef.calculate_luminous_efficacy(
-                self.data_df.loc[index], photopic_response, self.measurement_parameters
-            )
+        #     self.data_df.at[
+        #         index, "luminous_efficiency"
+        #     ] = ef.calculate_luminous_efficacy(
+        #         self.data_df.loc[index], photopic_response, self.measurement_parameters
+        #     )
 
-            self.data_df.at[
-                index, "current_efficiency"
-            ] = ef.calculate_current_efficiency(
-                self.data_df.loc[index], self.measurement_parameters
-            )
+        #     self.data_df.at[
+        #         index, "current_efficiency"
+        #     ] = ef.calculate_current_efficiency(
+        #         self.data_df.loc[index], self.measurement_parameters
+        #     )
 
-            self.data_df.at[index, "power_density"] = ef.calculate_power_density(
-                self.spectrum_data_df.loc[row["device_number"]],
-                row,
-                df_basic_data,
-                self.measurement_parameters,
-            )
+        #     self.data_df.at[index, "power_density"] = ef.calculate_power_density(
+        #         self.spectrum_data_df.loc[row["device_number"]],
+        #         row,
+        #         df_basic_data,
+        #         self.measurement_parameters,
+        #     )
 
-            cf.log_message("Data for " + str(index) + " successfully evaluated.")
+        #     cf.log_message("Data for " + str(index) + " successfully evaluated.")
 
-            # Generate output files
-            # generate_output_files(
-            #     df_jvl_data,
-            #     df_corrected_spectrum,
-            #     luminance,
-            #     eqe,
-            #     luminous_efficiency,
-            #     current_efficiency,
-            #     power_density,
-            #     max_intensity_wavelength,
-            #     cie_color_coordinates,
-            # )
+        # Generate output files
+        # generate_output_files(
+        #     df_jvl_data,
+        #     df_corrected_spectrum,
+        #     luminance,
+        #     eqe,
+        #     luminous_efficiency,
+        #     current_efficiency,
+        #     power_density,
+        #     max_intensity_wavelength,
+        #     cie_color_coordinates,
+        # )
 
-            # print(file_name + " successfully evaluated and evaluation files saved.")
+        # print(file_name + " successfully evaluated and evaluation files saved.")
 
     # -------------------------------------------------------------------- #
     # ------------------------ Show/plot Groups -------------------------- #

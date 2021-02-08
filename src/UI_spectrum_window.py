@@ -117,9 +117,9 @@ class Ui_EvaluateSpectrum(object):
         # If group names were already defined do the same for the groups
         if np.size(self.parameters["group_name"]) > 0:
             # Add a header label for the groups
-            self.group_label = QtWidgets.QLabel()
-            self.group_label.setObjectName("group_label")
-            self.verticalLayout.addWidget(self.group_label)
+            # self.group_label = QtWidgets.QLabel()
+            # self.group_label.setObjectName("group_label")
+            # self.verticalLayout.addWidget(self.group_label)
 
             # self.labelGroup = QtWidgets.QLabel("Groups:")
             # verticalLayout.addWidget(self.labelGroup)
@@ -161,7 +161,7 @@ class Ui_EvaluateSpectrum(object):
         EvaluateSpectrum.setWindowTitle(_translate("EvaluateSpectrum", "Show Groups"))
 
         self.header_label.setText(
-            _translate("EvaluateSpectrum", "Select Device or Group to Plot")
+            _translate("EvaluateSpectrum", "Select Group Spectrum to Plot")
         )
-        self.devices_label.setText(_translate("EvaluateSpectrum", "Device"))
-        self.group_label.setText(_translate("EvaluateSpectrum", "Group"))
+        # self.devices_label.setText(_translate("EvaluateSpectrum", "Device"))
+        # self.group_label.setText(_translate("EvaluateSpectrum", "Group"))
