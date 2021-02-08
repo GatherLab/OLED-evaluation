@@ -1,11 +1,29 @@
 {
   "overwrite": [
     {
+      "pd_cutoff": "0.0005",
+      "pd_saturation": "10",
+      "pd_area": "75",
+      "pd_peak_response": "683",
+      "amplifier_resistance": "475000",
+      "pd_resistance": "683",
+      "threshold_pd_voltage": "683",
+      "pixel_area": "16",
+      "pd_distance": "167",
       "default_saving_path": "/home/julianb/Documents/01-Studium/03-Promotion/02-Data/"
     }
   ],
   "default": [
     {
+      "pd_cutoff": "0.0005",
+      "pd_saturation": "10",
+      "pd_area": "75",
+      "pd_peak_response": "683",
+      "pd_resistance": "683",
+      "threshold_pd_voltage": "683",
+      "amplifier_resistance": "475000",
+      "pixel_area": "16",
+      "pd_distance": "167",
       "default_saving_path": "/home/julianb/Documents/01-Studium/03-Promotion/02-Data/"
     }
   ]

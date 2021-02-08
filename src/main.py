@@ -3,6 +3,7 @@ from settings import Settings
 from assign_groups import AssignGroups
 from show_group import ShowGroup
 from statistics import Statistics
+from spectrum import EvaluateSpectrum
 
 import core_functions as cf
 import evaluation_functions as ef
@@ -68,14 +69,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         )
 
         # Data that shall later be put into settings window
-        self.measurement_parameters = {
-            "pixel_area": 16,
-            "threshold_pd_voltage": 0.0005,
-            "pd_distance": 196,
-            "pd_area": 0.000075,
-            "pd_resistance": 4.75e5,
-            "pd_peak_response": 683,
-        }
+        self.measurement_parameters = cf.read_global_settings()
+
         self.measurement_parameters["pd_radius"] = math.sqrt(
             self.measurement_parameters["pd_area"] / math.pi
         )
@@ -931,12 +926,15 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             avg_values["current_density_4v"].apply(list).to_list()
         )
 
+        luminance_4v_grouped = avg_values["luminance_4v"].apply(list).to_list()
+
         self.boxplot_statistics(
             current_density_4v_grouped,
+            luminance_4v_grouped,
             labels=stats_df[groupby].unique(),
         )
 
-    def boxplot_statistics(self, avg_current_density, labels):
+    def boxplot_statistics(self, current_density_4v, luminance_4v, labels):
         """
         Does the plotting for the device statistics calculations
         """
@@ -960,16 +958,46 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         # Current at 4 V
         self.eval_ax[0, 0].boxplot(
-            avg_current_density, labels=labels.astype(str).tolist(), showfliers=False
+            current_density_4v, labels=labels.astype(str).tolist(), showfliers=False
         )
-        for i in range(len(avg_current_density)):
-            temp_y = avg_current_density[i]
+        for i in range(len(current_density_4v)):
+            temp_y = current_density_4v[i]
             temp_x = np.random.normal(1 + i, 0.04, size=len(temp_y))
 
             self.eval_ax[0, 0].plot(temp_x, temp_y, "b.")
+        self.eval_ax[0, 0].set_ylabel("Current Density (mA cm$^{-2}$)")
+
+        # Luminance at 4 V
+        self.eval_ax[0, 1].boxplot(
+            luminance_4v, labels=labels.astype(str).tolist(), showfliers=False
+        )
+        for i in range(len(luminance_4v)):
+            temp_y = luminance_4v[i]
+            temp_x = np.random.normal(1 + i, 0.04, size=len(temp_y))
+
+            self.eval_ax[0, 1].plot(temp_x, temp_y, "b.")
+
+        self.eval_ax[0, 1].set_ylabel("Luminance (cd m$^{-2}$)")
 
         self.eval_fig.draw()
         self.current_plot_type = "boxplot_stats"
+
+    # -------------------------------------------------------------------- #
+    # ----------------------------- Spectrum ----------------------------- #
+    # -------------------------------------------------------------------- #
+
+    def plot_spectrum(self):
+        """
+        Opens dialog to plot important graphs for each spectrum
+        """
+        parameters = {
+            "device_number": self.assigned_groups_df.index,
+            "group_name": self.assigned_groups_df["group_name"].unique(),
+        }
+
+        self.show_group_dialog = EvaluateSpectrum(parameters, self)
+        self.show_group_dialog.show()
+        button = self.show_group_dialog.exec_()
 
     # -------------------------------------------------------------------- #
     # ---------------------------- Save Data ----------------------------- #

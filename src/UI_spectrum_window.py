@@ -68,9 +68,9 @@ class Ui_EvaluateSpectrum(object):
         self.header_label.setObjectName("header_label")
         self.verticalLayout.addWidget(self.header_label)
 
-        self.devices_label = QtWidgets.QLabel()
-        self.devices_label.setObjectName("devices_label")
-        self.verticalLayout.addWidget(self.devices_label)
+        # self.devices_label = QtWidgets.QLabel()
+        # self.devices_label.setObjectName("devices_label")
+        # self.verticalLayout.addWidget(self.devices_label)
 
         # verticalLayout.addWidget(
         # QtWidgets.QLabel("IV Curves of which group or device shall be plotted?")
@@ -78,8 +78,8 @@ class Ui_EvaluateSpectrum(object):
         # verticalLayout.addWidget(QtWidgets.QLabel("Light IV"))
 
         # Grid Layout that hosts push buttons for the different devices
-        self.devices_gridLayout = QtWidgets.QGridLayout()
-        self.device_pushButton_container = np.empty(0, dtype="object")
+        # self.devices_gridLayout = QtWidgets.QGridLayout()
+        # self.device_pushButton_container = np.empty(0, dtype="object")
 
         # Count the number of pushbuttons in a row to have a line break every
         # max_row push buttons
@@ -87,32 +87,32 @@ class Ui_EvaluateSpectrum(object):
         max_row = 6
 
         # Generate the same number of push buttons than nb of devices
-        for index in range(len(self.parameters["device_number"])):
-            # Add pushbutton to pushbutton container with the right device number
-            self.device_pushButton_container = np.append(
-                self.device_pushButton_container,
-                QtWidgets.QPushButton(
-                    str(int(self.parameters["device_number"][index]))
-                ),
-            )
+        # for index in range(len(self.parameters["device_number"])):
+        #     # Add pushbutton to pushbutton container with the right device number
+        #     self.device_pushButton_container = np.append(
+        #         self.device_pushButton_container,
+        #         QtWidgets.QPushButton(
+        #             str(int(self.parameters["device_number"][index]))
+        #         ),
+        #     )
 
-            # # Connect the push button to the right function
-            # self.device_pushButton_container[index].clicked.connect(
-            #     functools.partial(
-            #         self.showGroup, self.parameters["device_number"][index]
-            #     )
-            # )
+        # # Connect the push button to the right function
+        # self.device_pushButton_container[index].clicked.connect(
+        #     functools.partial(
+        #         self.showGroup, self.parameters["device_number"][index]
+        #     )
+        # )
 
-            # Add pushbutton to the grid layout
-            self.devices_gridLayout.addWidget(
-                self.device_pushButton_container[-1],
-                int(count_row / max_row),
-                (np.size(self.device_pushButton_container) - 1) % max_row,
-            )
+        # # Add pushbutton to the grid layout
+        # self.devices_gridLayout.addWidget(
+        #     self.device_pushButton_container[-1],
+        #     int(count_row / max_row),
+        #     (np.size(self.device_pushButton_container) - 1) % max_row,
+        # )
 
-            count_row += 1
+        # count_row += 1
 
-        self.verticalLayout.addLayout(self.devices_gridLayout)
+        # self.verticalLayout.addLayout(self.devices_gridLayout)
 
         # If group names were already defined do the same for the groups
         if np.size(self.parameters["group_name"]) > 0:

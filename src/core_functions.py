@@ -40,6 +40,12 @@ def read_global_settings():
         # Update statusbar
         log_message("Default device parameters taken")
 
+    for key in settings[0].keys():
+        try:
+            settings[0][key] = float(settings[0][key])
+        except:
+            print("Entry not a float value")
+
     return settings[0]
 
 

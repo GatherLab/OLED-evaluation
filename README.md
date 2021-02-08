@@ -85,3 +85,29 @@ In general data is organised in pandas dataframe in a relational database manner
 
 - spectrum_data_df and assigned_groups_df have a 1:1 relationship and are only kept seperate for logical reasons but could in principle be merged in a single dataframe.
 - files_df and data_df have the same primary key and can be directly related with eachother. However, the primary keys of data_df are a subset of files_df since only the data of selected files is read in by the program and not all present in the folder. Device, pixel and scan number can be easily found out for each row by comparing to the files_df dataframe (join the dataframes basically).
+
+
+## To Do
+
+### UI
+- [x] Curernt densiy bei 4V
+- [x] Luminence bei 4V
+- [] EQE bei 1000 cd/m^2
+
+Goniometer Display
+- [ ] Map Intensity über WInkel
+- [ ] Radient intensity über Winkel (fig 5 changmin)
+
+Graphen nebeinander
+
+### Details on data evaluation
+- Kalibrationsfiles von github repo sind richtig, read them in by providing
+file path in settings
+- Kein smoothing 
+- Spektrometer file hat info über fiber drin (PL100, QP600)
+
+### Calibration files
+CalibrationData.txt = Spektrometer Sensitivity
+NormCurves_400-800.txt = xycie coordinates
+Photopic_response.txt = Sensitivität des Auges
+Responsivity_PD.txt = Photodiode characteristics
