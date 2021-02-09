@@ -137,42 +137,71 @@ def set_gain(gain):
 
 
 "SETTING KNOWN PARAMETERS"
+# Setting Variables
+OLEDwidth = 2e-3  # OLED width or height in m;
+pixel_area = (OLEDwidth) ** 2
+PDarea = 0.000075  # Photodiode area in m2
+PDradius = np.sqrt(PDarea / np.pi)  # Photodiode Radius in m
+PDresis, PDcutoff = set_gain(70)  # Resistance if gain = 70dB and high load resistance
+distance = 0.115  # Distance between OLED and PD in m
+sqsinalpha = PDradius ** 2 / (
+    distance ** 2 + PDradius ** 2
+)  # Taking into account finite size of PD
 # now = dt.datetime.now()  # Set the start time
 # start_time = str(
 #     now.strftime("%Y-%m-%d %H:%M").replace(" ", "").replace(":", "").replace("-", "")
 # )
 
-photopic_response = pd.read_csv(
-    os.path.join(
-        os.path.dirname(os.path.dirname(__file__)), "library", "Photopic_response.txt"
-    ),
-    sep="\t",
-    names=["wavelength", "photopic_response"],
-)
 
-pd_responsivity = pd.read_csv(
-    os.path.join(
-        os.path.dirname(os.path.dirname(__file__)), "library", "Responsivity_PD.txt"
-    ),
-    sep="\t",
-    names=["wavelength", "pd_responsivity"],
-)
+def read_calibration_files():
+    """
+    Function that wraps reading in the calibration files and returns them as dataframes
+    """
+    photopic_response = pd.read_csv(
+        os.path.join(
+            os.path.dirname(os.path.dirname(__file__)),
+            "library",
+            "Photopic_response.txt",
+        ),
+        sep="\t",
+        names=["wavelength", "photopic_response"],
+    )
 
-cie_reference = pd.read_csv(
-    os.path.join(
-        os.path.dirname(os.path.dirname(__file__)), "library", "NormCurves_400-800.txt"
-    ),
-    sep="\t",
-    names=["wavelength", "none", "x_cie", "y_cie", "z_cie"],
-)
+    pd_responsivity = pd.read_csv(
+        os.path.join(
+            os.path.dirname(os.path.dirname(__file__)), "library", "Responsivity_PD.txt"
+        ),
+        sep="\t",
+        names=["wavelength", "pd_responsivity"],
+    )
 
-spectrometer_calibration = pd.read_csv(
-    os.path.join(
-        os.path.dirname(os.path.dirname(__file__)), "library", "CalibrationData.txt"
-    ),
-    sep="\t",
-    names=["wavelength", "sensitivity"],
-)
+    cie_reference = pd.read_csv(
+        os.path.join(
+            os.path.dirname(os.path.dirname(__file__)),
+            "library",
+            "NormCurves_400-800.txt",
+        ),
+        sep="\t",
+        names=["wavelength", "none", "x_cie", "y_cie", "z_cie"],
+    )
+
+    spectrometer_calibration = pd.read_csv(
+        os.path.join(
+            os.path.dirname(os.path.dirname(__file__)), "library", "CalibrationData.txt"
+        ),
+        sep="\t",
+        names=["wavelength", "sensitivity"],
+    )
+
+    # interpolate spectrometer calibration factor onto correct axis
+    calibration = np.interp(
+        photopic_response["wavelength"].to_numpy(),
+        spectrometer_calibration["wavelength"].to_numpy(),
+        spectrometer_calibration["sensitivity"].to_numpy(),
+    )
+
+    return photopic_response, pd_responsivity, cie_reference, calibration
+
 
 # Loading the V(λ) and R(λ) spectra against wavelength
 # wavelength = np.loadtxt(
@@ -208,23 +237,6 @@ spectrometer_calibration = pd.read_csv(
 #     )[:, 1]
 # )
 
-# interpolate calibration factor onto correct axis
-calibration = np.interp(
-    photopic_response["wavelength"].to_numpy(),
-    spectrometer_calibration["wavelength"].to_numpy(),
-    spectrometer_calibration["sensitivity"].to_numpy(),
-)
-
-# Setting Variables
-OLEDwidth = 2e-3  # OLED width or height in m;
-pixel_area = (OLEDwidth) ** 2
-PDarea = 0.000075  # Photodiode area in m2
-PDradius = np.sqrt(PDarea / np.pi)  # Photodiode Radius in m
-PDresis, PDcutoff = set_gain(70)  # Resistance if gain = 70dB and high load resistance
-distance = 0.115  # Distance between OLED and PD in m
-sqsinalpha = PDradius ** 2 / (
-    distance ** 2 + PDradius ** 2
-)  # Taking into account finite size of PD
 
 # sc.physical_constants["luminous efficacy"][0] = 683  # Peak response in lm/W
 
@@ -315,40 +327,144 @@ sqsinalpha = PDradius ** 2 / (
 # print("\nBackground file in use is:", background)
 # Background spectrum
 
+#######################################################################################
+################################ Spectrum Related #####################################
+#######################################################################################
+
 # The following should be generic for both, a simple spectrum and a massive
 # angle resolved spectrum
 spectrum = pd.read_csv(
-    "/home/julianb/Documents/01-Studium/03-Promotion/02-Data/example-data/2021-02-04_test_d24_p2_gon-spec.csv",
+    # "/home/julianb/Documents/01-Studium/03-Promotion/02-Data/example-data/2021-02-04_test_d24_p2_gon-spec.csv",
+    "C:/Users/GatherLab-Julian/Documents/Nextcloud/01-Studium/03-Promotion/02-Data/example-data/2021-02-04_test_d24_p2_gon-spec.csv",
     sep="\t",
     skiprows=3,
 )
 
 
-def interpolate(column):
+# Read in calibration files
+(
+    photopic_response,
+    pd_responsivity,
+    cie_reference,
+    calibration,
+) = read_calibration_files()
+
+
+def interpolate_and_correct_spectrum(spectrum):
     """
-    Helper function to do the numpy interpolate on an entire dataframe
+    Function that interpolates a given spectrum and corrects it according to the calibration files
     """
-    return np.interp(
-        photopic_response["wavelength"].to_numpy(),
-        spectrum["wavelength"].to_numpy(),
-        column,
+
+    def interpolate(column):
+        """
+        Helper function to do the numpy interpolate on an entire dataframe
+        """
+        return np.interp(
+            photopic_response["wavelength"].to_numpy(),
+            spectrum["wavelength"].to_numpy(),
+            column,
+        )
+
+    # Now interpolate the entire dataframe on the wavelengths that are present in
+    # the photopic_response file
+    spectrum_interpolated_df = spectrum.apply(interpolate)
+
+    # Now subtract background and multiply with calibration
+    spectrum_corrected = (
+        spectrum_interpolated_df.loc[
+            :, ~np.isin(spectrum_interpolated_df.columns, ["background", "wavelength"])
+        ]
+        .subtract(spectrum_interpolated_df["background"], axis=0)
+        .multiply(calibration, axis=0)
+    )
+
+    spectrum_corrected["wavelength"] = spectrum_interpolated_df["wavelength"]
+
+    return spectrum_corrected
+
+
+# Now interpolate and correct the spectrum
+spectrum_corrected = interpolate_and_correct_spectrum(spectrum)
+
+
+#######################################################################################
+######################## Only Angle Resolved Spectrum Related #########################
+#######################################################################################
+
+
+def calculate_ri(column):
+    """
+    Function that calculates RI
+    """
+    return float(sc.h * sc.c / 1e-9 * np.sum(column))
+
+
+def calculate_li(column):
+    """
+    Function that calculates RI
+    """
+    return float(
+        sc.physical_constants["luminous efficacy"][0]
+        * sc.h
+        * sc.c
+        / 1e-9
+        * np.sum(column * photopic_response["photopic_response"].to_numpy())
     )
 
 
-# Now interpolate the entire dataframe on the wavelengths that are present in
-# the photopic_response file
-spectrum_interpolated_df = spectrum.apply(interpolate)
-
-# Now subtract background and multiply with calibration
-spectrum_corrected = (
-    spectrum_interpolated_df.loc[
-        :, ~np.isin(spectrum_interpolated_df.columns, ["background", "wavelength"])
-    ]
-    .subtract(spectrum_interpolated_df["background"], axis=0)
-    .multiply(calibration, axis=0)
+ri = spectrum_corrected.drop(["0_deg", "wavelength"], axis=1).apply(
+    calculate_ri, axis=0
+)
+li = spectrum_corrected.drop(["0_deg", "wavelength"], axis=1).apply(
+    calculate_li, axis=0
 )
 
-spectrum_corrected["wavelength"] = spectrum_interpolated_df["wavelength"]
+
+def calculate_efactor(column):
+    """
+    Function to calculate efactor, perp_intensity is just the intensity at 0°
+    """
+    return sum(column * spectrum_corrected["wavelength"]) / sum(
+        spectrum_corrected["0.0"] * spectrum_corrected["wavelength"]
+    )
+
+
+def calculate_vfactor(column):
+    """
+    Function to calculate the vfactor
+    """
+    return sum(column * photopic_response["photopic_response"].to_numpy()) / sum(
+        spectrum_corrected["0.0"] * photopic_response["photopic_response"].to_numpy()
+    )
+
+
+e_factor = spectrum_corrected.drop(["0_deg", "wavelength"], axis=1).apply(
+    calculate_efactor
+)
+v_factor = spectrum_corrected.drop(["0_deg", "wavelength"], axis=1).apply(
+    calculate_vfactor
+)
+
+# Not really needed, I might get rid of this later on
+goniometer_jvl = pd.read_csv(
+    # "/home/julianb/Documents/01-Studium/03-Promotion/02-Data/example-data/2021-02-04_test_d24_p2_gon-jvl.csv",
+    "C:/Users/GatherLab-Julian/Documents/Nextcloud/01-Studium/03-Promotion/02-Data/example-data/2021-02-04_test_d24_p2_gon-jvl.csv",
+    sep="\t",
+    skiprows=7,
+    names=["angle", "voltage", "current"],
+)
+
+# Formatting the data for the intensity map and spectrum.
+angles = goniometer_jvl["angle"].to_numpy()
+
+e_correction_factor = np.sum(
+    e_factor * np.sin(np.deg2rad(angles)) * np.deg2rad(np.diff(angles)[0])
+)
+
+v_correction_factor = np.sum(
+    v_factor * np.sin(np.deg2rad(angles)) * np.deg2rad(np.diff(angles)[0])
+)
+
 
 # This must be interpolated over the available wavelength of photopic response
 # spectrum_interpolated = np.interp(
@@ -428,15 +544,6 @@ spectrum_corrected["wavelength"] = spectrum_interpolated_df["wavelength"]
 #     print("No perpendicular spectrum. Unable to perform analysis.")
 #     os.sys.exit()
 
-# Importing current-voltage-luminance data from goniometer measurement,
-# specific to goniometer measurements
-goniometer_jvl = pd.read_csv(
-    "/home/julianb/Documents/01-Studium/03-Promotion/02-Data/example-data/2021-02-04_test_d24_p2_gon-jvl.csv",
-    sep="\t",
-    skiprows=7,
-    names=["angle", "voltage", "current"],
-)
-
 
 # angles = np.array(
 #     np.loadtxt(
@@ -459,15 +566,285 @@ goniometer_jvl = pd.read_csv(
 
 # Loading the Keithley data
 jvl_data = pd.read_csv(
-    "/home/julianb/Documents/01-Studium/03-Promotion/02-Data/example-data/2021-02-04_test_d21_p2_jvl.csv",
+    # "/home/julianb/Documents/01-Studium/03-Promotion/02-Data/example-data/2021-02-04_test_d21_p2_jvl.csv",
+    "C:/Users/GatherLab-Julian/Documents/Nextcloud/01-Studium/03-Promotion/02-Data/example-data/2021-02-04_test_d21_p2_jvl.csv",
     sep="\t",
     skiprows=7,
     names=["voltage", "current", "pd_voltage"],
 )
 
-jvl_data["current"] = jvl_data["current"] / 1000
-jvl_data["current_density"] = jvl_data.current / (pixel_area * 1e-2)
-jvl_data["absolute_current_density"] = abs(jvl_data.current_density)
+
+class JVLData:
+    """
+    At this point I think it is easier to have a class that allows for easy
+    calculation of the characteristics
+    """
+
+    def __init__(
+        self,
+        jvl_data,
+        perpendicular_spectrum,
+        photopic_response,
+        pd_responsivity,
+        angle_resolved,
+        correction_factor=[],
+    ):
+        """
+        Init function
+        """
+        self.voltage = jvl_data["voltage"]
+        self.pd_voltage = jvl_data["pd_voltage"]
+
+        self.current = jvl_data["current"] / 1000
+        self.current_density = self.current / (pixel_area * 1e-2)
+        self.absolute_current_density = abs(self.current_density)
+
+        self.cie_coordinates = self.calculate_cie_coordinates(
+            perpendicular_spectrum["wavelength"],
+            perpendicular_spectrum["intensity"],
+        )
+        self.calculate_integrals(
+            perpendicular_spectrum, photopic_response, pd_responsivity
+        )
+
+        if angle_resolved == True:
+            # Non lambertian case
+            e_coeff = self.calculate_non_lambertian_e_coeff()
+            v_coeff = self.calculate_non_lambertian_v_coeff()
+
+            self.eqe = self.calculate_non_lambertian_eqe(e_coeff, correction_factor[0])
+            self.luminance = self.calculate_non_lambertian_luminance(v_coeff)
+            self.luminous_efficiency = (
+                self.calculate_non_lambertian_luminous_efficiency(
+                    v_coeff, correction_factor[1]
+                )
+            )
+            self.power_density = self.calculate_non_lambertian_power_density(
+                e_coeff, correction_factor[0]
+            )
+        else:
+            # Lambertian case
+            e_coeff = self.calculate_lambertian_e_coeff()
+            v_coeff = self.calculate_lambertian_v_coeff()
+
+            self.eqe = self.calculate_lambertian_eqe(e_coeff)
+            self.luminance = self.calculate_lambertian_luminance(v_coeff)
+            self.luminous_efficiency = self.calculate_lambertian_luminous_efficiency(
+                v_coeff
+            )
+            self.power_density = self.calculate_lambertian_power_density(e_coeff)
+
+        self.current_efficiency = self.calculate_current_efficiency()
+
+    def calculate_integrals(
+        self, perpendicular_spectrum, photopic_response, pd_responsivity
+    ):
+        """
+        Function that calculates the important integrals
+        """
+        self.integral_1 = np.sum(
+            perpendicular_spectrum["intensity"] * perpendicular_spectrum["wavelength"]
+        )
+        # Integral2 = np.sum(perp_intensity)
+        self.integral_2 = np.sum(perpendicular_spectrum["intensity"])
+        # Integral3 = np.sum(perp_intensity * photopic_response["photopic_response"].to_numpy())
+        self.integral_3 = np.sum(
+            perpendicular_spectrum["intensity"].to_numpy()
+            * photopic_response.to_numpy()
+        )
+        # Integral4 = np.sum(perp_intensity * pd_responsivity["pd_responsivity"].to_numpy())
+        self.integral_4 = np.sum(
+            perpendicular_spectrum["intensity"] * pd_responsivity.to_numpy()
+        )
+
+    # Calculating CIE coordinates
+    def calculate_cie_coordinates(self, wavelength, perpendicular_spectrum):
+        """
+        Calculates wavelength of maximum spectral intensity and the CIE color coordinates
+        """
+        for i, j in enumerate(perpendicular_spectrum):
+            if j == np.max(perpendicular_spectrum):
+                max_intensity_wavelength = wavelength[i]
+
+        X = sum(perpendicular_spectrum * cie_reference.x_cie)
+        Y = sum(perpendicular_spectrum * cie_reference.y_cie)
+        Z = sum(perpendicular_spectrum * cie_reference.z_cie)
+
+        CIE = np.array([X / (X + Y + Z), Y / (X + Y + Z)])
+        return (
+            max_intensity_wavelength,
+            ("(" + ", ".join(["%.3f"] * 2) + ")") % tuple(CIE),
+        )
+
+    def calculate_non_lambertian_e_coeff(self):
+        """
+        Calculate e_coeff
+        """
+        return self.pd_voltage / PDresis / sqsinalpha * 2
+
+    def calculate_non_lambertian_v_coeff(self):
+        """
+        Calculate v_coeff
+        """
+        return (
+            sc.physical_constants["luminous efficacy"][0]
+            * self.pd_voltage
+            / PDresis
+            / sqsinalpha
+            * 2
+        )
+
+    def calculate_non_lambertian_eqe(self, e_coeff, e_correction_factor):
+        """
+        Function to calculate the eqe
+        """
+
+        # e_coeff = self.calculate_non_lambertian_e_coeff(jvl_data)
+
+        eqe = 100 * (
+            sc.e
+            / 1e9
+            / sc.h
+            / sc.c
+            / self.current
+            * e_coeff
+            * self.integral_1
+            / self.integral_4
+            * e_correction_factor
+        )
+
+        return eqe
+
+    def calculate_non_lambertian_luminance(self, v_coeff):
+        """
+        Calculate luminance
+        """
+        # v_coeff = self.calculate_non_lambertian_v_coeff(jvl_data)
+        return 1 / np.pi / pixel_area * v_coeff / 2 * self.integral_3 / self.integral_4
+
+    def calculate_non_lambertian_luminous_efficiency(
+        self, v_coeff, v_correction_factor
+    ):
+        """
+        Calculate luminous efficiency
+        """
+
+        # v_coeff = self.calculate_non_lambertian_v_coeff(jvl_data)
+        return (
+            1
+            / self.voltage
+            / self.current
+            * v_coeff
+            * self.integral_3
+            / self.integral_4
+            * v_correction_factor
+        )
+
+    def calculate_current_efficiency(self):
+        """
+        Calculate current efficiency
+        """
+        # lum = self.calculate_non_lambertian_luminance()
+
+        return pixel_area / self.current * self.luminance
+
+    def calculate_non_lambertian_power_density(self, e_coeff, e_correction_factor):
+        """
+        Calculate power density
+        """
+        # e_coeff = self.calculate_non_lambertian_e_coeff(jvl_data)
+        return (
+            1
+            / (pixel_area * 1e6)
+            * e_coeff
+            * self.integral_2
+            / self.integral_4
+            * e_correction_factor
+            * 1e3
+        )
+
+    def calculate_lambertian_e_coeff(self):
+        """
+        Calculate e_coeff
+        """
+        return self.pd_voltage / PDresis / sqsinalpha
+
+    def calculate_lambertian_v_coeff(self):
+        """
+        Calculate v_coeff
+        """
+        return (
+            sc.physical_constants["luminous efficacy"][0]
+            * self.pd_voltage
+            / PDresis
+            / sqsinalpha
+        )
+
+    def calculate_lambertian_eqe(self, e_coeff):
+        """
+        Function to calculate the eqe
+        """
+
+        # e_coeff = calculate_lambertian_eqe(jvl_data)
+
+        return 100 * (
+            sc.e
+            / 1e9
+            / sc.h
+            / sc.c
+            / self.current
+            * e_coeff
+            * self.integral_1
+            / self.integral_4
+        )
+
+    def calculate_lambertian_luminance(self, v_coeff):
+        """
+        Calculate luminance
+        """
+        # v_coeff = calculate_lambertian_v_coeff(jvl_data)
+        return 1 / np.pi / pixel_area * v_coeff * self.integral_3 / self.integral_4
+
+    def calculate_lambertian_luminous_efficiency(self, v_coeff):
+        """
+        Calculate luminous efficiency
+        """
+
+        # v_coeff = calculate_lambertian_v_coeff(self, jvl_data)
+        return (
+            1
+            / self.voltage
+            / self.current
+            * v_coeff
+            * self.integral_3
+            / self.integral_4
+        )
+
+    def calculate_lambertian_power_density(self, e_coeff):
+        """
+        Calculate power density
+        """
+        # e_coeff = calculate_lambertian_e_coeff(jvl_data)
+        return (
+            1 / (pixel_area * 1e6) * e_coeff * self.integral_2 / self.integral_4 * 1e3
+        )
+
+    def to_df(self):
+        """
+        return the variables of the class as dataframe
+        """
+        return
+
+
+jvl = JVLData(
+    jvl_data,
+    spectrum_corrected[["wavelength", "0.0"]].rename(columns={"0.0": "intensity"}),
+    photopic_response["photopic_response"],
+    pd_responsivity["pd_responsivity"],
+    True,
+    correction_factor=[e_correction_factor, v_correction_factor],
+)
+print("Stop")
 
 # currentdata = os.listdir(keithleyfilepath)
 # currentdata.sort()
@@ -571,33 +948,6 @@ jvl_data["absolute_current_density"] = abs(jvl_data.current_density)
 # ints[angle] = intensity  # saves individual spectra to a directory of all
 
 
-def calculate_ri(column):
-    """
-    Function that calculates RI
-    """
-    return float(sc.h * sc.c / 1e-9 * np.sum(column))
-
-
-def calculate_li(column):
-    """
-    Function that calculates RI
-    """
-    return float(
-        sc.physical_constants["luminous efficacy"][0]
-        * sc.h
-        * sc.c
-        / 1e-9
-        * np.sum(column * photopic_response["photopic_response"].to_numpy())
-    )
-
-
-ri = spectrum_corrected.drop(["0_deg", "wavelength"], axis=1).apply(
-    calculate_ri, axis=0
-)
-li = spectrum_corrected.drop(["0_deg", "wavelength"], axis=1).apply(
-    calculate_li, axis=0
-)
-
 # RI.append(float(sc.h * sc.c / 1e-9 * np.sum(intensity)))
 # LI.append(
 #     float(
@@ -615,30 +965,6 @@ li = spectrum_corrected.drop(["0_deg", "wavelength"], axis=1).apply(
 # intensities = np.vstack((intensities, np.array(intensity)))
 
 # if angle in np.arange(min_index, max_index, step_angle):
-def calculate_efactor(column):
-    """
-    Function to calculate efactor, perp_intensity is just the intensity at 0°
-    """
-    return sum(column * spectrum_corrected["wavelength"]) / sum(
-        spectrum_corrected["0.0"] * spectrum_corrected["wavelength"]
-    )
-
-
-def calculate_vfactor(column):
-    """
-    Function to calculate the vfactor
-    """
-    return sum(column * photopic_response["photopic_response"].to_numpy()) / sum(
-        spectrum_corrected["0.0"] * photopic_response["photopic_response"].to_numpy()
-    )
-
-
-e_factor = spectrum_corrected.drop(["0_deg", "wavelength"], axis=1).apply(
-    calculate_efactor
-)
-v_factor = spectrum_corrected.drop(["0_deg", "wavelength"], axis=1).apply(
-    calculate_vfactor
-)
 
 
 # e_correction_factor.append(
@@ -649,15 +975,20 @@ v_factor = spectrum_corrected.drop(["0_deg", "wavelength"], axis=1).apply(
 # / sum(perp_intensity * photopic_response["photopic_response"].to_numpy())
 # )  # This replaces cos(theta) in I = I0*cos(theta)
 
-
-# Formatting the data for the intensity map and spectrum.
-angles = goniometer_jvl["angle"].to_numpy()
+#######################################################################################
+############################### 0deg Spectrum Related #################################
+#######################################################################################
 
 # Normalise each column
+# I think this is also not needed for the calculations
 spectrum_normalised = (
     spectrum_corrected.drop(["0_deg", "wavelength"], axis=1)
     / spectrum_corrected.drop(["0_deg", "wavelength"], axis=1).max()
 )
+# Lambertian Spectrum (never used again, why do I need this??)
+lambertian_spectrum = np.cos(np.deg2rad(angles))
+non_lambertian_spectrum = ri / ri[np.where(angles == np.min(angles))[0][0]]
+non_lambertian_spectrum_v = li / li[np.where(angles == np.min(angles))[0][0]]
 
 
 # specangles = np.hstack([0, angles])
@@ -667,25 +998,19 @@ spectrum_normalised = (
 
 # Calculating key integrals for intensity in forward direction and correction factors F_E and F_V for all angles
 # Integral1 = np.sum(perp_intensity * wavelength)
-integral_1 = np.sum(spectrum_corrected["0.0"] * spectrum_corrected["wavelength"])
-# Integral2 = np.sum(perp_intensity)
-integral_2 = np.sum(spectrum_corrected["0.0"])
-# Integral3 = np.sum(perp_intensity * photopic_response["photopic_response"].to_numpy())
-integral_3 = np.sum(
-    spectrum_corrected["0.0"] * photopic_response["photopic_response"].to_numpy()
-)
-# Integral4 = np.sum(perp_intensity * pd_responsivity["pd_responsivity"].to_numpy())
-integral_4 = np.sum(
-    spectrum_corrected["0.0"] * pd_responsivity["pd_responsivity"].to_numpy()
-)
+# integral_1 = np.sum(spectrum_corrected["0.0"] * spectrum_corrected["wavelength"])
+# # Integral2 = np.sum(perp_intensity)
+# integral_2 = np.sum(spectrum_corrected["0.0"])
+# # Integral3 = np.sum(perp_intensity * photopic_response["photopic_response"].to_numpy())
+# integral_3 = np.sum(
+#     spectrum_corrected["0.0"] * photopic_response["photopic_response"].to_numpy()
+# )
+# # Integral4 = np.sum(perp_intensity * pd_responsivity["pd_responsivity"].to_numpy())
+# integral_4 = np.sum(
+#     spectrum_corrected["0.0"] * pd_responsivity["pd_responsivity"].to_numpy()
+# )
 
-e_correction_factor = np.sum(
-    e_factor * np.sin(np.deg2rad(angles)) * np.deg2rad(np.diff(angles)[0])
-)
 
-v_correction_factor = np.sum(
-    v_factor * np.sin(np.deg2rad(angles)) * np.deg2rad(np.diff(angles)[0])
-)
 # e_correction_factor = np.sum(
 # np.array(e_correction_factor)
 # * np.sin(np.deg2rad(np.arange(min_index, max_index, step_angle)))
@@ -698,11 +1023,6 @@ v_correction_factor = np.sum(
 # )
 # print(e_correction_factor)
 # print(v_correction_factor)
-
-# Lambertian Spectrum
-lambertian_spectrum = np.cos(np.deg2rad(angles))
-non_lambertian_spectrum = ri / ri[np.where(angles == np.min(angles))[0][0]]
-non_lambertian_spectrum_v = li / li[np.where(angles == np.min(angles))[0][0]]
 
 
 # Ilam = []
@@ -721,250 +1041,6 @@ non_lambertian_spectrum_v = li / li[np.where(angles == np.min(angles))[0][0]]
 # abscurrentdensity = abs(
 # np.array(currentdensity)
 # )  # calculates the absolute value of the current density
-
-# Calculating CIE coordinates
-def calculate_cie_coordinates(wavelength, perpendicular_spectrum):
-    """
-    Calculates wavelength of maximum spectral intensity and the CIE color coordinates
-    """
-    for i, j in enumerate(perpendicular_spectrum):
-        if j == np.max(perpendicular_spectrum):
-            max_intensity_wavelength = wavelength[i]
-
-    X = sum(perpendicular_spectrum * cie_reference.x_cie)
-    Y = sum(perpendicular_spectrum * cie_reference.y_cie)
-    Z = sum(perpendicular_spectrum * cie_reference.z_cie)
-
-    CIE = np.array([X / (X + Y + Z), Y / (X + Y + Z)])
-    return (
-        max_intensity_wavelength,
-        ("(" + ", ".join(["%.3f"] * 2) + ")") % tuple(CIE),
-    )
-
-
-cie_coordinates = calculate_cie_coordinates(
-    spectrum_corrected["wavelength"], spectrum_corrected["0.0"]
-)
-
-
-# for i, j in enumerate(perp_intensity):
-#     if j == max(perp_intensity):
-#         lambdamax = wavelength[i]
-#         X = sum(perp_intensity * cie_reference["x_cie"].to_numpy())
-#         Y = sum(perp_intensity * cie_reference["y_cie"].to_numpy())
-#         Z = sum(perp_intensity * cie_reference["z_cie"].to_numpy())
-#         CIE = [0] * 2
-#         CIE[0] = X / (X + Y + Z)
-#         CIE[1] = Y / (X + Y + Z)
-#         CIEformatted = ("(" + ", ".join(["%.3f"] * 2) + ")") % tuple(CIE)
-
-# print("Calculating non-Lambertian efficiency data...")
-
-
-def calculate_non_lambertian_e_coeff(jvl_data):
-    """
-    Calculate e_coeff
-    """
-    return jvl_data["pd_voltage"] / PDresis / sqsinalpha * 2
-
-
-def calculate_non_lambertian_v_coeff(jvl_data):
-    """
-    Calculate v_coeff
-    """
-    return (
-        sc.physical_constants["luminous efficacy"][0]
-        * jvl_data["pd_voltage"]
-        / PDresis
-        / sqsinalpha
-        * 2
-    )
-
-
-# e_coeff = calculate_e_coeff(jvl_data)
-# v_coeff = calculate_v_coeff(jvl_data)
-
-
-def calculate_non_lambertian_eqe(jvl_data):
-    """
-    Function to calculate the eqe
-    """
-
-    e_coeff = calculate_non_lambertian_e_coeff(jvl_data)
-
-    temp_eqe = 100 * (
-        sc.e
-        / 1e9
-        / sc.h
-        / sc.c
-        / jvl_data["current"]
-        * e_coeff
-        * integral_1
-        / integral_4
-        * e_correction_factor
-    )
-
-    temp_eqe[np.where(temp_eqe <= PDcutoff)] = 0
-    return temp_eqe
-
-
-# for v in range(len(PDvoltage)):
-# if PDvoltage[v] > PDcutoff:
-# eCoeff[v] = PDvoltage[v] / PDresis / sqsinalpha * 2
-# vCoeff[v] = (
-#     sc.physical_constants["luminous efficacy"][0]
-#     * PDvoltage[v]
-#     / PDresis
-#     / sqsinalpha
-#     * 2
-# )
-# EQE[v] = 100 * (
-#     sc.e
-#     / 1e9
-#     / sc.h
-#     / sc.c
-#     / OLEDcurrent[v]
-#     * eCoeff[v]
-#     * Integral1
-#     / Integral4
-#     * e_correction_factor
-# )
-
-
-def calculate_non_lambertian_luminance(jvl_data):
-    """
-    Calculate luminance
-    """
-    v_coeff = calculate_non_lambertian_v_coeff(jvl_data)
-    return 1 / np.pi / pixel_area * v_coeff / 2 * integral_3 / integral_4
-
-
-def calculate_non_lambertian_luminous_efficiency(jvl_data):
-    """
-    Calculate luminous efficiency
-    """
-
-    v_coeff = calculate_non_lambertian_v_coeff(jvl_data)
-    return (
-        1
-        / jvl_data["voltage"]
-        / jvl_data["current"]
-        * v_coeff
-        * integral_3
-        / integral_4
-        * v_correction_factor
-    )
-
-
-def calculate_current_efficiency(jvl_data):
-    """
-    Calculate current efficiency
-    """
-    lum = calculate_non_lambertian_luminance(jvl_data)
-
-    return pixel_area / jvl_data["current"] * lum
-
-
-def calculate_non_lambertian_power_density(jvl_data):
-    """
-    Calculate power density
-    """
-    e_coeff = calculate_non_lambertian_e_coeff(jvl_data)
-    return (
-        1
-        / (pixel_area * 1e6)
-        * e_coeff
-        * integral_2
-        / integral_4
-        * e_correction_factor
-        * 1e3
-    )
-
-
-# Formatting the efficiency data
-# dataeff_NONLAM = np.stack(
-#     (
-#         OLEDvoltage,
-#         OLEDcurrent * 1e3,
-#         currentdensity,
-#         abscurrentdensity,
-#         Lum,
-#         EQE,
-#         LE,
-#         CE,
-#         POW,
-#     )
-# )  # Converges the individual arrays into one array
-
-
-def calculate_lambertian_e_coeff(jvl_data):
-    """
-    Calculate e_coeff
-    """
-    return jvl_data["pd_voltage"] / PDresis / sqsinalpha
-
-
-def calculate_lambertian_v_coeff(jvl_data):
-    """
-    Calculate v_coeff
-    """
-    return (
-        sc.physical_constants["luminous efficacy"][0]
-        * jvl_data["pd_voltage"]
-        / PDresis
-        / sqsinalpha
-    )
-
-
-def calculate_lambertian_eqe(jvl_data):
-    """
-    Function to calculate the eqe
-    """
-
-    e_coeff = calculate_lambertian_eqe(jvl_data)
-
-    return 100 * (
-        sc.e
-        / 1e9
-        / sc.h
-        / sc.c
-        / jvl_data["current"]
-        * e_coeff
-        * integral_1
-        / integral_4
-    )
-
-
-def calculate_lambertian_luminance(jvl_data):
-    """
-    Calculate luminance
-    """
-    v_coeff = calculate_lambertian_v_coeff(jvl_data)
-    return 1 / np.pi / pixel_area * v_coeff * integral_3 / integral_4
-
-
-def calculate_lambertian_luminous_efficiency(jvl_data):
-    """
-    Calculate luminous efficiency
-    """
-
-    v_coeff = calculate_lambertian_v_coeff(jvl_data)
-    return (
-        1
-        / jvl_data["voltage"]
-        / jvl_data["current"]
-        * v_coeff
-        * integral_3
-        / integral_4
-    )
-
-
-def calculate_lambertian_power_density(jvl_data):
-    """
-    Calculate power density
-    """
-    e_coeff = calculate_lambertian_e_coeff(jvl_data)
-    return 1 / (pixel_area * 1e6) * e_coeff * integral_2 / integral_4 * 1e3
 
 
 # print("Calculating Lambertian efficiency data...")
