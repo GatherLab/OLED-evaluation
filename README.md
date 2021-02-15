@@ -43,7 +43,7 @@ Some important evaluation parameters can be set in a "global setting" style dial
 
 In general data is organised in pandas dataframe in a relational database manner. One key defines the relationship of the dataframe to others. However, the relationship can be 1:n. The primary key is for all dataframes the index that shall allow to relate the dataframes among eachother and is marked with (PM) in the following.
 
-- data_df: Contains the JVl data for all selected devices. The scan in the index should be the same for all of them since this is only after the user selected the relevant scan. Importantly, not all contained lists have the same length. The "masked" variable serves to check if a curve was masked by the user or not. 
+- data_df: Contains the JVl data for all selected devices. The scan in the index should be the same for all of them since this is only after the user selected the relevant scan. Importantly, not all contained lists have the same length. The "masked" variable serves to check if a curve was masked by the user or not.
 
 | index (PM) | device_number | voltage   | current   | current_density | pd_voltage | luminance | eqe      | luminous_efficiency | current_efficiency | power_density | masked |
 | ---------- | ------------- | --------- | --------- | --------------- | ---------- | --------- | -------- | ------------------- | ------------------ | ------------- | ------ |
@@ -53,14 +53,14 @@ In general data is organised in pandas dataframe in a relational database manner
 
 - spectrum_data_df: Contains all the spectrum data for the different groups
 
-| index (PM) | wavelength     | background     | intensity      |
-| ---------- | -------------- | -------------- | -------------- |
-| 21         | [1, 2, 3, ...] | [3, 4, 5, ...] | [6, 7, 8, ...] |
-| 24         | [1, 2, 3, ...] | [3, 4, 5, ...] | [6, 7, 8, ...] |
-| 31         | [1, 2, 3, ...] | [3, 4, 5, ...] | [6, 7, 8, ...] |
-| 34         | [1, 2, 3, ...] | [3, 4, 5, ...] | [6, 7, 8, ...] |
-| 41         | [1, 2, 3, ...] | [3, 4, 5, ...] | [6, 7, 8, ...] |
-| 44         | [1, 2, 3, ...] | [3, 4, 5, ...] | [6, 7, 8, ...] |
+| index (PM) | wavelength     | background     | intensity      | angle_resolved | correction_factor |
+| ---------- | -------------- | -------------- | -------------- | -------------- | ----------------- |
+| 21         | [1, 2, 3, ...] | [3, 4, 5, ...] | [6, 7, 8, ...] | True           | [0.1, 0.2]        |
+| 24         | [1, 2, 3, ...] | [3, 4, 5, ...] | [6, 7, 8, ...] | False          | -                 |
+| 31         | [1, 2, 3, ...] | [3, 4, 5, ...] | [6, 7, 8, ...] | False          | -                 |
+| 34         | [1, 2, 3, ...] | [3, 4, 5, ...] | [6, 7, 8, ...] | False          | -                 |
+| 41         | [1, 2, 3, ...] | [3, 4, 5, ...] | [6, 7, 8, ...] | False          | -                 |
+| 44         | [1, 2, 3, ...] | [3, 4, 5, ...] | [6, 7, 8, ...] | False          | -                 |
 
 - files_df: Contains the file names and all relevant information extracted from them for all files in the selected folder
 
@@ -69,7 +69,7 @@ In general data is organised in pandas dataframe in a relational database manner
 | d1p2s1     | "user/documents/data/2021-02-04_test_d1_p2.csv     | 1             | 2            | 1           |
 | d1p2s2     | "user/documents/data/2021-02-04_test_d1_p2_02.csv  | 1             | 2            | 2           |
 | d2p6s1     | "user/documents/data/2021-02-04_test_d2_p6.csv     | 2             | 6            | 1           |
-| d11p5s5    | "user/documents/data/2021-02-04_test_d11_p5_05.csv | 5             | 5            | 5           | d11p5s5 |
+| d11p5s5    | "user/documents/data/2021-02-04_test_d11_p5_05.csv | 5             | 5            | 5           |
 
 - assigned_groups_df: Contains all information that was provided in the assigned groups dialog (except for the scan number)
 
@@ -82,31 +82,33 @@ In general data is organised in pandas dataframe in a relational database manner
 | 41         | Bphen:CsC  | "user/documents/data/2021-02-04_test_d41_p2_spec.csv" | #FFFFF1 |
 | 44         | Bphen:CsC  | "user/documents/data/2021-02-04_test_d41_p2_spec.csv" | #FFFFF1 |
 
-
 - spectrum_data_df and assigned_groups_df have a 1:1 relationship and are only kept seperate for logical reasons but could in principle be merged in a single dataframe.
 - files_df and data_df have the same primary key and can be directly related with eachother. However, the primary keys of data_df are a subset of files_df since only the data of selected files is read in by the program and not all present in the folder. Device, pixel and scan number can be easily found out for each row by comparing to the files_df dataframe (join the dataframes basically).
-
 
 ## To Do
 
 ### UI
-- [x] Curernt densiy bei 4V
-- [x] Luminence bei 4V
-- [] EQE bei 1000 cd/m^2
+
+- [x] Current density at 4V
+- [x] Luminance at 4V
+- [] EQE at 1000 cd/m^2
 
 Goniometer Display
-- [ ] Map Intensity über WInkel
-- [ ] Radient intensity über Winkel (fig 5 changmin)
+
+- [ ] Map Intensity over angle
+- [ ] Radiant intensity over angle (fig 5 changmin)
 
 Graphen nebeinander
 
 ### Details on data evaluation
+
 - Kalibrationsfiles von github repo sind richtig, read them in by providing
-file path in settings
-- Kein smoothing 
+  file path in settings
+- Kein smoothing
 - Spektrometer file hat info über fiber drin (PL100, QP600)
 
 ### Calibration files
+
 CalibrationData.txt = Spektrometer Sensitivity
 NormCurves_400-800.txt = xycie coordinates
 Photopic_response.txt = Sensitivität des Auges

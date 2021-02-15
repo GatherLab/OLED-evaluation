@@ -333,21 +333,21 @@ def read_calibration_files():
 
 # The following should be generic for both, a simple spectrum and a massive
 # angle resolved spectrum
-spectrum = pd.read_csv(
-    # "/home/julianb/Documents/01-Studium/03-Promotion/02-Data/example-data/2021-02-04_test_d24_p2_gon-spec.csv",
-    "C:/Users/GatherLab-Julian/Documents/Nextcloud/01-Studium/03-Promotion/02-Data/example-data/2021-02-04_test_d24_p2_gon-spec.csv",
-    sep="\t",
-    skiprows=3,
-)
+# spectrum = pd.read_csv(
+#     "/home/julianb/Documents/01-Studium/03-Promotion/02-Data/example-data/2021-02-04_test_d24_p2_gon-spec.csv",
+#     # "C:/Users/GatherLab-Julian/Documents/Nextcloud/01-Studium/03-Promotion/02-Data/example-data/2021-02-04_test_d24_p2_gon-spec.csv",
+#     sep="\t",
+#     skiprows=3,
+# )
 
 
-# Read in calibration files
-(
-    photopic_response,
-    pd_responsivity,
-    cie_reference,
-    calibration,
-) = read_calibration_files()
+# # Read in calibration files
+# (
+#     photopic_response,
+#     pd_responsivity,
+#     cie_reference,
+#     calibration,
+# ) = read_calibration_files()
 
 
 def interpolate_and_correct_spectrum(spectrum):
@@ -384,7 +384,7 @@ def interpolate_and_correct_spectrum(spectrum):
 
 
 # Now interpolate and correct the spectrum
-spectrum_corrected = interpolate_and_correct_spectrum(spectrum)
+# spectrum_corrected = interpolate_and_correct_spectrum(spectrum)
 
 
 #######################################################################################
@@ -412,58 +412,82 @@ def calculate_li(column):
     )
 
 
-ri = spectrum_corrected.drop(["0_deg", "wavelength"], axis=1).apply(
-    calculate_ri, axis=0
-)
-li = spectrum_corrected.drop(["0_deg", "wavelength"], axis=1).apply(
-    calculate_li, axis=0
-)
+# ri = spectrum_corrected.drop(["0_deg", "wavelength"], axis=1).apply(
+#     calculate_ri, axis=0
+# )
+# li = spectrum_corrected.drop(["0_deg", "wavelength"], axis=1).apply(
+#     calculate_li, axis=0
+# )
 
 
-def calculate_efactor(column):
+def calculate_e_correction(df):
     """
-    Function to calculate efactor, perp_intensity is just the intensity at 0°
+    Closure to calculate the e correction factor from a dataframe
     """
-    return sum(column * spectrum_corrected["wavelength"]) / sum(
-        spectrum_corrected["0.0"] * spectrum_corrected["wavelength"]
+    # Get angles from column names first
+    angles = df.drop(["0_deg", "wavelength"], axis=1).columns.to_numpy(float)
+
+    def calculate_efactor(column):
+        """
+        Function to calculate efactor, perp_intensity is just the intensity at 0°
+        """
+        return sum(column * df["wavelength"]) / sum(df["0.0"] * df["wavelength"])
+
+    e_factor = df.drop(["0_deg", "wavelength"], axis=1).apply(calculate_efactor)
+
+    return np.sum(
+        e_factor * np.sin(np.deg2rad(angles)) * np.deg2rad(np.diff(angles)[0])
     )
 
 
-def calculate_vfactor(column):
+def calculate_v_correction(df, photopic_response):
     """
-    Function to calculate the vfactor
+    Closure to calculate the e correction factor from a dataframe
     """
-    return sum(column * photopic_response["photopic_response"].to_numpy()) / sum(
-        spectrum_corrected["0.0"] * photopic_response["photopic_response"].to_numpy()
+
+    # Get angles from column names first
+    angles = df.drop(["0_deg", "wavelength"], axis=1).columns.to_numpy(float)
+
+    def calculate_vfactor(column):
+        """
+        Function to calculate the vfactor
+        """
+        return sum(column * photopic_response["photopic_response"].to_numpy()) / sum(
+            df["0.0"] * photopic_response["photopic_response"].to_numpy()
+        )
+
+    v_factor = df.drop(["0_deg", "wavelength"], axis=1).apply(calculate_vfactor)
+    return np.sum(
+        v_factor * np.sin(np.deg2rad(angles)) * np.deg2rad(np.diff(angles)[0])
     )
 
 
-e_factor = spectrum_corrected.drop(["0_deg", "wavelength"], axis=1).apply(
-    calculate_efactor
-)
-v_factor = spectrum_corrected.drop(["0_deg", "wavelength"], axis=1).apply(
-    calculate_vfactor
-)
+# Calculate correction factors
+# e_correction_factor = calculate_e_correction(spectrum_corrected)
+# v_correction_factor = calculate_v_correction(spectrum_corrected, photopic_response)
+
+# Normalise each column
+# I think this is also not needed for the calculations
+# spectrum_normalised = (
+#     spectrum_corrected.drop(["0_deg", "wavelength"], axis=1)
+#     / spectrum_corrected.drop(["0_deg", "wavelength"], axis=1).max()
+# )
+# Lambertian Spectrum (never used again, why do I need this??)
+# lambertian_spectrum = np.cos(np.deg2rad(angles))
+# non_lambertian_spectrum = ri / ri[np.where(angles == np.min(angles))[0][0]]
+# non_lambertian_spectrum_v = li / li[np.where(angles == np.min(angles))[0][0]]
+
 
 # Not really needed, I might get rid of this later on
-goniometer_jvl = pd.read_csv(
-    # "/home/julianb/Documents/01-Studium/03-Promotion/02-Data/example-data/2021-02-04_test_d24_p2_gon-jvl.csv",
-    "C:/Users/GatherLab-Julian/Documents/Nextcloud/01-Studium/03-Promotion/02-Data/example-data/2021-02-04_test_d24_p2_gon-jvl.csv",
-    sep="\t",
-    skiprows=7,
-    names=["angle", "voltage", "current"],
-)
+# goniometer_jvl = pd.read_csv(
+#     "/home/julianb/Documents/01-Studium/03-Promotion/02-Data/example-data/2021-02-04_test_d24_p2_gon-jvl.csv",
+#     # "C:/Users/GatherLab-Julian/Documents/Nextcloud/01-Studium/03-Promotion/02-Data/example-data/2021-02-04_test_d24_p2_gon-jvl.csv",
+#     sep="\t",
+#     skiprows=7,
+#     names=["angle", "voltage", "current"],
+# )
 
 # Formatting the data for the intensity map and spectrum.
-angles = goniometer_jvl["angle"].to_numpy()
-
-e_correction_factor = np.sum(
-    e_factor * np.sin(np.deg2rad(angles)) * np.deg2rad(np.diff(angles)[0])
-)
-
-v_correction_factor = np.sum(
-    v_factor * np.sin(np.deg2rad(angles)) * np.deg2rad(np.diff(angles)[0])
-)
 
 
 # This must be interpolated over the available wavelength of photopic response
@@ -565,13 +589,13 @@ v_correction_factor = np.sum(
 # )
 
 # Loading the Keithley data
-jvl_data = pd.read_csv(
-    # "/home/julianb/Documents/01-Studium/03-Promotion/02-Data/example-data/2021-02-04_test_d21_p2_jvl.csv",
-    "C:/Users/GatherLab-Julian/Documents/Nextcloud/01-Studium/03-Promotion/02-Data/example-data/2021-02-04_test_d21_p2_jvl.csv",
-    sep="\t",
-    skiprows=7,
-    names=["voltage", "current", "pd_voltage"],
-)
+# jvl_data = pd.read_csv(
+#     "/home/julianb/Documents/01-Studium/03-Promotion/02-Data/example-data/2021-02-04_test_d21_p2_jvl.csv",
+#     # "C:/Users/GatherLab-Julian/Documents/Nextcloud/01-Studium/03-Promotion/02-Data/example-data/2021-02-04_test_d21_p2_jvl.csv",
+#     sep="\t",
+#     skiprows=7,
+#     names=["voltage", "current", "pd_voltage"],
+# )
 
 
 class JVLData:
@@ -586,25 +610,28 @@ class JVLData:
         perpendicular_spectrum,
         photopic_response,
         pd_responsivity,
+        cie_reference,
         angle_resolved,
         correction_factor=[],
     ):
         """
         Init function
         """
-        self.voltage = jvl_data["voltage"]
-        self.pd_voltage = jvl_data["pd_voltage"]
+        self.voltage = np.array(jvl_data["voltage"])
+        self.pd_voltage = np.array(jvl_data["pd_voltage"])
 
-        self.current = jvl_data["current"] / 1000
+        self.current = np.array(jvl_data["current"]) / 1000
         self.current_density = self.current / (pixel_area * 1e-2)
-        self.absolute_current_density = abs(self.current_density)
+        self.absolute_current_density = np.array(abs(self.current_density))
 
         self.cie_coordinates = self.calculate_cie_coordinates(
             perpendicular_spectrum["wavelength"],
             perpendicular_spectrum["intensity"],
         )
         self.calculate_integrals(
-            perpendicular_spectrum, photopic_response, pd_responsivity
+            perpendicular_spectrum,
+            photopic_response["photopic_response"],
+            pd_responsivity["pd_responsivity"],
         )
 
         if angle_resolved == True:
@@ -829,22 +856,35 @@ class JVLData:
             1 / (pixel_area * 1e6) * e_coeff * self.integral_2 / self.integral_4 * 1e3
         )
 
-    def to_df(self):
+    def to_series(self):
         """
         return the variables of the class as dataframe
         """
-        return
+        df = pd.Series()
+        df["voltage"] = self.voltage
+        df["pd_voltage"] = self.pd_voltage
+        df["current"] = self.current
+        df["current_density"] = self.current_density
+        df["absolute_current_density"] = self.absolute_current_density
+        df["cie_coordinate"] = self.cie_coordinates
+        df["luminance"] = self.luminance
+        df["eqe"] = self.eqe
+        df["luminous_efficiency"] = self.luminous_efficiency
+        df["current_efficiency"] = self.current_efficiency
+        df["power_density"] = self.power_density
+
+        return df
 
 
-jvl = JVLData(
-    jvl_data,
-    spectrum_corrected[["wavelength", "0.0"]].rename(columns={"0.0": "intensity"}),
-    photopic_response["photopic_response"],
-    pd_responsivity["pd_responsivity"],
-    True,
-    correction_factor=[e_correction_factor, v_correction_factor],
-)
-print("Stop")
+# jvl = JVLData(
+#     jvl_data,
+#     spectrum_corrected[["wavelength", "0.0"]].rename(columns={"0.0": "intensity"}),
+#     photopic_response,
+#     pd_responsivity,
+#     True,
+#     correction_factor=[e_correction_factor, v_correction_factor],
+# )
+# print("Stop")
 
 # currentdata = os.listdir(keithleyfilepath)
 # currentdata.sort()
@@ -974,21 +1014,6 @@ print("Stop")
 # sum(intensity * photopic_response["photopic_response"].to_numpy())
 # / sum(perp_intensity * photopic_response["photopic_response"].to_numpy())
 # )  # This replaces cos(theta) in I = I0*cos(theta)
-
-#######################################################################################
-############################### 0deg Spectrum Related #################################
-#######################################################################################
-
-# Normalise each column
-# I think this is also not needed for the calculations
-spectrum_normalised = (
-    spectrum_corrected.drop(["0_deg", "wavelength"], axis=1)
-    / spectrum_corrected.drop(["0_deg", "wavelength"], axis=1).max()
-)
-# Lambertian Spectrum (never used again, why do I need this??)
-lambertian_spectrum = np.cos(np.deg2rad(angles))
-non_lambertian_spectrum = ri / ri[np.where(angles == np.min(angles))[0][0]]
-non_lambertian_spectrum_v = li / li[np.where(angles == np.min(angles))[0][0]]
 
 
 # specangles = np.hstack([0, angles])

@@ -312,87 +312,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             # the future this check might be moved to the assign dialog
             # directly
             if not self.assigned_groups_df["spectrum_path"].isnull().any():
-                # Now check if the spectra are simple spectra or angle resolved ones
-                i = 0
-
-                for spectrum_path in self.assigned_groups_df["spectrum_path"].to_list():
-                    if (
-                        spectrum_path.split("_")[-1].split(".")[0] == "gon-spec"
-                        or spectrum_path.split("_")[-2] == "gon-spec"
-                    ):
-                        # Goniometer file
-                        # Read in the angle resolved file
-                        angle_resolved_spectrum = pd.read_csv(
-                            spectrum_path, sep="\t", skiprows=3
-                        )
-
-                        # Extract the foward spectrum and save to self.spectrum_data_df
-                        if not hasattr(self, "spectrum_data_df"):
-                            self.spectrum_data_df = pd.DataFrame(
-                                [
-                                    [
-                                        [
-                                            angle_resolved_spectrum["wavelength"],
-                                        ],
-                                        [
-                                            angle_resolved_spectrum["background"],
-                                        ],
-                                        [
-                                            angle_resolved_spectrum["0.0"],
-                                        ],
-                                    ]
-                                ],
-                                columns=["wavelength", "background", "intensity"],
-                                index=[self.assigned_groups_df.index.to_list()[i]],
-                            )
-                        else:
-                            self.spectrum_data_df.append(
-                                pd.DataFrame(
-                                    [
-                                        [
-                                            [
-                                                angle_resolved_spectrum["wavelength"],
-                                            ],
-                                            [
-                                                angle_resolved_spectrum["background"],
-                                            ],
-                                            [
-                                                angle_resolved_spectrum["0.0"],
-                                            ],
-                                        ]
-                                    ],
-                                    columns=["wavelength", "background", "intensity"],
-                                    index=[self.assigned_groups_df.index.to_list()[i]],
-                                )
-                            )
-
-                        # Calculate correction factors
-                        correction_factors = ef.calculate_angle_correction(
-                            angle_resolved_spectrum, 1
-                        )
-                    elif (
-                        spectrum_path.split("_")[-1].split(".")[0] == "spec"
-                        or spectrum_path.split("_")[-2] == "spec"
-                    ):
-                        # Regular spectrum file
-                        self.spectrum_data_df = cf.read_multiple_files(
-                            self.assigned_groups_df["spectrum_path"].to_list(),
-                            ["wavelength", "background", "intensity"],
-                            self.assigned_groups_df.index.to_list(),
-                            skip_row=14,
-                        )
-
-                        cf.log_message(
-                            "Spectrum data found for devices "
-                            + str(self.spectrum_data_df.index.to_list())
-                        )
-
-                    else:
-                        # Not a valid spectrum name
-                        cf.log_message(
-                            "Selected spectrum file does not have a valid name"
-                        )
-                    i += 1
 
                 # Now do the evaluation and append to the data_df dataframe
                 self.evaluate_jvl()
@@ -437,6 +356,25 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         #     df_correction_data.correction,
         # )
 
+        # Declare the spectrum_data_df
+        try:
+            del self.spectrum_data_df
+        except AttributeError:
+            cf.log_message(
+                "Spectrum data frame does not yet exist and is being created now."
+            )
+
+        self.spectrum_data_df = pd.DataFrame(
+            columns=[
+                "wavelength",
+                "background",
+                "intensity",
+                "angle_resolved",
+                "correction_factor",
+            ],
+            index=self.assigned_groups_df.index,
+        )
+
         # Add empty columns to our basic dataframes
         self.data_df["current_density"] = np.empty((len(self.data_df), 0)).tolist()
         self.data_df["luminance"] = np.empty((len(self.data_df), 0)).tolist()
@@ -444,173 +382,152 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.data_df["luminous_efficiency"] = np.empty((len(self.data_df), 0)).tolist()
         self.data_df["current_efficiency"] = np.empty((len(self.data_df), 0)).tolist()
         self.data_df["power_density"] = np.empty((len(self.data_df), 0)).tolist()
+        self.data_df["cie"] = np.empty((len(self.data_df), 0)).tolist()
         self.data_df["masked"] = np.repeat(False, len(self.data_df))
 
-        self.spectrum_data_df["interpolated_intensity"] = np.empty(
-            (len(self.spectrum_data_df), 0)
-        ).tolist()
-        self.spectrum_data_df["corrected_intensity"] = np.empty(
-            (len(self.spectrum_data_df), 0)
-        ).tolist()
-        self.spectrum_data_df["minus_background"] = np.empty(
-            (len(self.spectrum_data_df), 0)
-        ).tolist()
+        # self.spectrum_data_df["interpolated_intensity"] = np.empty(
+        #     (len(self.spectrum_data_df), 0)
+        # ).tolist()
+        # self.spectrum_data_df["corrected_intensity"] = np.empty(
+        #     (len(self.spectrum_data_df), 0)
+        # ).tolist()
+        # self.spectrum_data_df["minus_background"] = np.empty(
+        #     (len(self.spectrum_data_df), 0)
+        # ).tolist()
 
-        # for index, row in self.data_df.iterrows():
+        # Read in calibration files
+        (
+            photopic_response,
+            pd_responsivity,
+            cie_reference,
+            calibration,
+        ) = ef.read_calibration_files()
 
-        #     # Transform to SI units for calculations
-        #     # df_jvl_data["current"] = df_jvl_data["current"] / 1000
-        #     # df_jvl_data["current_density"] = df_jvl_data.current / (pixel_area * 1e-2)
-        #     # df_jvl_data["absolute_current_density"] = abs(df_jvl_data.current_density)
-        #     self.data_df.at[index, "current"] = list(np.array(row["current"]) / 1000)
-        #     self.data_df.at[index, "current_density"] = list(
-        #         np.array(row["current"])
-        #         / (self.measurement_parameters["pixel_area"] * 1e-2)
-        #     )
+        for i in range(np.size(self.assigned_groups_df.index)):
+            # Read in the spectrum file for the according device (and check if
+            # goniometer or not)
+            spectrum_path = self.assigned_groups_df["spectrum_path"].iloc[i]
 
-        #     # Load spectral data and df_background. The idea is  that if there is no specific df_spectrum file given, the program searches for files containing d<no> in their name that matches the d<no> in the jvl data file name
-        #     # if not spectrum_file:
-        #     #     dev_number = np.array(file_name.split("_"))[
-        #     #         [
-        #     #             bool(re.match("^[0123456789d]+$", i))
-        #     #             for i in file_name.split("_")
-        #     #         ]
-        #     #     ][0]
-        #     #     spectrum_file_name = np.array(spectra_file_names)[
-        #     #         [dev_number in str_ for str_ in spectra_file_names]
-        #     #     ][0]
-        #     #     spectrum_file_path = root_directory + "spectra/" + spectrum_file_name
-        #     # else:
-        #     #     spectrum_file_path = root_directory + "spectra/" + spectrum_file
+            if (
+                spectrum_path.split("_")[-1].split(".")[0] == "gon-spec"
+                or spectrum_path.split("_")[-2] == "gon-spec"
+            ):
+                self.spectrum_data_df["angle_resolved"].iloc[i] = True
 
-        #     # The df_background path is always the same
-        #     # background_file_path = root_directory + "spectra/background.txt"
+                # Goniometer file
+                # Read in the angle resolved file
+                raw_spectrum = pd.read_csv(spectrum_path, sep="\t", skiprows=3)
 
-        #     # # Load background file
-        #     # df_background = pd.read_csv(
-        #     #     background_file_path,
-        #     #     header=12,
-        #     #     names=["wavelength", "counts"],
-        #     #     sep="\t",
-        #     # )
+                # Extract the foward spectrum and save to self.spectrum_data_df
 
-        #     # # Load actual spectrum file
-        #     # df_spectrum = pd.read_csv(
-        #     #     spectrum_file_path,
-        #     #     header=12,
-        #     #     names=["wavelength", "counts"],
-        #     #     sep="\t",
-        #     # )
+                self.spectrum_data_df.loc[
+                    self.assigned_groups_df.index.to_list()[i], "intensity"
+                ] = raw_spectrum["0.0"].to_list()
 
-        #     # Interpolate this data on basic data and save in separate data frame
-        #     # df_corrected_spectrum = pd.DataFrame()
+                # Interpolate and correct spectrum
+                interpolated_spectrum = ef.interpolate_and_correct_spectrum(
+                    raw_spectrum
+                )
 
-        #     # Interpolate spectra onto correct axis and subtract background
-        #     self.spectrum_data_df.at[
-        #         row["device_number"],
-        #         "interpolated_intensity",
-        #     ] = np.interp(
-        #         df_basic_data.wavelength.to_list(),
-        #         self.spectrum_data_df.loc[row["device_number"], "wavelength"],
-        #         self.spectrum_data_df.loc[row["device_number"], "intensity"],
-        #     )
+                # Calculate correction factors
+                e_correction_factor = ef.calculate_e_correction(interpolated_spectrum)
+                v_correction_factor = ef.calculate_v_correction(
+                    interpolated_spectrum, photopic_response
+                )
+                self.spectrum_data_df["correction_factor"].iloc[i] = [
+                    e_correction_factor,
+                    v_correction_factor,
+                ]
 
-        #     self.spectrum_data_df.at[
-        #         row["device_number"],
-        #         "minus_background",
-        #     ] = self.spectrum_data_df.at[
-        #         row["device_number"], "interpolated_intensity"
-        #     ] - np.interp(
-        #         df_basic_data.wavelength.to_list(),
-        #         self.spectrum_data_df.loc[row["device_number"], "wavelength"],
-        #         self.spectrum_data_df.loc[row["device_number"], "background"],
-        #     )
+                cf.log_message(
+                    "Angle resolved spectrum data found for device "
+                    + str(self.assigned_groups_df.index[i])
+                )
 
-        #     self.spectrum_data_df.at[row["device_number"], "corrected_intensity",] = (
-        #         self.spectrum_data_df.loc[
-        #             row["device_number"],
-        #             "minus_background",
-        #         ]
-        #         * df_basic_data.interpolated
-        #     )
-        #     # df_corrected_spectrum["spectrum_intensity"] = np.interp(
-        #     #     df_basic_data.wavelength, df_spectrum.wavelength, df_spectrum.counts
-        #     # )
-        #     # df_corrected_spectrum["background_int"] = background_int = np.interp(
-        #     #     df_basic_data.wavelength, df_background.wavelength, df_background.counts
-        #     # )
+                # Calculate correction factors
+                # ri = ef.calculate_ri()
+                # li = ef.calculate_li()
+                # e_correction_factor = ef.calculate_efactor()
+                # v_correction_factor = ef.calculate_vfactor()
+            elif (
+                spectrum_path.split("_")[-1].split(".")[0] == "spec"
+                or spectrum_path.split("_")[-2] == "spec"
+            ):
+                self.spectrum_data_df["angle_resolved"].iloc[i] = False
 
-        #     # Do df_background subtraction
-        #     # df_corrected_spectrum["spectrum_m_background"] = (
-        #     #     df_corrected_spectrum.spectrum_intensity
-        #     #     - df_corrected_spectrum.background_int
-        #     # )
+                # Regular spectrum file
+                raw_spectrum = pd.read_csv(
+                    spectrum_path,
+                    sep="\t",
+                    skiprows=14,
+                    names=["wavelength", "background", "intensity"],
+                    engine="python",
+                    skip_blank_lines=False,
+                )
 
-        #     # multiply by spectrometer df_correction_data.correction factor to get intensity
-        #     # df_corrected_spectrum["intensity"] = (
-        #     #     df_corrected_spectrum["spectrum_m_background"]
-        #     #     * df_basic_data.interpolated
-        #     # )
+                self.spectrum_data_df.loc[
+                    self.assigned_groups_df.index.to_list()[i], "intensity"
+                ] = raw_spectrum["intensity"].to_list()
 
-        #     # Now do the real calculations
-        #     (
-        #         max_intensity_wavelength,
-        #         cie_color_coordinates,
-        #     ) = ef.calculate_cie_coordinates(
-        #         self.spectrum_data_df.loc[row["device_number"]], df_norm_curves
-        #     )
+                self.spectrum_data_df["correction_factor"].iloc[i] = [0, 0]
+                cf.log_message(
+                    "Spectrum data found for device "
+                    + str(self.assigned_groups_df.index[i])
+                )
 
-        #     self.data_df.at[index, "eqe"] = ef.calculate_eqe(
-        #         self.spectrum_data_df.loc[row["device_number"]],
-        #         self.data_df.loc[index],
-        #         df_basic_data,
-        #         self.measurement_parameters,
-        #     )
-        #     (
-        #         photopic_response,
-        #         self.data_df.at[index, "luminance"],
-        #     ) = ef.calculate_luminance(
-        #         self.spectrum_data_df.loc[row["device_number"]],
-        #         self.data_df.loc[index],
-        #         df_basic_data,
-        #         self.measurement_parameters,
-        #     )
+            else:
+                # Not a valid spectrum name
+                cf.log_message("Selected spectrum file does not have a valid name")
+                continue
 
-        #     self.data_df.at[
-        #         index, "luminous_efficiency"
-        #     ] = ef.calculate_luminous_efficacy(
-        #         self.data_df.loc[index], photopic_response, self.measurement_parameters
-        #     )
+            self.spectrum_data_df.loc[
+                self.assigned_groups_df.index.to_list()[i], "wavelength"
+            ] = raw_spectrum["wavelength"].to_list()
+            self.spectrum_data_df.loc[
+                self.assigned_groups_df.index.to_list()[i], "background"
+            ] = raw_spectrum["background"].to_list()
 
-        #     self.data_df.at[
-        #         index, "current_efficiency"
-        #     ] = ef.calculate_current_efficiency(
-        #         self.data_df.loc[index], self.measurement_parameters
-        #     )
+        # Iterate over all loaded data
+        for index, row in self.data_df.iterrows():
 
-        #     self.data_df.at[index, "power_density"] = ef.calculate_power_density(
-        #         self.spectrum_data_df.loc[row["device_number"]],
-        #         row,
-        #         df_basic_data,
-        #         self.measurement_parameters,
-        #     )
+            spectrum = self.spectrum_data_df.loc[
+                self.spectrum_data_df.index == row["device_number"]
+            ]
 
-        #     cf.log_message("Data for " + str(index) + " successfully evaluated.")
+            # The following is a bit odd, but necessary to format the weird
+            # data frame with list entries to a normal one to make handeling
+            # easier
+            reshaped_spectrum = pd.DataFrame(
+                np.array(
+                    [
+                        spectrum["wavelength"].to_list()[0],
+                        spectrum["background"].to_list()[0],
+                        spectrum["intensity"].to_list()[0],
+                    ]
+                ).T,
+                columns=["wavelength", "background", "intensity"],
+            )
 
-        # Generate output files
-        # generate_output_files(
-        #     df_jvl_data,
-        #     df_corrected_spectrum,
-        #     luminance,
-        #     eqe,
-        #     luminous_efficiency,
-        #     current_efficiency,
-        #     power_density,
-        #     max_intensity_wavelength,
-        #     cie_color_coordinates,
-        # )
+            # Interpolate and correct spectrum
+            interpolated_spectrum = ef.interpolate_and_correct_spectrum(
+                reshaped_spectrum
+            )
 
-        # print(file_name + " successfully evaluated and evaluation files saved.")
+            # Now get an instance of the JVL class that on instanciating,
+            # calculates all relevant quantities for us and uses the right
+            # functions depending on goniometer correction or not
+            jvl_instance = ef.JVLData(
+                jvl_data=row,
+                perpendicular_spectrum=interpolated_spectrum,
+                photopic_response=photopic_response,
+                pd_responsivity=pd_responsivity,
+                cie_reference=cie_reference,
+                angle_resolved=spectrum["angle_resolved"].to_list()[0],
+                correction_factor=spectrum["correction_factor"].to_list(),
+            )
+            self.data_df.loc[index] = jvl_instance.to_series()
+            self.data_df.loc[index, "masked"] = False
+            self.data_df.loc[index, "device_number"] = row["device_number"]
 
     # -------------------------------------------------------------------- #
     # ------------------------ Show/plot Groups -------------------------- #

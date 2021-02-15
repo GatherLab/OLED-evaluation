@@ -28,15 +28,14 @@ class EvaluateSpectrum(QtWidgets.QDialog, Ui_EvaluateSpectrum):
 
         for index in range(np.size(self.parameters["group_name"])):
             # Connect the push buttons for the group buttons
-            self.group_pushButton_container[index].clicked.connect(self.plot_group)
+            self.group_pushButton_container[index].clicked.connect(
+                functools.partial(
+                    self.parent.plot_spectrum,
+                    self.parameters["group_name"][index],
+                )
+            )
 
         self.close_pushButton.clicked.connect(self.close)
-
-    def plot_group(self):
-        """
-        Function that plots the spectrum of a group
-        """
-        print("Plot group")
 
     def close(self):
         """
