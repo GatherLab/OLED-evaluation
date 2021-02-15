@@ -14,6 +14,7 @@ import time
 import os
 import json
 import sys
+from pathlib import Path
 import functools
 from datetime import date
 import logging
@@ -115,7 +116,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.eval_assign_groups_pushButton.clicked.connect(self.assign_groups)
         self.eval_plot_groups_pushButton.clicked.connect(self.plot_groups)
         self.eval_plot_statistics_pushButton.clicked.connect(self.plot_statistics)
-        self.eval_spectrum_analysis_pushButton.clicked.connect(self.plot_spectrum)
+        self.eval_spectrum_analysis_pushButton.clicked.connect(
+            self.open_spectrum_dialog
+        )
         self.eval_save_pushButton.clicked.connect(self.save_evaluated_data)
 
         # Set all buttons except for the change path pushButton to disable
@@ -235,6 +238,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.files_df["device_number"] = device_numbers
         self.files_df["pixel_number"] = pixel_numbers
         self.files_df["scan_number"] = scan_number
+        self.batch_name = np.unique(batch_names)[0]
 
         # Now set the identifier as index
         self.files_df = self.files_df.set_index(np.array(identifier))
@@ -379,7 +383,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.data_df["current_density"] = np.empty((len(self.data_df), 0)).tolist()
         self.data_df["luminance"] = np.empty((len(self.data_df), 0)).tolist()
         self.data_df["eqe"] = np.empty((len(self.data_df), 0)).tolist()
-        self.data_df["luminous_efficiency"] = np.empty((len(self.data_df), 0)).tolist()
+        self.data_df["luminous_efficacy"] = np.empty((len(self.data_df), 0)).tolist()
         self.data_df["current_efficiency"] = np.empty((len(self.data_df), 0)).tolist()
         self.data_df["power_density"] = np.empty((len(self.data_df), 0)).tolist()
         self.data_df["cie"] = np.empty((len(self.data_df), 0)).tolist()
@@ -419,14 +423,13 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 raw_spectrum = pd.read_csv(spectrum_path, sep="\t", skiprows=3)
 
                 # Extract the foward spectrum and save to self.spectrum_data_df
-
                 self.spectrum_data_df.loc[
                     self.assigned_groups_df.index.to_list()[i], "intensity"
                 ] = raw_spectrum["0.0"].to_list()
 
                 # Interpolate and correct spectrum
                 interpolated_spectrum = ef.interpolate_and_correct_spectrum(
-                    raw_spectrum
+                    raw_spectrum, photopic_response, calibration
                 )
 
                 # Calculate correction factors
@@ -510,7 +513,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
             # Interpolate and correct spectrum
             interpolated_spectrum = ef.interpolate_and_correct_spectrum(
-                reshaped_spectrum
+                reshaped_spectrum, photopic_response, calibration
             )
 
             # Now get an instance of the JVL class that on instanciating,
@@ -523,7 +526,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 pd_responsivity=pd_responsivity,
                 cie_reference=cie_reference,
                 angle_resolved=spectrum["angle_resolved"].to_list()[0],
-                correction_factor=spectrum["correction_factor"].to_list(),
+                correction_factor=spectrum["correction_factor"].to_list()[0],
             )
             self.data_df.loc[index] = jvl_instance.to_series()
             self.data_df.loc[index, "masked"] = False
@@ -897,6 +900,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.eval_ax[0, 1].set_ylabel("Luminance (cd m$^{-2}$)")
 
+        self.eval_fig.figure.tight_layout()
         self.eval_fig.draw()
         self.current_plot_type = "boxplot_stats"
 
@@ -904,7 +908,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     # ----------------------------- Spectrum ----------------------------- #
     # -------------------------------------------------------------------- #
 
-    def plot_spectrum(self):
+    def open_spectrum_dialog(self):
         """
         Opens dialog to plot important graphs for each spectrum
         """
@@ -917,6 +921,95 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.show_group_dialog.show()
         button = self.show_group_dialog.exec_()
 
+    def plot_spectrum(self, group):
+        """
+        Plot the spectrum
+        """
+        if not self.current_plot_type == "spectrum":
+            # Clear figure and define axis
+            self.eval_fig.figure.clf()
+            self.eval_ax0 = self.eval_fig.figure.add_subplot(121)
+            self.eval_ax1 = self.eval_fig.figure.add_subplot(122, projection="polar")
+
+            # Some more visuals
+            self.eval_ax0.set_facecolor("#E0E0E0")
+            self.eval_ax1.set_facecolor("#E0E0E0")
+        else:
+            self.eval_ax0.cla()
+            self.eval_ax1.cla()
+
+        if (
+            self.assigned_groups_df.join(self.spectrum_data_df)
+            .loc[self.assigned_groups_df["group_name"] == group, "angle_resolved"]
+            .to_list()[0]
+        ):
+            # The angle resolved spectrum is not stored permanently and
+            # therefore has to be read in again
+            file_name = self.assigned_groups_df.loc[
+                self.assigned_groups_df["group_name"] == group, "spectrum_path"
+            ].to_list()[0]
+
+            spectrum = pd.read_csv(file_name, sep="\t", skiprows=3)
+
+            # first subtract the background from all columns but the wavelength
+            temp = (
+                spectrum.drop(["wavelength", "0_deg"], axis=1)
+                .transpose()
+                .sub(spectrum["background"])
+                .transpose()
+            )
+
+            # Now add the wavelength to the dataframe again
+            temp["wavelength"] = spectrum["wavelength"]
+
+            # And set the wavelength as index of the dataframe and drop the background instead now
+            temp = temp.set_index("wavelength").drop(["background"], axis=1)
+
+            # Plot current data
+            # This is the best way I could come up with so far. There must be a better one, however.
+            x = temp.index.values.tolist()
+            y = list(map(float, temp.columns.values.tolist()))
+
+            X, Y = np.meshgrid(x, y)
+
+            self.eval_ax0.set_xlabel("Angle (°)")
+            self.eval_ax0.set_ylabel("Wavelength (nm)")
+
+            self.eval_ax0.pcolormesh(Y, X, temp.to_numpy().T, shading="auto")
+
+            ## Radiant intensity polar coordinates
+            # theta = np.linspace(0, np.pi)
+            angles = np.radians(temp.columns.to_numpy(float))
+            luminous_intensity = temp.sum()
+
+            ri = temp.apply(ef.calculate_ri, axis=0)
+
+            non_lambertian_spectrum = ri / ri[np.where(angles == np.min(angles))[0][0]]
+
+            # ax = fig.add_subplot(111, polar=True)
+            self.eval_ax1.plot(
+                angles,
+                non_lambertian_spectrum,
+            )
+            self.eval_ax1.plot(
+                angles, np.cos(angles), label="Lambertian", color="black"
+            )
+
+            self.eval_ax1.set_thetamin(-90)
+            self.eval_ax1.set_thetamax(90)
+            self.eval_ax1.set_rmin(0)
+            self.eval_ax1.set_rmax(3)
+            self.eval_ax1.set_theta_zero_location("W", offset=-90)
+
+        else:
+            print("Not angle resolved")
+
+        # self.eval_ax[0].plot()
+
+        self.eval_fig.figure.tight_layout()
+        self.eval_fig.draw()
+        self.current_plot_type = "spectrum"
+
     # -------------------------------------------------------------------- #
     # ---------------------------- Save Data ----------------------------- #
     # -------------------------------------------------------------------- #
@@ -925,7 +1018,99 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """
         Function that saves the evaluated data to files
         """
-        print("Save data to files")
+        unmasked_data = self.data_df.loc[self.data_df["masked"] == False].join(
+            self.files_df.loc[:, ["scan_number", "pixel_number"]]
+        )
+
+        for index, row in unmasked_data.iterrows():
+            # Create folder if it does not exist yet
+            Path(self.global_path + "/eval/").mkdir(parents=True, exist_ok=True)
+
+            # Save data
+            file_path = (
+                self.global_path
+                + "/eval/"
+                + date.today().strftime("%Y-%m-%d_")
+                + self.batch_name
+                + "_d"
+                + str(row["device_number"])
+                + "_p"
+                + str(row["pixel_number"])
+                + "_eval"
+                + ".csv"
+            )
+
+            # Define header line with voltage and integration time
+            line01 = (
+                "Evaluation Spectrum:   "
+                + self.assigned_groups_df.loc[
+                    self.assigned_groups_df.index == row["device_number"],
+                    "spectrum_path",
+                ]
+                .to_list()[0]
+                .split("/")[-1]
+            )
+            line02 = (
+                "CIE Coordinates:    "
+                + str(row["cie"])
+                + "\t Scan Number: "
+                + str(row["scan_number"])
+            )
+
+            line03 = "### Measurement data ###"
+            line04 = "Voltage\t Current\t PD Voltage\t Current Density\t Luminance\t EQE\t Luminous Efficacy\t Current Efficiency\t Power Density\t"
+            line05 = "V\t A\t V\t mA/cm^2\t cd/m^2\t %\t lm/W\t cd A\t mW/cm^2\n"
+            header_lines = [
+                line01,
+                line02,
+                line03,
+                line04,
+                line05,
+            ]
+
+            # Drop columns that are not saved to main part of file
+            series_to_save = row.drop(
+                ["cie", "masked", "scan_number", "pixel_number", "device_number"]
+            )
+
+            df = pd.DataFrame(
+                np.array(
+                    np.split(
+                        np.concatenate(series_to_save.to_numpy()), len(series_to_save)
+                    )
+                ).T,
+                columns=series_to_save.index,
+            )
+
+            df["voltage"] = df["voltage"].map(lambda x: "{0:.2f}".format(x))
+            df["current"] = df["current"].map(lambda x: "{0:.5f}".format(x))
+            df["pd_voltage"] = df["pd_voltage"].map(lambda x: "{0:.5f}".format(x))
+            df["current_density"] = df["current_density"].map(
+                lambda x: "{0:.2f}".format(x)
+            )
+            df["luminance"] = df["luminance"].map(lambda x: "{0:.2f}".format(x))
+            df["eqe"] = df["eqe"].map(lambda x: "{0:.2f}".format(x))
+            df["luminous_efficacy"] = df["luminous_efficacy"].map(
+                lambda x: "{0:.2f}".format(x)
+            )
+            df["current_efficiency"] = df["current_efficiency"].map(
+                lambda x: "{0:.2f}".format(x)
+            )
+            df["power_density"] = df["power_density"].map(lambda x: "{0:.2f}".format(x))
+
+            cf.save_file(df, file_path, header_lines)
+
+            cf.log_message(
+                "Saved d"
+                + str(int(row["device_number"]))
+                + "p"
+                + str((row["pixel_number"]))
+            )
+
+            # Format the dataframe for saving (no. of digits)
+            # df_spectrum_data["wavelength"] = df_spectrum_data["wavelength"].map(
+            #     lambda x: "{0:.2f}".format(x)
+            # )
 
     # -------------------------------------------------------------------- #
     # ------------------------- Global Functions ------------------------- #

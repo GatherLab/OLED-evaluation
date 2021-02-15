@@ -526,7 +526,7 @@ class Ui_MainWindow(object):
             self.eval_scrollAreaWidgetContents
         )
         self.eval_change_path_pushButton.setObjectName("eval_change_path_pushButton")
-        self.eval_change_path_pushButton.setIcon(QtGui.QIcon("./icons/select_folder"))
+        self.eval_change_path_pushButton.setIcon(QtGui.QIcon("./icons/folder"))
         self.eval_change_path_pushButton.setIconSize(QtCore.QSize(50, 50))
         self.eval_change_path_pushButton.setSizePolicy(
             QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Expanding
@@ -543,7 +543,9 @@ class Ui_MainWindow(object):
         self.eval_assign_groups_pushButton.setObjectName(
             "eval_assign_groups_pushButton"
         )
-        self.eval_assign_groups_pushButton.setIcon(QtGui.QIcon("./icons/assign_group"))
+        self.eval_assign_groups_pushButton.setIcon(
+            QtGui.QIcon("./icons/assign_groups.png")
+        )
         self.eval_assign_groups_pushButton.setIconSize(QtCore.QSize(50, 50))
         self.eval_assign_groups_pushButton.setSizePolicy(
             QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Expanding
@@ -558,7 +560,7 @@ class Ui_MainWindow(object):
             self.eval_scrollAreaWidgetContents
         )
         self.eval_plot_groups_pushButton.setObjectName("eval_plot_groups_pushButton")
-        self.eval_plot_groups_pushButton.setIcon(QtGui.QIcon("./icons/show_graphs"))
+        self.eval_plot_groups_pushButton.setIcon(QtGui.QIcon("./icons/plot-jvl.png"))
         self.eval_plot_groups_pushButton.setIconSize(QtCore.QSize(50, 50))
         self.eval_plot_groups_pushButton.setSizePolicy(
             QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Expanding
@@ -576,7 +578,7 @@ class Ui_MainWindow(object):
             "eval_plot_statistics_pushButton"
         )
         self.eval_plot_statistics_pushButton.setIcon(
-            QtGui.QIcon("./icons/show_overview")
+            QtGui.QIcon("./icons/plot-stats.png")
         )
         self.eval_plot_statistics_pushButton.setIconSize(QtCore.QSize(50, 50))
         self.eval_plot_statistics_pushButton.setSizePolicy(
@@ -595,7 +597,7 @@ class Ui_MainWindow(object):
             "eval_spectrum_analysis_pushButton"
         )
         self.eval_spectrum_analysis_pushButton.setIcon(
-            QtGui.QIcon("./icons/show_overview")
+            QtGui.QIcon("./icons/plot-spectrum.png")
         )
         self.eval_spectrum_analysis_pushButton.setIconSize(QtCore.QSize(50, 50))
         self.eval_spectrum_analysis_pushButton.setSizePolicy(
@@ -613,7 +615,7 @@ class Ui_MainWindow(object):
             self.eval_scrollAreaWidgetContents
         )
         self.eval_save_pushButton.setObjectName("eval_save_pushButton")
-        self.eval_save_pushButton.setIcon(QtGui.QIcon("./icons/save"))
+        self.eval_save_pushButton.setIcon(QtGui.QIcon("./icons/save.png"))
         self.eval_save_pushButton.setIconSize(QtCore.QSize(50, 50))
         self.eval_save_pushButton.setSizePolicy(
             QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Expanding

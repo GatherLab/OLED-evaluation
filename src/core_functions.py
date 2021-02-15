@@ -104,3 +104,31 @@ def read_multiple_files(
         i += 1
 
     return data_frame
+
+
+def save_file(df, file_path, header_lines, save_header=False):
+    """
+    Generic function that allows to save a file. If it exists already, rename
+    it.
+    """
+    # First check if file already exists. If yes, add a number at the end (this
+    # is checked as often as the file still exists to count up the numbers)
+    i = 2
+    while True:
+        if not os.path.isfile(file_path):
+            break
+
+        # Get rid of file ending
+        if i == 2:
+            file_path = os.path.splitext(file_path)[0] + "_" + f"{i:02d}" + ".csv"
+        else:
+            # Since we already added a new _no to the file we have to get rid of it again
+            file_path = "_".join(file_path.split("_")[:-1]) + "_" + f"{i:02d}" + ".csv"
+
+        i += 1
+
+    with open(file_path, "a") as the_file:
+        the_file.write("\n".join(header_lines))
+
+    # Now write pandas dataframe to file
+    df.to_csv(file_path, index=False, mode="a", header=save_header, sep="\t")

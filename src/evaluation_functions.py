@@ -350,7 +350,7 @@ def read_calibration_files():
 # ) = read_calibration_files()
 
 
-def interpolate_and_correct_spectrum(spectrum):
+def interpolate_and_correct_spectrum(spectrum, photopic_response, calibration):
     """
     Function that interpolates a given spectrum and corrects it according to the calibration files
     """
@@ -399,7 +399,7 @@ def calculate_ri(column):
     return float(sc.h * sc.c / 1e-9 * np.sum(column))
 
 
-def calculate_li(column):
+def calculate_li(column, photopic_response):
     """
     Function that calculates RI
     """
@@ -627,6 +627,7 @@ class JVLData:
         self.cie_coordinates = self.calculate_cie_coordinates(
             perpendicular_spectrum["wavelength"],
             perpendicular_spectrum["intensity"],
+            cie_reference,
         )
         self.calculate_integrals(
             perpendicular_spectrum,
@@ -641,10 +642,8 @@ class JVLData:
 
             self.eqe = self.calculate_non_lambertian_eqe(e_coeff, correction_factor[0])
             self.luminance = self.calculate_non_lambertian_luminance(v_coeff)
-            self.luminous_efficiency = (
-                self.calculate_non_lambertian_luminous_efficiency(
-                    v_coeff, correction_factor[1]
-                )
+            self.luminous_efficacy = self.calculate_non_lambertian_luminous_efficacy(
+                v_coeff, correction_factor[1]
             )
             self.power_density = self.calculate_non_lambertian_power_density(
                 e_coeff, correction_factor[0]
@@ -656,7 +655,7 @@ class JVLData:
 
             self.eqe = self.calculate_lambertian_eqe(e_coeff)
             self.luminance = self.calculate_lambertian_luminance(v_coeff)
-            self.luminous_efficiency = self.calculate_lambertian_luminous_efficiency(
+            self.luminous_efficacy = self.calculate_lambertian_luminous_efficacy(
                 v_coeff
             )
             self.power_density = self.calculate_lambertian_power_density(e_coeff)
@@ -685,7 +684,9 @@ class JVLData:
         )
 
     # Calculating CIE coordinates
-    def calculate_cie_coordinates(self, wavelength, perpendicular_spectrum):
+    def calculate_cie_coordinates(
+        self, wavelength, perpendicular_spectrum, cie_reference
+    ):
         """
         Calculates wavelength of maximum spectral intensity and the CIE color coordinates
         """
@@ -749,9 +750,7 @@ class JVLData:
         # v_coeff = self.calculate_non_lambertian_v_coeff(jvl_data)
         return 1 / np.pi / pixel_area * v_coeff / 2 * self.integral_3 / self.integral_4
 
-    def calculate_non_lambertian_luminous_efficiency(
-        self, v_coeff, v_correction_factor
-    ):
+    def calculate_non_lambertian_luminous_efficacy(self, v_coeff, v_correction_factor):
         """
         Calculate luminous efficiency
         """
@@ -832,7 +831,7 @@ class JVLData:
         # v_coeff = calculate_lambertian_v_coeff(jvl_data)
         return 1 / np.pi / pixel_area * v_coeff * self.integral_3 / self.integral_4
 
-    def calculate_lambertian_luminous_efficiency(self, v_coeff):
+    def calculate_lambertian_luminous_efficacy(self, v_coeff):
         """
         Calculate luminous efficiency
         """
@@ -869,7 +868,7 @@ class JVLData:
         df["cie_coordinate"] = self.cie_coordinates
         df["luminance"] = self.luminance
         df["eqe"] = self.eqe
-        df["luminous_efficiency"] = self.luminous_efficiency
+        df["luminous_efficacy"] = self.luminous_efficacy
         df["current_efficiency"] = self.current_efficiency
         df["power_density"] = self.power_density
 
@@ -1473,11 +1472,11 @@ class JVLData:
 #     """
 #     Calculate luminous efficacy
 #     """
-#     luminous_efficiency = np.zeros(len(df_jvl_data.pd_voltage))
+#     luminous_efficacy = np.zeros(len(df_jvl_data.pd_voltage))
 #     for v in range(len(df_jvl_data.pd_voltage)):
-#         # luminous_efficiency is only calculated if the photodiode detects a reasonable response
+#         # luminous_efficacy is only calculated if the photodiode detects a reasonable response
 #         if df_jvl_data.pd_voltage[v] > measurement_parameters["threshold_pd_voltage"]:
-#             luminous_efficiency[v] = (
+#             luminous_efficacy[v] = (
 #                 1
 #                 / measurement_parameters["sq_sin_alpha"]
 #                 / photopic_response
@@ -1486,7 +1485,7 @@ class JVLData:
 #                 / df_jvl_data.voltage[v]
 #                 / df_jvl_data.current[v]
 #             )  # lm/W; luminous efficacy
-#     return luminous_efficiency
+#     return luminous_efficacy
 
 
 # def calculate_current_efficiency(df_jvl_data, measurement_parameters):
@@ -1601,7 +1600,7 @@ class JVLData:
 #     df_corrected_spectrum,
 #     luminance,
 #     eqe,
-#     luminous_efficiency,
+#     luminous_efficacy,
 #     current_efficiency,
 #     power_density,
 #     max_intensity_wavelength,
@@ -1625,7 +1624,7 @@ class JVLData:
 #             df_jvl_data.absolute_current_density * 1000,
 #             luminance,
 #             eqe,
-#             luminous_efficiency,
+#             luminous_efficacy,
 #             current_efficiency,
 #             power_density,
 #         )
@@ -1639,7 +1638,7 @@ class JVLData:
 #     eff04 = "Photodiode pixel_area:		75 mm2"
 #     eff05 = "Maximum intensity at:		" + str(max_intensity_wavelength) + " nm"
 #     eff06 = "CIE coordinates:		" + str(cie_color_coordinates)
-#     eff13 = "V	I	J	Abs(J)	L	eqe	luminous_efficiency	current_efficiency	P/A"
+#     eff13 = "V	I	J	Abs(J)	L	eqe	luminous_efficacy	current_efficiency	P/A"
 #     eff14 = "V	mA	mA/cm2	mA/cm2	cd/m2	%	lm/W	cd/A	mW/mm2"
 
 #     np.savetxt(
