@@ -1,28 +1,28 @@
 {
-  "overwrite": [
-    {
-      "default_saving_path": "/home/julianb/Documents/01-Studium/03-Promotion/02-Data/",
-      "pd_gain": "50",
-      "pd_area": "75",
-      "pd_distance": "167",
-      "pixel_area": "16",
-      "photopic_response_path": "/home/julianb/Documents/04-Programming/OLED-evaluation/calibration/Photopic_response.txt",
-      "pd_responsivity_path": "/home/julianb/Documents/04-Programming/OLED-evaluation/calibration/Responsivity_PD.txt",
-      "cie_reference_path": "/home/julianb/Documents/04-Programming/OLED-evaluation/calibration/cie_reference_400-800.txt",
-      "spectrometer_calibration_path": "/home/julianb/Documents/04-Programming/OLED-evaluation/calibration/Calibration_QEPro_QP600_20210204.txt"
-    }
-  ],
-  "default": [
-    {
-      "default_saving_path": "/home/julianb/Documents/01-Studium/03-Promotion/02-Data/",
-      "pd_gain": "50",
-      "pd_area": "75",
-      "pd_distance": "167",
-      "pixel_area": "16",
-      "photopic_response_path": "/home/julianb/Documents/04-Programming/OLED-evaluation/calibration/Photopic_response.txt",
-      "pd_responsivity_path": "/home/julianb/Documents/04-Programming/OLED-evaluation/calibration/Responsivity_PD.txt",
-      "cie_reference_path": "/home/julianb/Documents/04-Programming/OLED-evaluation/calibration/cie_reference_400-800.txt",
-      "spectrometer_calibration_path": "/home/julianb/Documents/04-Programming/OLED-evaluation/calibration/Calibration_QEPro_QP600_20210204.txt"
-    }
-  ]
+    "overwrite": [
+        {
+            "default_saving_path": "C:\\Users\\GatherLab-AR\\Documents\\Data",
+            "pd_gain": "50.0",
+            "pd_area": "75.0",
+            "pd_distance": "155",
+            "pixel_area": "16.0",
+            "photopic_response_path": "C:\\Users\\GatherLab-AR\\Documents\\Software\\OLED-evaluation\\calibration\\Photopic_response.txt",
+            "pd_responsivity_path": "C:\\Users\\GatherLab-AR\\Documents\\Software\\OLED-evaluation\\calibration\\Responsivity_PD.txt",
+            "cie_reference_path": "C:\\Users\\GatherLab-AR\\Documents\\Software\\OLED-evaluation\\calibration\\cie_reference_400-800.txt",
+            "spectrometer_calibration_path": "C:\\Users\\GatherLab-AR\\Documents\\Software\\OLED-evaluation\\calibration\\Calibration_QEPro_PL100_20210204.txt"
+        }
+    ],
+    "default": [
+        {
+            "default_saving_path": "/home/julianb/Documents/01-Studium/03-Promotion/02-Data/",
+            "pd_gain": "50",
+            "pd_area": "75",
+            "pd_distance": "155",
+            "pixel_area": "16",
+            "photopic_response_path": "/home/julianb/Documents/04-Programming/OLED-evaluation/calibration/Photopic_response.txt",
+            "pd_responsivity_path": "/home/julianb/Documents/04-Programming/OLED-evaluation/calibration/Responsivity_PD.txt",
+            "cie_reference_path": "/home/julianb/Documents/04-Programming/OLED-evaluation/calibration/cie_reference_400-800.txt",
+            "spectrometer_calibration_path": "/home/julianb/Documents/04-Programming/OLED-evaluation/calibration/Calibration_QEPro_QP600_20210204.txt"
+        }
+    ]
 }
