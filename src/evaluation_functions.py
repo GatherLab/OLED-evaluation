@@ -82,113 +82,119 @@ import scipy.constants as sc  # natural constants
 #     return np.convolve(interval, window, "same")
 
 
-def set_gain(gain):
-    """
-    Set calculation parameters according to gain of photodiode.
+# def set_gain(gain):
+#     """
+#     Set calculation parameters according to gain of photodiode.
 
-    gain: int (0, 10, 20, 30, 40, 50, 60, 70)
-        Gain of photodiode which was used to measure the luminance.
+#     gain: int (0, 10, 20, 30, 40, 50, 60, 70)
+#         Gain of photodiode which was used to measure the luminance.
 
-    returns:
-        PDres: float
-            resistance of the transimpedance amplifier used to amplify and
-            convert the photocurrent of the diode into a voltage.
-        PDcutoff: float
-            cutoff voltage of photodiode below which only noise is expected.
-    """
-    if (
-        gain == 0
-    ):  # set resistance of the transimpedance amplifier used to amplify and convert PD current into voltage
-        PDres = 1.51e3  # Ohm; High-Z
-        PDcutoff = 1e-6  # V
-    elif gain == 10:
-        PDres = 4.75e3  # Ohm; High-Z
-        PDcutoff = 3e-6  # V
-    elif gain == 20:
-        PDres = 1.5e4  # Ohm; High-Z
-        PDcutoff = 5e-6  # V
-    elif gain == 30:
-        PDres = 4.75e4  # Ohm; High-Z
-        PDcutoff = 1e-5  # V
-    elif gain == 40:
-        PDres = 1.51e5  # Ohm; High-Z
-        PDcutoff = 3e-4  # V
-    elif gain == 50:
-        PDres = 4.75e5  # Ohm; High-Z
-        PDcutoff = 9e-4  # V
-    elif gain == 60:
-        PDres = 1.5e6  # Ohm; High-Z
-        PDcutoff = 4e-3  # V
-    elif gain == 70:
-        PDres = 4.75e6  # Ohm; High-Z
-        PDcutoff = 2e-3  # V
-    elif gain == 80:
-        PDres = 2.2e6  # Ohm; High-Z
-        PDcutoff = 2e-5  # V
+#     returns:
+#         PDres: float
+#             resistance of the transimpedance amplifier used to amplify and
+#             convert the photocurrent of the diode into a voltage.
+#         PDcutoff: float
+#             cutoff voltage of photodiode below which only noise is expected.
+#     """
+#     if (
+#         gain == 0
+#     ):  # set resistance of the transimpedance amplifier used to amplify and convert PD current into voltage
+#         PDres = 1.51e3  # Ohm; High-Z
+#         PDcutoff = 1e-6  # V
+#     elif gain == 10:
+#         PDres = 4.75e3  # Ohm; High-Z
+#         PDcutoff = 3e-6  # V
+#     elif gain == 20:
+#         PDres = 1.5e4  # Ohm; High-Z
+#         PDcutoff = 5e-6  # V
+#     elif gain == 30:
+#         PDres = 4.75e4  # Ohm; High-Z
+#         PDcutoff = 1e-5  # V
+#     elif gain == 40:
+#         PDres = 1.51e5  # Ohm; High-Z
+#         PDcutoff = 3e-4  # V
+#     elif gain == 50:
+#         PDres = 4.75e5  # Ohm; High-Z
+#         PDcutoff = 9e-4  # V
+#     elif gain == 60:
+#         PDres = 1.5e6  # Ohm; High-Z
+#         PDcutoff = 4e-3  # V
+#     elif gain == 70:
+#         PDres = 4.75e6  # Ohm; High-Z
+#         PDcutoff = 2e-3  # V
+#     elif gain == 80:
+#         PDres = 2.2e6  # Ohm; High-Z
+#         PDcutoff = 2e-5  # V
 
-    else:
-        print(
-            "Error: Not a valid gain."
-            + "\nThe Thorlabs PDA100A2 supports the following gains:"
-            + "\n0 dB, 10 dB, 20 dB, 30 dB, 40 dB, 50 dB, 60 dB, 70 dB"
-            + "\nCheck photodiode gain in your data header."
-        )
-    return PDres, PDcutoff
+#     else:
+#         print(
+#             "Error: Not a valid gain."
+#             + "\nThe Thorlabs PDA100A2 supports the following gains:"
+#             + "\n0 dB, 10 dB, 20 dB, 30 dB, 40 dB, 50 dB, 60 dB, 70 dB"
+#             + "\nCheck photodiode gain in your data header."
+#         )
+#     return PDres, PDcutoff
 
 
-"SETTING KNOWN PARAMETERS"
+# "SETTING KNOWN PARAMETERS"
 # Setting Variables
-OLEDwidth = 2e-3  # OLED width or height in m;
-pixel_area = (OLEDwidth) ** 2
-PDarea = 0.000075  # Photodiode area in m2
-PDradius = np.sqrt(PDarea / np.pi)  # Photodiode Radius in m
-PDresis, PDcutoff = set_gain(70)  # Resistance if gain = 70dB and high load resistance
-distance = 0.115  # Distance between OLED and PD in m
-sqsinalpha = PDradius ** 2 / (
-    distance ** 2 + PDradius ** 2
-)  # Taking into account finite size of PD
+# OLEDwidth = 2e-3  # OLED width or height in m;
+# pixel_area = (OLEDwidth) ** 2
+# PDarea = 0.000075  # Photodiode area in m2
+# PDradius = np.sqrt(PDarea / np.pi)  # Photodiode Radius in m
+# PDresis, PDcutoff = set_gain(70)  # Resistance if gain = 70dB and high load resistance
+# distance = 0.115  # Distance between OLED and PD in m
 # now = dt.datetime.now()  # Set the start time
 # start_time = str(
 #     now.strftime("%Y-%m-%d %H:%M").replace(" ", "").replace(":", "").replace("-", "")
 # )
 
 
-def read_calibration_files():
+def read_calibration_files(
+    photopic_response_path,
+    pd_responsivity_path,
+    cie_reference_path,
+    spectrometer_calibration_path,
+):
     """
     Function that wraps reading in the calibration files and returns them as dataframes
     """
     photopic_response = pd.read_csv(
-        os.path.join(
-            os.path.dirname(os.path.dirname(__file__)),
-            "library",
-            "Photopic_response.txt",
-        ),
+        # os.path.join(
+        #     os.path.dirname(os.path.dirname(__file__)),
+        #     "library",
+        #     "Photopic_response.txt",
+        # ),
+        photopic_response_path,
         sep="\t",
         names=["wavelength", "photopic_response"],
     )
 
     pd_responsivity = pd.read_csv(
-        os.path.join(
-            os.path.dirname(os.path.dirname(__file__)), "library", "Responsivity_PD.txt"
-        ),
+        # os.path.join(
+        #     os.path.dirname(os.path.dirname(__file__)), "library", "Responsivity_PD.txt"
+        # ),
+        pd_responsivity_path,
         sep="\t",
         names=["wavelength", "pd_responsivity"],
     )
 
     cie_reference = pd.read_csv(
-        os.path.join(
-            os.path.dirname(os.path.dirname(__file__)),
-            "library",
-            "NormCurves_400-800.txt",
-        ),
+        # os.path.join(
+        #     os.path.dirname(os.path.dirname(__file__)),
+        #     "library",
+        #     "NormCurves_400-800.txt",
+        # ),
+        cie_reference_path,
         sep="\t",
         names=["wavelength", "none", "x_cie", "y_cie", "z_cie"],
     )
 
     spectrometer_calibration = pd.read_csv(
-        os.path.join(
-            os.path.dirname(os.path.dirname(__file__)), "library", "CalibrationData.txt"
-        ),
+        # os.path.join(
+        #     os.path.dirname(os.path.dirname(__file__)), "library", "CalibrationData.txt"
+        # ),
+        spectrometer_calibration_path,
         sep="\t",
         names=["wavelength", "sensitivity"],
     )
@@ -612,16 +618,37 @@ class JVLData:
         pd_responsivity,
         cie_reference,
         angle_resolved,
+        pixel_area,
+        pd_resistance,
+        pd_radius,
+        pd_distance,
         correction_factor=[],
     ):
         """
-        Init function
+        All data must be provided in SI units!
+        The calculated quantities are, however, directly in their final
+        (usual) units.
+        - voltage: volts
+        - current: mA
+        - current density: mA/cm2
+        - absolute current density: mA/cm2
+        - luminance: cd/m2
+        - eqe: %
+        - luminous_efficacy: lm/W
+        - current_efficiency: cd/A
+        - power density: mW/mm2
         """
+        self.pd_resistance = pd_resistance
+        self.pixel_area = pixel_area
+        # Taking into account finite size of PD
+        self.sqsinalpha = pd_radius ** 2 / (pd_distance ** 2 + pd_radius ** 2)
+
         self.voltage = np.array(jvl_data["voltage"])
         self.pd_voltage = np.array(jvl_data["pd_voltage"])
 
         self.current = np.array(jvl_data["current"]) / 1000
-        self.current_density = self.current / (pixel_area * 1e-2)
+        # Current density directly in mA/cm^2
+        self.current_density = np.array(jvl_data["current"]) / (pixel_area * 1e4)
         self.absolute_current_density = np.array(abs(self.current_density))
 
         self.cie_coordinates = self.calculate_cie_coordinates(
@@ -708,7 +735,7 @@ class JVLData:
         """
         Calculate e_coeff
         """
-        return self.pd_voltage / PDresis / sqsinalpha * 2
+        return self.pd_voltage / self.pd_resistance / self.sqsinalpha * 2
 
     def calculate_non_lambertian_v_coeff(self):
         """
@@ -717,8 +744,8 @@ class JVLData:
         return (
             sc.physical_constants["luminous efficacy"][0]
             * self.pd_voltage
-            / PDresis
-            / sqsinalpha
+            / self.pd_resistance
+            / self.sqsinalpha
             * 2
         )
 
@@ -748,7 +775,15 @@ class JVLData:
         Calculate luminance
         """
         # v_coeff = self.calculate_non_lambertian_v_coeff(jvl_data)
-        return 1 / np.pi / pixel_area * v_coeff / 2 * self.integral_3 / self.integral_4
+        return (
+            1
+            / np.pi
+            / self.pixel_area
+            * v_coeff
+            / 2
+            * self.integral_3
+            / self.integral_4
+        )
 
     def calculate_non_lambertian_luminous_efficacy(self, v_coeff, v_correction_factor):
         """
@@ -772,7 +807,7 @@ class JVLData:
         """
         # lum = self.calculate_non_lambertian_luminance()
 
-        return pixel_area / self.current * self.luminance
+        return self.pixel_area / self.current * self.luminance
 
     def calculate_non_lambertian_power_density(self, e_coeff, e_correction_factor):
         """
@@ -781,7 +816,7 @@ class JVLData:
         # e_coeff = self.calculate_non_lambertian_e_coeff(jvl_data)
         return (
             1
-            / (pixel_area * 1e6)
+            / (self.pixel_area * 1e6)
             * e_coeff
             * self.integral_2
             / self.integral_4
@@ -793,7 +828,7 @@ class JVLData:
         """
         Calculate e_coeff
         """
-        return self.pd_voltage / PDresis / sqsinalpha
+        return self.pd_voltage / self.pd_resistance / self.sqsinalpha
 
     def calculate_lambertian_v_coeff(self):
         """
@@ -802,8 +837,8 @@ class JVLData:
         return (
             sc.physical_constants["luminous efficacy"][0]
             * self.pd_voltage
-            / PDresis
-            / sqsinalpha
+            / self.pd_resistance
+            / self.sqsinalpha
         )
 
     def calculate_lambertian_eqe(self, e_coeff):
@@ -829,7 +864,7 @@ class JVLData:
         Calculate luminance
         """
         # v_coeff = calculate_lambertian_v_coeff(jvl_data)
-        return 1 / np.pi / pixel_area * v_coeff * self.integral_3 / self.integral_4
+        return 1 / np.pi / self.pixel_area * v_coeff * self.integral_3 / self.integral_4
 
     def calculate_lambertian_luminous_efficacy(self, v_coeff):
         """
@@ -852,7 +887,12 @@ class JVLData:
         """
         # e_coeff = calculate_lambertian_e_coeff(jvl_data)
         return (
-            1 / (pixel_area * 1e6) * e_coeff * self.integral_2 / self.integral_4 * 1e3
+            1
+            / (self.pixel_area * 1e6)
+            * e_coeff
+            * self.integral_2
+            / self.integral_4
+            * 1e3
         )
 
     def to_series(self):

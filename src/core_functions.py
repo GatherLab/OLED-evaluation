@@ -44,7 +44,7 @@ def read_global_settings():
         try:
             settings[0][key] = float(settings[0][key])
         except:
-            print("Entry not a float value")
+            settings[0][key] = str(settings[0][key])
 
     return settings[0]
 

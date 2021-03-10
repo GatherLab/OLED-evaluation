@@ -21,7 +21,23 @@ class Settings(QtWidgets.QDialog, Ui_Settings):
         self.parent = parent
 
         # Load from file to fill the lines
-        # default_settings = cf.read_global_settings()
+        settings = cf.read_global_settings()
+        self.default_saving_path_lineEdit.setText(settings["default_saving_path"])
+        self.photodiode_gain_lineEdit.setText(str(settings["pd_gain"]))
+        self.photodiode_area_lineEdit.setText(str(settings["pd_area"]))
+        self.distance_photodiode_oled_lineEdit.setText(str(settings["pd_distance"]))
+        self.oled_area_lineEdit.setText(str(settings["pixel_area"]))
+
+        self.photopic_response_calibration_path_lineEdit.setText(
+            str(settings["photopic_response_path"])
+        )
+        self.pd_responsivity_calibration_path_lineEdit.setText(
+            str(settings["pd_responsivity_path"])
+        )
+        self.cie_reference_path_lineEdit.setText(str(settings["cie_reference_path"]))
+        self.spectrometer_calibration_path_lineEdit.setText(
+            str(settings["spectrometer_calibration_path"])
+        )
 
         # self.keithley_source_address_lineEdit.setText(
         #     default_settings["keithley_source_address"]
@@ -44,14 +60,15 @@ class Settings(QtWidgets.QDialog, Ui_Settings):
         settings_data["overwrite"] = []
         settings_data["overwrite"].append(
             {
-                "photodiode_cutoff": self.photodiode_cutoff_lineEdit.text(),
-                "photodiode_saturation": self.photodiode_saturation_lineEdit.text(),
-                "photodiode_area": self.photodiode_area_lineEdit.text(),
-                "photodiode_peak_response": self.photodiode_peak_response_lineEdit.text(),
-                "amplifier_resistance": self.amplifier_resistance_lineEdit.text(),
-                "oled_area": self.oled_area_lineEdit.text(),
-                "distance_photodiode_oled": self.distance_photodiode_oled_lineEdit.text(),
                 "default_saving_path": self.default_saving_path_lineEdit.text(),
+                "pd_gain": self.photodiode_gain_lineEdit.text(),
+                "pd_area": self.photodiode_area_lineEdit.text(),
+                "pd_distance": self.photodiode_area_lineEdit.text(),
+                "pixel_area": self.oled_area_lineEdit.text(),
+                "photopic_response_path": self.photopic_response_calibration_path_lineEdit.text(),
+                "pd_responsivity_path": self.pd_responsivity_calibration_path_lineEdit.text(),
+                "cie_reference_path": self.cie_reference_path_lineEdit.text(),
+                "spectrometer_calibration_path": self.spectrometer_calibration_path_lineEdit.text(),
             }
         )
         #
@@ -90,21 +107,24 @@ class Settings(QtWidgets.QDialog, Ui_Settings):
 
         default_settings = data["default"][0]
 
-        self.photodiode_cutoff_lineEdit.setText(default_settings["photodiode_cutoff"])
-        self.photodiode_saturation_lineEdit.setText(
-            default_settings["photodiode_saturation"]
-        )
-        self.photodiode_area_lineEdit.setText(default_settings["photodiode_area"])
-        self.photodiode_peak_response_lineEdit.setText(
-            default_settings["photodiode_peak_response"]
-        )
-        self.amplifier_resistance_lineEdit.setText(
-            default_settings["amplifier_resistance"]
-        )
-        self.oled_area_lineEdit.setText(default_settings["oled_area"])
-        self.distance_photodiode_oled_lineEdit.setText(
-            default_settings["distance_photodiode_oled"]
-        )
         self.default_saving_path_lineEdit.setText(
             default_settings["default_saving_path"]
+        )
+        self.photodiode_gain_lineEdit.setText(str(default_settings["pd_gain"]))
+        self.photodiode_area_lineEdit.setText(str(default_settings["pd_area"]))
+        self.distance_photodiode_oled_lineEdit.setText(
+            str(default_settings["pd_distance"])
+        )
+        self.oled_area_lineEdit.setText(str(default_settings["pixel_area"]))
+        self.photopic_response_calibration_path_lineEdit.setText(
+            str(default_settings["photopic_response_path"])
+        )
+        self.pd_responsivity_calibration_path_lineEdit.setText(
+            str(default_settings["pd_responsivity_path"])
+        )
+        self.cie_reference_path_lineEdit.setText(
+            str(default_settings["cie_reference_path"])
+        )
+        self.spectrometer_calibration_path_lineEdit.setText(
+            str(default_settings["spectrometer_calibration_path"])
         )

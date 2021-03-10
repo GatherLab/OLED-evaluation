@@ -70,17 +70,17 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         )
 
         # Data that shall later be put into settings window
-        self.measurement_parameters = cf.read_global_settings()
+        # self.measurement_parameters = cf.read_global_settings()
 
-        self.measurement_parameters["pd_radius"] = math.sqrt(
-            self.measurement_parameters["pd_area"] / math.pi
-        )
-        self.measurement_parameters["sq_sin_alpha"] = self.measurement_parameters[
-            "pd_radius"
-        ] ** 2 / (
-            (self.measurement_parameters["pd_distance"] * 1e-3) ** 2
-            + self.measurement_parameters["pd_radius"] ** 2
-        )
+        # self.measurement_parameters["pd_radius"] = math.sqrt(
+        #     self.measurement_parameters["pd_area"] / math.pi
+        # )
+        # self.measurement_parameters["sq_sin_alpha"] = self.measurement_parameters[
+        #     "pd_radius"
+        # ] ** 2 / (
+        #     (self.measurement_parameters["pd_distance"] * 1e-3) ** 2
+        #     + self.measurement_parameters["pd_radius"] ** 2
+        # )
         self.current_plot_type = "none"
 
         # -------------------------------------------------------------------- #
@@ -152,12 +152,18 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """
         global_variables = cf.read_global_settings()
 
-        self.global_path = QtWidgets.QFileDialog.getExistingDirectory(
+        path = QtWidgets.QFileDialog.getExistingDirectory(
             QtWidgets.QFileDialog(),
             "Select a Folder",
             global_variables["default_saving_path"],
             QtWidgets.QFileDialog.ShowDirsOnly,
         )
+
+        # Check if the user chose a path or just pressed cancel
+        if path == "":
+            return
+        else:
+            self.global_path = path
 
         # Now get the file paths for all files at top level in this folder
         self.file_names = cf.read_file_names(self.global_path)
@@ -399,13 +405,42 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         #     (len(self.spectrum_data_df), 0)
         # ).tolist()
 
+        # Read in global settings
+        global_settings = cf.read_global_settings()
+
         # Read in calibration files
         (
             photopic_response,
             pd_responsivity,
             cie_reference,
             calibration,
-        ) = ef.read_calibration_files()
+        ) = ef.read_calibration_files(
+            global_settings["photopic_response_path"],
+            global_settings["pd_responsivity_path"],
+            global_settings["cie_reference_path"],
+            global_settings["spectrometer_calibration_path"],
+        )
+
+        # Read in photodiode lookup table
+        with open(
+            os.path.join(Path(__file__).parent.parent, "usr", "photodiode_gain.json")
+        ) as json_file:
+            data = json.load(json_file)
+
+        pd_parameters = data[str(int(global_settings["pd_gain"]))][0]
+
+        for key in data[str(int(global_settings["pd_gain"]))][0].keys():
+            try:
+                pd_parameters[key] = float(pd_parameters[key])
+            except:
+                print("Entry not a float value")
+
+        # pd_parameters = data[str(int(global_settings["pd_gain"]))][0]
+        pd_parameters["pd_area"] = global_settings["pd_area"]
+        pd_parameters["pd_radius"] = np.sqrt(pd_parameters["pd_area"] * 1e-6 / np.pi)
+
+        # pixel_area = global_settings["pixel_area"]
+        # distance = global_settings["distance"]
 
         for i in range(np.size(self.assigned_groups_df.index)):
             # Read in the spectrum file for the according device (and check if
@@ -526,6 +561,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 pd_responsivity=pd_responsivity,
                 cie_reference=cie_reference,
                 angle_resolved=spectrum["angle_resolved"].to_list()[0],
+                pixel_area=global_settings["pixel_area"] * 1e-6,
+                pd_resistance=pd_parameters["pd_resistance"],
+                pd_radius=pd_parameters["pd_radius"],
+                pd_distance=global_settings["pd_distance"] * 1e-3,
                 correction_factor=spectrum["correction_factor"].to_list()[0],
             )
             self.data_df.loc[index] = jvl_instance.to_series()

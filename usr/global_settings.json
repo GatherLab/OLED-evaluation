@@ -1,30 +1,28 @@
 {
   "overwrite": [
     {
-      "pd_cutoff": "0.0005",
-      "pd_saturation": "10",
+      "default_saving_path": "/home/julianb/Documents/01-Studium/03-Promotion/02-Data/",
+      "pd_gain": "50",
       "pd_area": "75",
-      "pd_peak_response": "683",
-      "amplifier_resistance": "475000",
-      "pd_resistance": "683",
-      "threshold_pd_voltage": "683",
-      "pixel_area": "16",
       "pd_distance": "167",
-      "default_saving_path": "/home/julianb/Documents/01-Studium/03-Promotion/02-Data/"
+      "pixel_area": "16",
+      "photopic_response_path": "/home/julianb/Documents/04-Programming/OLED-evaluation/calibration/Photopic_response.txt",
+      "pd_responsivity_path": "/home/julianb/Documents/04-Programming/OLED-evaluation/calibration/Responsivity_PD.txt",
+      "cie_reference_path": "/home/julianb/Documents/04-Programming/OLED-evaluation/calibration/cie_reference_400-800.txt",
+      "spectrometer_calibration_path": "/home/julianb/Documents/04-Programming/OLED-evaluation/calibration/Calibration_QEPro_QP600_20210204.txt"
     }
   ],
   "default": [
     {
-      "pd_cutoff": "0.0005",
-      "pd_saturation": "10",
+      "default_saving_path": "/home/julianb/Documents/01-Studium/03-Promotion/02-Data/",
+      "pd_gain": "50",
       "pd_area": "75",
-      "pd_peak_response": "683",
-      "pd_resistance": "683",
-      "threshold_pd_voltage": "683",
-      "amplifier_resistance": "475000",
-      "pixel_area": "16",
       "pd_distance": "167",
-      "default_saving_path": "/home/julianb/Documents/01-Studium/03-Promotion/02-Data/"
+      "pixel_area": "16",
+      "photopic_response_path": "/home/julianb/Documents/04-Programming/OLED-evaluation/calibration/Photopic_response.txt",
+      "pd_responsivity_path": "/home/julianb/Documents/04-Programming/OLED-evaluation/calibration/Responsivity_PD.txt",
+      "cie_reference_path": "/home/julianb/Documents/04-Programming/OLED-evaluation/calibration/cie_reference_400-800.txt",
+      "spectrometer_calibration_path": "/home/julianb/Documents/04-Programming/OLED-evaluation/calibration/Calibration_QEPro_QP600_20210204.txt"
     }
   ]
 }
