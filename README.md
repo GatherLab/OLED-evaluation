@@ -1,45 +1,105 @@
-# OLED-evaluation
+<h1 align="center">
+  GatherLab OLED Evaluation Tool
+</h1>
+
+<p align="center">
+   <a href="https://github.com/GatherLab/OLED-jvl-evaluation/commits/" title="Last Commit"><img src="https://img.shields.io/github/last-commit/GatherLab/OLED-jvl-evaluation?style=flat"></a>
+   <a href="https://github.com/GatherLab/OLED-jvl-evaluation/issues" title="Open Issues"><img src="https://img.shields.io/github/issues/GatherLab/OLED-jvl-evaluation?style=flat"></a>
+   <a href="./LICENSE" title="License"><img src="https://img.shields.io/github/license/GatherLab/OLED-jvl-evaluation"></a>
+</p>
+
+<p align="center">
+  <a href="#setup">Setup</a> •
+  <a href="#user journey">User Journey</a> •
+  <a href="#development">development</a> •
+  <a href="#licensing">Licensing</a>
+</p>
 
 Software for easy evaluation of previously measured data in the data format of https://github.com/GatherLab/OLED-jvl-measurement
 
-## User Journey
+## Setup
 
-- The user starts with the usual interface that she knows from other gatherlab programs
-- The scrollbar on the right is now used as a guide through the program with different options available that should normally be executed in order
+Setup a python environment with your favourite virtual environment management tool. The following step by step guide assumes that the user wants to use the since python 3.3 recommended software venv that ships with python on a windows machine.
 
-1. At the beginning only the top button that is to select a folder where the data files are contained. If a folder was selected, all file names at top level (not in the subfolders of this folder) are read in
-   - If the file names are correct and in theory the files should be able to be read in, more buttons on the right can now be clicked.
-   - The files that are read in must obey the file naming convention that is defined by the measurement program, thus
+1. Clone project folder to your local machine
+2. Change e.g. with windows power shell into the project folder
+3. Generate a virtual environement with the name "venv"
 
 ```terminal
-<date>_<batch_name>_d<device_no>_p<pixel_no>_jvl(_<scan_no>).csv
+py -m venv venv
 ```
 
-2. The second button opens a dialog that allows assignment of all available devices to different groups. This is important to ensure ordering of the devices and to obtain statistics for different OLEDs. Since it is usually good practice to have several devices of the same kind.
-   - The user can now select which scan she wants to use, in case devices were scanned several times. This is done with a dropdown menu. The maximum value in the dropdown is given by the maximum scan number found in the file names.
-   - Furthermore, the user can use a slider to define how many groups she wants to define. The maximum value of the slider is the number of different devices detected from the file names. The value of the slider determines the number of lines below where the user defines the groups.
-   - A group definition comprises a group name that briefly explains what the group is, all device numbers that belong to the group, a spectrum file and a color associated with the group.
-   - The group name can be entered in a text field
-   - The group numbers as well. This is to maintain simplicity and an easy to use interface. Different device numbers are seperated by a comma.
-   - A spectrum file can be selected by clicking on a button that allows the user to browse the hard drive and select files with .csv or .txt ending. The spectrum file also has to obey the conventions set by the measurement program for spectrum files, especially when it comes to file structure (columns for wavelength, background & intensity). Otherwise, the user should be able to select a full goniometer spectrum file with which a correction factor for the emission can be calculated. This shall be done seamlessly and the program shall automatically decide if the input is a full angle resolved spectrum or a simple spectrum.
-   - The color is optional but might be used for plotting later on and can be selected from a colorpicker
-   - On saving the groups all parameters are saved in a dataframe and hand over to the main window. Furthermore, if angle resolved spectra are selected, the correction factor shall be calculated and printed to the terminal for each group (print the entire dataframe).
-   - On saving the data of all selected devices shall be read in (in a single dataframe for simplicity) and all relevant calculations shall be already done here.
-3. Now that the groups are assigned, the user shall be able to plot JVL curves for each group or each device depending on the previous definition. This is done with this dialog. The user shall go through all curves and by simply clicking on the legend in the graph he shall be able to unselect a certain device for the statistic calculations later on. Unselected devices' data is also not saved to file later on. An additional button or a right click on a graph shall allow the user to plot all four relevant graphs for the device as subplots in the main plotting area. The user can go back from this view by clicking on plot in the still open dialog.
-4. This button is to plot statistics for all selected devices. What the statistics really imply must be defined later on but current density at 4V as well as luminence at 4 V is set. The statistics shall be shown as a boxplot with each data point visible, however.
-5. Button 5 is meant for the spectrum analysis and shall allow the user to plot the selected spectra seperately. This shall be done using an additional dialog that shows buttons for the different groups. The way the spectra shall be plotted can be selected (just plot the heatmap for goniometer, the spectra for single spectra, or a angle map).
-6. Lastly the user shall be able to save the evaluated data. Each evaluation data is saved to seperate files (for each device, pixel combination). Additionally, a summary file shall be provided were all the important parameters for each pixel are summarised for future reference. From this file it shall be possible to load the status of the evaluation program (defined groups, selected pixels etc) again at a later point of time.
+4. Activate the new environement
 
-Some important evaluation parameters can be set in a "global setting" style dialog at the top menubar, where also a logging file and the documentation here in this readme file can be selected.
+```
+Set-ExecutionPolicy Unrestricted -Scope Process
+.\venv\Scripts\activate
+```
 
-## Initial Design Choices
+5. Install required packages from requirements.txt (this assumes that pip is activated on your machine)
 
-- The calibration files are in the programs folder. On the long run, they must be selected within the GUI but for the beginning they can just sit in one of the program folders.
-- The calculation logic should be strictly kept in seperate functions (maybe classes but currently I don't see any point of having classes here) so that it can also be integrated directly into the measurement program.
-- The settings for the batch (e.g. photodiode gain, measurement distance etc.) can be kept in a seperate settings top menubar option. Some default parameters for this shall be provided and the costum ones saved in the folder where the data is in a seperate evaluation folder for reference.
-- How to deal with multiple measurements?
+```
+pip install -r requirements.txt
+```
 
-## Data Structures
+6. Execute the main.py file to start the program
+
+```terminal
+python3 main.py
+```
+
+## User Journey
+
+The user journey for this software is quite pre-defined and follows a process
+matched to our measured OLED data. All steps required to go through and
+evaluate the JVL data are described in the following in detail.
+
+### Setting a Directory
+
+As a first step the user should select the directory where she stored all her
+JVL files. This is done by pressing the first button on the right side with
+the picture of a folder. A file dialog opens that lets the user select a
+directory. When the user presses "Ok" all file names from this folder that
+end on \_jvl will be read in. The program now knows what data is available.
+
+### Checking the Settings
+
+The user should now go to the top settings and check if all measurement
+parameters that are entered here are correct.
+
+### Assigning Groups
+
+The user can now assign groups of different devices that would be according
+to their composition (e.g. the first four devices have the same properties).
+This can be done by pressing the second, now enabled button on the right. A
+new dialog opens up that allows to select the scan (if a pixel was measured
+more than once). As a second the step the user can define the number of
+different groups using the slider below. It is limited to a maximum of the
+number of devices detected in the folder. Now the user can name the groups
+and assign the devices in the field nearby. Multiple devices are separated by
+commas. Next to the device number field is a pushbutton as is normally red,
+the user has to press on it to select a relevant spectrum for this group that
+is used for the evaluation. As soon as this is done, the pushbutton will be
+green. If this was repeated for all groups then the groups can be saved.
+
+Now the actual reading in of the data happens and all the calculations take
+place. This may take a few seconds.
+
+### Looking at the Data
+
+### Looking at the Statistics
+
+### Looking at the Spectra
+
+### Saving Data
+
+## Development
+
+### Formatter
+
+- Python formatter: black
+
+### Data Structures
 
 In general data is organised in pandas dataframe in a relational database manner. One key defines the relationship of the dataframe to others. However, the relationship can be 1:n. The primary key is for all dataframes the index that shall allow to relate the dataframes among eachother and is marked with (PM) in the following.
 
@@ -83,33 +143,5 @@ In general data is organised in pandas dataframe in a relational database manner
 | 44         | Bphen:CsC  | "user/documents/data/2021-02-04_test_d41_p2_spec.csv" | #FFFFF1 |
 
 - spectrum_data_df and assigned_groups_df have a 1:1 relationship and are only kept seperate for logical reasons but could in principle be merged in a single dataframe.
+
 - files_df and data_df have the same primary key and can be directly related with eachother. However, the primary keys of data_df are a subset of files_df since only the data of selected files is read in by the program and not all present in the folder. Device, pixel and scan number can be easily found out for each row by comparing to the files_df dataframe (join the dataframes basically).
-
-## To Do
-
-### UI
-
-- [x] Current density at 4V
-- [x] Luminance at 4V
-- [] EQE at 1000 cd/m^2
-
-Goniometer Display
-
-- [ ] Map Intensity over angle
-- [ ] Radiant intensity over angle (fig 5 changmin)
-
-Graphen nebeinander
-
-### Details on data evaluation
-
-- Kalibrationsfiles von github repo sind richtig, read them in by providing
-  file path in settings
-- Kein smoothing
-- Spektrometer file hat info über fiber drin (PL100, QP600)
-
-### Calibration files
-
-CalibrationData.txt = Spektrometer Sensitivity
-NormCurves_400-800.txt = xycie coordinates
-Photopic_response.txt = Sensitivität des Auges
-Responsivity_PD.txt = Photodiode characteristics
