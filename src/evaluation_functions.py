@@ -805,7 +805,8 @@ class JVLData:
         """
         Calculate current efficiency
         """
-        # lum = self.calculate_non_lambertian_luminance()
+        # In case of the current being zero, set a helper current to nan so
+        # that the result of the division becomes nan instead of infinite
 
         return self.pixel_area / self.current * self.luminance
 

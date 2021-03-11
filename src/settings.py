@@ -63,7 +63,7 @@ class Settings(QtWidgets.QDialog, Ui_Settings):
                 "default_saving_path": self.default_saving_path_lineEdit.text(),
                 "pd_gain": self.photodiode_gain_lineEdit.text(),
                 "pd_area": self.photodiode_area_lineEdit.text(),
-                "pd_distance": self.photodiode_area_lineEdit.text(),
+                "pd_distance": self.distance_photodiode_oled_lineEdit.text(),
                 "pixel_area": self.oled_area_lineEdit.text(),
                 "photopic_response_path": self.photopic_response_calibration_path_lineEdit.text(),
                 "pd_responsivity_path": self.pd_responsivity_calibration_path_lineEdit.text(),
@@ -71,7 +71,7 @@ class Settings(QtWidgets.QDialog, Ui_Settings):
                 "spectrometer_calibration_path": self.spectrometer_calibration_path_lineEdit.text(),
             }
         )
-        #
+
         # Load the default parameter settings
         with open(
             os.path.join(Path(__file__).parent.parent, "usr", "global_settings.json")

@@ -753,6 +753,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.eval_ax[0, 1].set_xscale("log")
         self.eval_ax[0, 1].set_xlabel("Current Density (mA cm$^{-2}$)")
         self.eval_ax[0, 1].set_ylabel("External Quantum Efficiency (%)")
+        self.eval_ax[0, 1].set_ylim([10e-2, max(temp_df.iloc[0]["eqe"])])
 
         # Plot power density over voltage
         self.eval_ax[1, 0].plot(temp_df["voltage"][0], temp_df["power_density"][0])
