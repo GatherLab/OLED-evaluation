@@ -228,10 +228,10 @@ class AssignGroups(QtWidgets.QDialog, Ui_AssignGroup):
         """
         global_variables = cf.read_global_settings()
         try:
-            if os.path.isfile(self.group_spectrum_path[group_number]):
+            if os.path.isfile(str(self.group_spectrum_path[group_number])):
                 initial_path = self.group_spectrum_path[group_number]
             else:
-                initial_path = global_variables["default_saving_path"]
+                initial_path = self.parent.global_path
         except:
             initial_path = global_variables["default_saving_path"]
 

@@ -633,6 +633,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.eval_ax1.set_ylabel("Current Density (mA cm$^{-2}$)")
         self.eval_ax2.set_ylabel("Luminance (cd m$^{-2}$)")
 
+        self.eval_ax2.format_coord = self.make_format(self.eval_ax2, self.eval_ax1)
+
         # Some more visuals
         self.eval_ax1.set_facecolor("#E0E0E0")
         # self.eval_ax1.tick_params(axis="x", direction="in", length=8)
@@ -748,12 +750,24 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             linestyle="--",
         )
 
+        self.eval_ax5.format_coord = self.make_format(self.eval_ax5, self.eval_ax[0, 0])
+
         # Plot eqe over absolute current density
         self.eval_ax[0, 1].plot(temp_df["current_density"][0], temp_df["eqe"][0])
         self.eval_ax[0, 1].set_xscale("log")
         self.eval_ax[0, 1].set_xlabel("Current Density (mA cm$^{-2}$)")
         self.eval_ax[0, 1].set_ylabel("External Quantum Efficiency (%)")
-        self.eval_ax[0, 1].set_ylim([10e-2, max(temp_df.iloc[0]["eqe"])])
+        self.eval_ax[0, 1].set_xlim([1e-2, max(temp_df.iloc[0]["current_density"])])
+        # Find maximum non infinite eqe value and set that +1 as the limits
+        self.eval_ax[0, 1].set_ylim(
+            [
+                0,
+                np.where(
+                    np.isinf(temp_df.iloc[0]["eqe"]), -np.Inf, temp_df.iloc[0]["eqe"]
+                ).max()
+                + 1,
+            ]
+        )
 
         # Plot power density over voltage
         self.eval_ax[1, 0].plot(temp_df["voltage"][0], temp_df["power_density"][0])
@@ -838,16 +852,22 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # inside the lists
         # First get the index of the arrays at 4 V (that is where we do all the
         # stats)
-        idx_4v = np.where(np.array(self.data_df["voltage"][0]) == 4.0)[0][0]
+        # Here we have to iterate over all lists in our list, since if they
+        # have a different length everything else fails
 
-        current_density_4v = np.array(
-            self.data_df["current_density"]
-            .loc[self.data_df["masked"] == False]
-            .to_list()
-        )[:, idx_4v]
-        luminance_4v = np.array(
-            self.data_df["luminance"].loc[self.data_df["masked"] == False].to_list()
-        )[:, idx_4v]
+        current_density_4v = []
+        luminance_4v = []
+        eqe_4v = []
+        power_density_4v = []
+
+        for index, row in self.data_df.loc[self.data_df["masked"] == False].iterrows():
+            idx_4v = np.where(row["voltage"] == 4.0)
+            # idx_4v = np.where(np.array(self.data_df["voltage"][0]) == 4.0)[0][0]
+
+            current_density_4v.append(row["current_density"][idx_4v][0])
+            luminance_4v.append(row["luminance"][idx_4v][0])
+            eqe_4v.append(row["eqe"][idx_4v][0])
+            power_density_4v.append(row["power_density"][idx_4v][0])
 
         device_numbers = (
             self.data_df["device_number"]
@@ -867,8 +887,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 [
                     device_numbers.astype(int),
                     group_names,
-                    current_density_4v.astype(float),
-                    luminance_4v.astype(float),
+                    np.array(current_density_4v).astype(float),
+                    np.array(luminance_4v).astype(float),
+                    np.array(eqe_4v).astype(float),
+                    np.array(power_density_4v).astype(float),
                 ]
             ).T,
             columns=[
@@ -876,6 +898,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 "group_name",
                 "current_density_4v",
                 "luminance_4v",
+                "eqe_4v",
+                "power_density_4v",
             ],
             index=self.data_df.loc[self.data_df["masked"] == False].index,
         )
@@ -888,14 +912,22 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         )
 
         luminance_4v_grouped = avg_values["luminance_4v"].apply(list).to_list()
+        eqe_4v_grouped = avg_values["eqe_4v"].apply(list).to_list()
+        power_density_4v_grouped = avg_values["power_density_4v"].apply(list).to_list()
 
         self.boxplot_statistics(
             current_density_4v_grouped,
             luminance_4v_grouped,
-            labels=stats_df[groupby].unique(),
+            eqe_4v_grouped,
+            power_density_4v_grouped,
+            labels=np.unique(
+                np.concatenate(avg_values[groupby].apply(list).to_numpy())
+            ),
         )
 
-    def boxplot_statistics(self, current_density_4v, luminance_4v, labels):
+    def boxplot_statistics(
+        self, current_density_4v, luminance_4v, eqe_4v, power_density_4v, labels
+    ):
         """
         Does the plotting for the device statistics calculations
         """
@@ -926,7 +958,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             temp_x = np.random.normal(1 + i, 0.04, size=len(temp_y))
 
             self.eval_ax[0, 0].plot(temp_x, temp_y, "b.")
-        self.eval_ax[0, 0].set_ylabel("Current Density (mA cm$^{-2}$)")
+        self.eval_ax[0, 0].set_ylabel("Current Density @ 4V (mA cm$^{-2}$)")
 
         # Luminance at 4 V
         self.eval_ax[0, 1].boxplot(
@@ -938,7 +970,31 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
             self.eval_ax[0, 1].plot(temp_x, temp_y, "b.")
 
-        self.eval_ax[0, 1].set_ylabel("Luminance (cd m$^{-2}$)")
+        self.eval_ax[0, 1].set_ylabel("Luminance @ 4V (cd m$^{-2}$)")
+
+        # EQE at 4 V
+        self.eval_ax[1, 0].boxplot(
+            eqe_4v, labels=labels.astype(str).tolist(), showfliers=False
+        )
+        for i in range(len(eqe_4v)):
+            temp_y = eqe_4v[i]
+            temp_x = np.random.normal(1 + i, 0.04, size=len(temp_y))
+
+            self.eval_ax[1, 0].plot(temp_x, temp_y, "b.")
+
+        self.eval_ax[1, 0].set_ylabel("EQE @ 4V (%)")
+
+        # Power Density at 4 V
+        self.eval_ax[1, 1].boxplot(
+            power_density_4v, labels=labels.astype(str).tolist(), showfliers=False
+        )
+        for i in range(len(power_density_4v)):
+            temp_y = power_density_4v[i]
+            temp_x = np.random.normal(1 + i, 0.04, size=len(temp_y))
+
+            self.eval_ax[1, 1].plot(temp_x, temp_y, "b.")
+
+        self.eval_ax[1, 1].set_ylabel("Power Density @ 4V (mA mm$^{-2}$)")
 
         self.eval_fig.figure.tight_layout()
         self.eval_fig.draw()
@@ -965,24 +1021,27 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """
         Plot the spectrum
         """
-        if not self.current_plot_type == "spectrum":
-            # Clear figure and define axis
-            self.eval_fig.figure.clf()
-            self.eval_ax0 = self.eval_fig.figure.add_subplot(121)
-            self.eval_ax1 = self.eval_fig.figure.add_subplot(122, projection="polar")
-
-            # Some more visuals
-            self.eval_ax0.set_facecolor("#E0E0E0")
-            self.eval_ax1.set_facecolor("#E0E0E0")
-        else:
-            self.eval_ax0.cla()
-            self.eval_ax1.cla()
 
         if (
             self.assigned_groups_df.join(self.spectrum_data_df)
             .loc[self.assigned_groups_df["group_name"] == group, "angle_resolved"]
             .to_list()[0]
         ):
+            if not self.current_plot_type == "angle_resolved_spectrum":
+                # Clear figure and define axis
+                self.eval_fig.figure.clf()
+                self.eval_ax0 = self.eval_fig.figure.add_subplot(121)
+                self.eval_ax1 = self.eval_fig.figure.add_subplot(
+                    122, projection="polar"
+                )
+
+                # Some more visuals
+                self.eval_ax0.set_facecolor("#E0E0E0")
+                self.eval_ax1.set_facecolor("#E0E0E0")
+            else:
+                self.eval_ax0.cla()
+                self.eval_ax1.cla()
+
             # The angle resolved spectrum is not stored permanently and
             # therefore has to be read in again
             file_name = self.assigned_groups_df.loc[
@@ -992,12 +1051,20 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             spectrum = pd.read_csv(file_name, sep="\t", skiprows=3)
 
             # first subtract the background from all columns but the wavelength
-            temp = (
-                spectrum.drop(["wavelength", "0_deg"], axis=1)
-                .transpose()
-                .sub(spectrum["background"])
-                .transpose()
-            )
+            try:
+                temp = (
+                    spectrum.drop(["wavelength", "0_deg"], axis=1)
+                    .transpose()
+                    .sub(spectrum["background"])
+                    .transpose()
+                )
+            except:
+                temp = (
+                    spectrum.drop(["wavelength"], axis=1)
+                    .transpose()
+                    .sub(spectrum["background"])
+                    .transpose()
+                )
 
             # Now add the wavelength to the dataframe again
             temp["wavelength"] = spectrum["wavelength"]
@@ -1024,7 +1091,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
             ri = temp.apply(ef.calculate_ri, axis=0)
 
-            non_lambertian_spectrum = ri / ri[np.where(angles == np.min(angles))[0][0]]
+            non_lambertian_spectrum = ri / ri[np.where(angles == 0)[0][0]]
 
             # ax = fig.add_subplot(111, polar=True)
             self.eval_ax1.plot(
@@ -1038,17 +1105,47 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.eval_ax1.set_thetamin(-90)
             self.eval_ax1.set_thetamax(90)
             self.eval_ax1.set_rmin(0)
-            self.eval_ax1.set_rmax(3)
+            self.eval_ax1.set_rmax(1.5)
+            self.eval_ax1.set_rticks(np.arange(0, 1.51, 0.5))
             self.eval_ax1.set_theta_zero_location("W", offset=-90)
+            self.eval_ax1.set_xlabel("Radiant Intensity (a.u.)")
 
+            self.current_plot_type = "angle_resolved_spectrum"
         else:
-            print("Not angle resolved")
+            if not self.current_plot_type == "normal_spectrum":
+                # Clear figure and define axis
+                self.eval_fig.figure.clf()
+                self.eval_ax = self.eval_fig.figure.subplots()
+
+                # Some more visuals
+                self.eval_ax.set_facecolor("#E0E0E0")
+            else:
+                self.eval_ax.cla()
+
+            device_number = self.assigned_groups_df.loc[
+                self.assigned_groups_df["group_name"] == group
+            ].index
+
+            wavelength = self.spectrum_data_df.loc[
+                device_number, "wavelength"
+            ].to_list()[0]
+            intensity = np.array(
+                self.spectrum_data_df.loc[device_number, "intensity"].to_list()[0]
+            ) - np.array(
+                self.spectrum_data_df.loc[device_number, "background"].to_list()[0]
+            )
+
+            self.eval_ax.plot(wavelength, intensity / np.max(intensity))
+            self.eval_ax.set_xlabel("Wavelength (nm)")
+            self.eval_ax.set_ylabel("Intensity (a.u.)")
+            self.eval_ax.grid(True)
+
+            self.current_plot_type = "normal_spectrum"
 
         # self.eval_ax[0].plot()
 
         self.eval_fig.figure.tight_layout()
         self.eval_fig.draw()
-        self.current_plot_type = "spectrum"
 
     # -------------------------------------------------------------------- #
     # ---------------------------- Save Data ----------------------------- #
@@ -1081,6 +1178,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             )
 
             # Define header line with voltage and integration time
+            header_lines = []
             line01 = (
                 "Evaluation Spectrum:   "
                 + self.assigned_groups_df.loc[
@@ -1090,23 +1188,47 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 .to_list()[0]
                 .split("/")[-1]
             )
+            header_lines.append(line01)
             line02 = (
                 "CIE Coordinates:    "
                 + str(row["cie"])
                 + "\t Scan Number: "
                 + str(row["scan_number"])
+                + "Assigned group: "
+                + str(self.assigned_groups_df.loc[row["device_number"], "group_name"])
             )
+            header_lines.append(line02)
+            if self.spectrum_data_df.loc[row["device_number"], "angle_resolved"]:
+                line04 = (
+                    "Photon Number Correction Factor: "
+                    + str(
+                        round(
+                            2
+                            * self.spectrum_data_df["correction_factor"].loc[
+                                row["device_number"]
+                            ][0],
+                            4,
+                        )
+                    )
+                    + "\t Photometric Correction Factor: "
+                    + str(
+                        round(
+                            2
+                            * self.spectrum_data_df["correction_factor"].loc[
+                                row["device_number"]
+                            ][1],
+                            4,
+                        )
+                    )
+                )
+                header_lines.append(line04)
 
-            line03 = "### Measurement data ###"
-            line04 = "Voltage\t Current\t PD Voltage\t Current Density\t Luminance\t EQE\t Luminous Efficacy\t Current Efficiency\t Power Density\t"
-            line05 = "V\t A\t V\t mA/cm^2\t cd/m^2\t %\t lm/W\t cd A\t mW/cm^2\n"
-            header_lines = [
-                line01,
-                line02,
-                line03,
-                line04,
-                line05,
-            ]
+            line05 = "### Measurement data ###"
+            header_lines.append(line05)
+            line06 = "Voltage\t Current\t PD Voltage\t Current Density\t Luminance\t EQE\t Luminous Efficacy\t Current Efficiency\t Power Density\t"
+            header_lines.append(line06)
+            line07 = "V\t A\t V\t mA/cm^2\t cd/m^2\t %\t lm/W\t cd A\t mW/cm^2\n"
+            header_lines.append(line07)
 
             # Drop columns that are not saved to main part of file
             series_to_save = row.drop(
@@ -1155,6 +1277,25 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     # -------------------------------------------------------------------- #
     # ------------------------- Global Functions ------------------------- #
     # -------------------------------------------------------------------- #
+
+    def make_format(self, current, other):
+        """
+        function to allow display of both coordinates for figures with two axis
+        """
+        # current and other are axes
+        def format_coord(x, y):
+            # x, y are data coordinates
+            # convert to display coords
+            display_coord = current.transData.transform((x, y))
+            inv = other.transData.inverted()
+            # convert back to data coords with respect to ax
+            ax_coord = inv.transform(display_coord)
+            coords = [ax_coord, (x, y)]
+            return "Left: {:<40}    Right: {:<}".format(
+                *["({:.3f}, {:.3f})".format(x, y) for x, y in coords]
+            )
+
+        return format_coord
 
     def show_settings(self):
         """
@@ -1237,10 +1378,12 @@ if __name__ == "__main__":
     ui = MainWindow()
 
     # Icon (see https://stackoverflow.com/questions/1551605/how-to-set-applications-taskbar-icon-in-windows-7/1552105#1552105)
-    # import ctypes
+    if not sys.platform.startswith("linux"):
+        import ctypes
 
-    # myappid = u"mycompan.myproduct.subproduct.version"  # arbitrary string
-    # ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
+        myappid = u"mycompan.myproduct.subproduct.version"  # arbitrary string
+        ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
+
     app_icon = QtGui.QIcon()
     app_icon.addFile("./icons/program_icon.png", QtCore.QSize(256, 256))
     app.setWindowIcon(app_icon)

@@ -431,7 +431,10 @@ def calculate_e_correction(df):
     Closure to calculate the e correction factor from a dataframe
     """
     # Get angles from column names first
-    angles = df.drop(["0_deg", "wavelength"], axis=1).columns.to_numpy(float)
+    try:
+        angles = df.drop(["0_deg", "wavelength"], axis=1).columns.to_numpy(float)
+    except:
+        angles = df.drop(["wavelength"], axis=1).columns.to_numpy(float)
 
     def calculate_efactor(column):
         """
@@ -439,10 +442,33 @@ def calculate_e_correction(df):
         """
         return sum(column * df["wavelength"]) / sum(df["0.0"] * df["wavelength"])
 
-    e_factor = df.drop(["0_deg", "wavelength"], axis=1).apply(calculate_efactor)
+    try:
+        e_factor = df.drop(["0_deg", "wavelength"], axis=1).apply(calculate_efactor)
+    except:
+        e_factor = df.drop(["wavelength"], axis=1).apply(calculate_efactor)
+
+    # It is now important to only integrate from 0 to 90° and not the entire spectrum
+    # It is probably smarter to pull this at some point up but this works.
+    relevant_e_factors = e_factor.loc[
+        np.logical_and(
+            np.array(e_factor.index).astype(float) >= 0,
+            np.array(e_factor.index).astype(float) <= 90,
+        )
+    ]
+
+    relevant_angles = np.array(
+        e_factor.loc[
+            np.logical_and(
+                np.array(e_factor.index).astype(float) >= 0,
+                np.array(e_factor.index).astype(float) <= 90,
+            )
+        ].index
+    ).astype(float)
 
     return np.sum(
-        e_factor * np.sin(np.deg2rad(angles)) * np.deg2rad(np.diff(angles)[0])
+        relevant_e_factors
+        * np.sin(np.deg2rad(relevant_angles))
+        * np.deg2rad(np.diff(relevant_angles)[0])
     )
 
 
@@ -452,7 +478,10 @@ def calculate_v_correction(df, photopic_response):
     """
 
     # Get angles from column names first
-    angles = df.drop(["0_deg", "wavelength"], axis=1).columns.to_numpy(float)
+    try:
+        angles = df.drop(["0_deg", "wavelength"], axis=1).columns.to_numpy(float)
+    except:
+        angles = df.drop(["wavelength"], axis=1).columns.to_numpy(float)
 
     def calculate_vfactor(column):
         """
@@ -462,9 +491,33 @@ def calculate_v_correction(df, photopic_response):
             df["0.0"] * photopic_response["photopic_response"].to_numpy()
         )
 
-    v_factor = df.drop(["0_deg", "wavelength"], axis=1).apply(calculate_vfactor)
+    try:
+        v_factor = df.drop(["0_deg", "wavelength"], axis=1).apply(calculate_vfactor)
+    except:
+        v_factor = df.drop(["wavelength"], axis=1).apply(calculate_vfactor)
+
+    # It is now important to only integrate from 0 to 90° and not the entire spectrum
+    # It is probably smarter to pull this at some point up but this works.
+    relevant_v_factor = v_factor.loc[
+        np.logical_and(
+            np.array(v_factor.index).astype(float) >= 0,
+            np.array(v_factor.index).astype(float) <= 90,
+        )
+    ]
+
+    relevant_angles = np.array(
+        v_factor.loc[
+            np.logical_and(
+                np.array(v_factor.index).astype(float) >= 0,
+                np.array(v_factor.index).astype(float) <= 90,
+            )
+        ].index
+    ).astype(float)
+
     return np.sum(
-        v_factor * np.sin(np.deg2rad(angles)) * np.deg2rad(np.diff(angles)[0])
+        relevant_v_factor
+        * np.sin(np.deg2rad(relevant_angles))
+        * np.deg2rad(np.diff(relevant_angles)[0])
     )
 
 

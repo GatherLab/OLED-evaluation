@@ -350,7 +350,7 @@ class Ui_MainWindow(object):
 
         self.eval_fig.figure.set_facecolor("#E0E0E0")
         self.eval_mplToolbar = NavigationToolbar(self.eval_fig, self.eval_graph_widget)
-        self.eval_mplToolbar.setStyleSheet("background-color:#E0E0E0;")
+        self.eval_mplToolbar.setStyleSheet("background-color:#E0E0E0; color:black;")
         self.eval_mpl_graph_gridLayout.addWidget(self.eval_mplToolbar)
 
         # ----------------------- Define scroll area ---------------------------
