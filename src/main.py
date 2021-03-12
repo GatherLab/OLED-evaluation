@@ -1069,6 +1069,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """
         Plot the spectrum
         """
+        color = self.assigned_groups_df.loc[
+            self.assigned_groups_df.group_name == group,
+            "color",
+        ].to_list()[0]
 
         if (
             self.assigned_groups_df.join(self.spectrum_data_df)
@@ -1142,10 +1146,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             non_lambertian_spectrum = ri / ri[np.where(angles == 0)[0][0]]
 
             # ax = fig.add_subplot(111, polar=True)
-            self.eval_ax1.plot(
-                angles,
-                non_lambertian_spectrum,
-            )
+            self.eval_ax1.plot(angles, non_lambertian_spectrum, color=color)
             self.eval_ax1.plot(
                 angles, np.cos(angles), label="Lambertian", color="black"
             )
@@ -1160,10 +1161,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
             self.current_plot_type = "angle_resolved_spectrum"
         else:
-            color = self.assigned_groups_df.loc[
-                self.assigned_groups_df.group_name == group,
-                "color",
-            ].to_list()[0]
 
             if not self.current_plot_type == "normal_spectrum":
                 # Clear figure and define axis
