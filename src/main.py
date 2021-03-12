@@ -713,6 +713,13 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """
 
         temp_df = self.data_df.loc[self.data_df.index == identifier]
+        color = self.assigned_groups_df.loc[
+            self.assigned_groups_df.index
+            == self.data_df.loc[
+                self.data_df.index == identifier, "device_number"
+            ].to_list()[0],
+            "color",
+        ].to_list()[0]
 
         if not self.current_plot_type == "single":
             # Clear figure and define axis
@@ -743,17 +750,19 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.eval_ax[0, 0].set_ylabel("Current Density (mA cm$^{-2}$)")
         self.eval_ax5.set_ylabel("Luminance (cd m$^{-2}$)")
 
-        self.eval_ax[0, 0].plot(temp_df["voltage"][0], temp_df["current_density"][0])
+        self.eval_ax[0, 0].plot(
+            temp_df["voltage"][0], temp_df["current_density"][0], color=color
+        )
         self.eval_ax5.plot(
-            temp_df["voltage"][0],
-            temp_df["luminance"][0],
-            linestyle="--",
+            temp_df["voltage"][0], temp_df["luminance"][0], linestyle="--", color=color
         )
 
         self.eval_ax5.format_coord = self.make_format(self.eval_ax5, self.eval_ax[0, 0])
 
         # Plot eqe over absolute current density
-        self.eval_ax[0, 1].plot(temp_df["current_density"][0], temp_df["eqe"][0])
+        self.eval_ax[0, 1].plot(
+            temp_df["current_density"][0], temp_df["eqe"][0], color=color
+        )
         self.eval_ax[0, 1].set_xscale("log")
         self.eval_ax[0, 1].set_xlabel("Current Density (mA cm$^{-2}$)")
         self.eval_ax[0, 1].set_ylabel("External Quantum Efficiency (%)")
@@ -770,7 +779,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         )
 
         # Plot power density over voltage
-        self.eval_ax[1, 0].plot(temp_df["voltage"][0], temp_df["power_density"][0])
+        self.eval_ax[1, 0].plot(
+            temp_df["voltage"][0], temp_df["power_density"][0], color=color
+        )
         self.eval_ax[1, 0].set_yscale("log")
         self.eval_ax[1, 0].set_xlabel("Voltage (V)")
         self.eval_ax[1, 0].set_ylabel("Power Density (mW mm$^{-2}$)")
@@ -781,6 +792,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             spectrum_data["wavelength"][0],
             np.array(spectrum_data["intensity"][0])
             - np.array(spectrum_data["background"][0]),
+            color=color,
         )
         self.eval_ax[1, 1].set_xlabel("Wavelength (nm)")
         self.eval_ax[1, 1].set_ylabel("Spectrum (a.u.)")
@@ -954,10 +966,19 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             current_density_4v, labels=labels.astype(str).tolist(), showfliers=False
         )
         for i in range(len(current_density_4v)):
+            try:
+                color = self.assigned_groups_df.loc[
+                    self.assigned_groups_df.group_name == labels[i],
+                    "color",
+                ].to_list()[0]
+            except:
+                color = self.assigned_groups_df.loc[
+                    self.assigned_groups_df.index == labels[i], "color"
+                ].to_list()[0]
             temp_y = current_density_4v[i]
             temp_x = np.random.normal(1 + i, 0.04, size=len(temp_y))
 
-            self.eval_ax[0, 0].plot(temp_x, temp_y, "b.")
+            self.eval_ax[0, 0].plot(temp_x, temp_y, "b.", color=color)
         self.eval_ax[0, 0].set_ylabel("Current Density @ 4V (mA cm$^{-2}$)")
 
         # Luminance at 4 V
@@ -965,10 +986,19 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             luminance_4v, labels=labels.astype(str).tolist(), showfliers=False
         )
         for i in range(len(luminance_4v)):
+            try:
+                color = self.assigned_groups_df.loc[
+                    self.assigned_groups_df.group_name == labels[i],
+                    "color",
+                ].to_list()[0]
+            except:
+                color = self.assigned_groups_df.loc[
+                    self.assigned_groups_df.index == labels[i], "color"
+                ].to_list()[0]
             temp_y = luminance_4v[i]
             temp_x = np.random.normal(1 + i, 0.04, size=len(temp_y))
 
-            self.eval_ax[0, 1].plot(temp_x, temp_y, "b.")
+            self.eval_ax[0, 1].plot(temp_x, temp_y, "b.", color=color)
 
         self.eval_ax[0, 1].set_ylabel("Luminance @ 4V (cd m$^{-2}$)")
 
@@ -977,10 +1007,19 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             eqe_4v, labels=labels.astype(str).tolist(), showfliers=False
         )
         for i in range(len(eqe_4v)):
+            try:
+                color = self.assigned_groups_df.loc[
+                    self.assigned_groups_df.group_name == labels[i],
+                    "color",
+                ].to_list()[0]
+            except:
+                color = self.assigned_groups_df.loc[
+                    self.assigned_groups_df.index == labels[i], "color"
+                ].to_list()[0]
             temp_y = eqe_4v[i]
             temp_x = np.random.normal(1 + i, 0.04, size=len(temp_y))
 
-            self.eval_ax[1, 0].plot(temp_x, temp_y, "b.")
+            self.eval_ax[1, 0].plot(temp_x, temp_y, "b.", color=color)
 
         self.eval_ax[1, 0].set_ylabel("EQE @ 4V (%)")
 
@@ -989,10 +1028,19 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             power_density_4v, labels=labels.astype(str).tolist(), showfliers=False
         )
         for i in range(len(power_density_4v)):
+            try:
+                color = self.assigned_groups_df.loc[
+                    self.assigned_groups_df.group_name == labels[i],
+                    "color",
+                ].to_list()[0]
+            except:
+                color = self.assigned_groups_df.loc[
+                    self.assigned_groups_df.index == labels[i], "color"
+                ].to_list()[0]
             temp_y = power_density_4v[i]
             temp_x = np.random.normal(1 + i, 0.04, size=len(temp_y))
 
-            self.eval_ax[1, 1].plot(temp_x, temp_y, "b.")
+            self.eval_ax[1, 1].plot(temp_x, temp_y, "b.", color=color)
 
         self.eval_ax[1, 1].set_ylabel("Power Density @ 4V (mA mm$^{-2}$)")
 
@@ -1112,6 +1160,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
             self.current_plot_type = "angle_resolved_spectrum"
         else:
+            color = self.assigned_groups_df.loc[
+                self.assigned_groups_df.group_name == group,
+                "color",
+            ].to_list()[0]
+
             if not self.current_plot_type == "normal_spectrum":
                 # Clear figure and define axis
                 self.eval_fig.figure.clf()
@@ -1135,7 +1188,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.spectrum_data_df.loc[device_number, "background"].to_list()[0]
             )
 
-            self.eval_ax.plot(wavelength, intensity / np.max(intensity))
+            self.eval_ax.plot(wavelength, intensity / np.max(intensity), color=color)
             self.eval_ax.set_xlabel("Wavelength (nm)")
             self.eval_ax.set_ylabel("Intensity (a.u.)")
             self.eval_ax.grid(True)
