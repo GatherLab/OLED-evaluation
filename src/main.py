@@ -380,10 +380,12 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 "background",
                 "intensity",
                 "angle_resolved",
-                "correction_factor",
+                # "correction_factor",
             ],
             index=self.assigned_groups_df.index,
         )
+
+        self.spectrum_data_df["correction_factor"] = np.empty((2, 0)).tolist()
 
         # Add empty columns to our basic dataframes
         self.data_df["current_density"] = np.empty((len(self.data_df), 0)).tolist()
@@ -507,7 +509,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                     self.assigned_groups_df.index.to_list()[i], "intensity"
                 ] = raw_spectrum["intensity"].to_list()
 
-                self.spectrum_data_df["correction_factor"].iloc[i] = [0, 0]
+                # self.spectrum_data_df["correction_factor"].iloc[i] = [0, 0]
+                self.spectrum_data_df.loc[self.spectrum_data_df.index[i], "correction_factor"] = [0, 0]
                 cf.log_message(
                     "Spectrum data found for device "
                     + str(self.assigned_groups_df.index[i])

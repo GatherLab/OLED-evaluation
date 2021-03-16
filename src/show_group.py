@@ -10,7 +10,7 @@ import functools
 import numpy as np
 import pandas as pd
 
-import randomcolor
+# import randomcolor
 
 from UI_show_group_window import Ui_ShowGroup
 
