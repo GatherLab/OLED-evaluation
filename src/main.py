@@ -99,14 +99,14 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # -------------------------------------------------------------------- #
         self.actionOptions.triggered.connect(self.show_settings)
 
-        self.actionOpen_Log.triggered.connect(lambda: cf.open_file("log.out"))
+        self.actionOpen_Log.triggered.connect(lambda: cf.open_file("./usr/log.out"))
 
         # Open the documentation in the browser (maybe in the future directly
         # open the readme file in the folder but currently this is so much
         # easier and prettier)
         self.actionDocumentation.triggered.connect(
             lambda: webbrowser.open(
-                "https://github.com/GatherLab/me-measurement/blob/main/README.md"
+                "https://github.com/GatherLab/OLED-evaluation/blob/main/README.md"
             )
         )
         # -------------------------------------------------------------------- #
