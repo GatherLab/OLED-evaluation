@@ -388,9 +388,9 @@ def calibrate_spectrum(spectrum, calibration):
     # interpolate spectrometer calibration factor onto correct axis (so that it
     # can be multiplied with the spectrum itself)
     interpolated_calibration = np.interp(
-        spectrum["wavelength"].to_numpy(),
-        calibration["wavelength"].to_numpy(),
-        calibration["sensitivity"].to_numpy(),
+        spectrum["wavelength"].to_numpy(dtype=np.float),
+        calibration["wavelength"].to_numpy(dtype=np.float),
+        calibration["sensitivity"].to_numpy(dtype=np.float),
     )
 
     # Now subtract background and multiply with calibration

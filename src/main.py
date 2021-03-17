@@ -471,8 +471,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 raw_spectrum = pd.read_csv(spectrum_path, sep="\t", skiprows=3)
 
                 # Extract the foward spectrum and save to self.spectrum_data_df
-                self.spectrum_data_df.loc[
-                    self.assigned_groups_df.index.to_list()[i], "intensity"
+                # self.spectrum_data_df.loc[
+                #     self.assigned_groups_df.index.to_list()[i], "intensity"
+                # ] = raw_spectrum["0.0"].to_list()
+                self.spectrum_data_df["intensity"].loc[
+                    self.assigned_groups_df.index.to_list()[i]
                 ] = raw_spectrum["0.0"].to_list()
 
                 # Interpolate and correct spectrum
@@ -560,18 +563,20 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             #     self.assigned_groups_df.index.to_list()[i], "background"
             # ] = raw_spectrum["background"].to_list()
 
-            # This can probably be merged with the above spectrum
-            # calibration. However, the spectrum should not be interpolated
-            # and I am not 100% sure if I can reverse the order of
-            # interpolation and calibration (probably yes). To keep things
-            # working I don't reverse it for now, however, and repeat the
-            # calculation.
-            # self.spectrum_data_df.loc[
-            #     self.assigned_groups_df.index.to_list()[i], "calibrated_intensity"
-            # ] = ef.calibrate_spectrum(self.spectrum_data_df, calibration)
+            # The following is overcomplicated but it works. Has to be improved
+            # in a future implementation
+
             self.spectrum_data_df["calibrated_intensity"].loc[
                 self.assigned_groups_df.index.to_list()[i]
-            ] = ef.calibrate_spectrum(raw_spectrum, spectrometer_calibration)[
+            ] = ef.calibrate_spectrum(
+                self.spectrum_data_df.loc[
+                    [
+                        self.assigned_groups_df.index.to_list()[i],
+                    ],
+                    ["wavelength", "background", "intensity"],
+                ].apply(pd.Series.explode),
+                spectrometer_calibration,
+            )[
                 "intensity"
             ].to_list()
 
@@ -1448,6 +1453,23 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                     )
                 )
                 header_lines.append(line04)
+
+                # spectrum_path = self.assigned_groups_df["spectrum_path"].iloc[i]
+
+                if self.spectrum_data_df["angle_resolved"].loc[device_number]:
+                    # Goniometer file
+                    # Read in the angle resolved file again
+                    raw_spectrum = pd.read_csv(spectrum_path, sep="\t", skiprows=3)
+
+                    # Extract the foward spectrum and save to self.spectrum_data_df
+                    self.spectrum_data_df.loc[
+                        self.assigned_groups_df.index.to_list()[i], "intensity"
+                    ] = raw_spectrum["0.0"].to_list()
+
+                    calibrated_spectrum = ef.calibrate_spectrum(
+                        self.spectrum_data_df, spectrometer_calibration
+                    )
+                    print("test")
 
             line05 = "### Measurement data ###"
             header_lines.append(line05)
