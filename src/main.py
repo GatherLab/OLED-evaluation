@@ -604,11 +604,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             # interpolated_spectrum = ef.interpolate_and_correct_spectrum(
             # reshaped_spectrum, photopic_response, calibration
             # )
-            interpolate_spectrum = ef.interpolate_spectrum(
+            interpolated_spectrum = ef.interpolate_spectrum(
                 reshaped_spectrum, photopic_response
             )
             calibrated_spectrum = ef.calibrate_spectrum(
-                interpolate_spectrum, spectrometer_calibration
+                interpolated_spectrum, spectrometer_calibration
             )
 
             # Now get an instance of the JVL class that on instanciating,

@@ -206,7 +206,41 @@ def read_calibration_files(
     #     spectrometer_calibration["sensitivity"].to_numpy(),
     # )
 
-    return photopic_response, pd_responsivity, cie_reference, spectrometer_calibration
+    # Only take the part of the calibration files that is in the range of the
+    # spectrometer calibration file. Otherwise all future interpolations will
+    # interpolate on data that does not exist. I think it doesn't make a
+    # difference because this kind of data is set to zero anyways by the
+    # interpolate function but it is more logic to get rid of the unwanted data
+    # here already
+    photopic_response_range = photopic_response.loc[
+        np.logical_and(
+            photopic_response["wavelength"]
+            <= spectrometer_calibration["wavelength"].max(),
+            photopic_response["wavelength"]
+            >= spectrometer_calibration["wavelength"].min(),
+        )
+    ]
+    pd_responsivity_range = pd_responsivity.loc[
+        np.logical_and(
+            pd_responsivity["wavelength"]
+            <= spectrometer_calibration["wavelength"].max(),
+            pd_responsivity["wavelength"]
+            >= spectrometer_calibration["wavelength"].min(),
+        )
+    ]
+    cie_reference_range = cie_reference.loc[
+        np.logical_and(
+            cie_reference["wavelength"] <= spectrometer_calibration["wavelength"].max(),
+            cie_reference["wavelength"] >= spectrometer_calibration["wavelength"].min(),
+        )
+    ]
+
+    return (
+        photopic_response_range,
+        pd_responsivity_range,
+        cie_reference_range,
+        spectrometer_calibration,
+    )
 
 
 # Loading the V(λ) and R(λ) spectra against wavelength
