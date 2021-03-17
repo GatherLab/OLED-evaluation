@@ -376,15 +376,24 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.spectrum_data_df = pd.DataFrame(
             columns=[
-                "wavelength",
-                "background",
-                "intensity",
                 "angle_resolved",
                 # "correction_factor",
             ],
             index=self.assigned_groups_df.index,
         )
 
+        self.spectrum_data_df["wavelength"] = np.empty(
+            (len(self.spectrum_data_df), 0)
+        ).tolist()
+        self.spectrum_data_df["background"] = np.empty(
+            (len(self.spectrum_data_df), 0)
+        ).tolist()
+        self.spectrum_data_df["intensity"] = np.empty(
+            (len(self.spectrum_data_df), 0)
+        ).tolist()
+        self.spectrum_data_df["calibrated_intensity"] = np.empty(
+            (len(self.spectrum_data_df), 0)
+        ).tolist()
         self.spectrum_data_df["correction_factor"] = np.empty(
             (len(self.spectrum_data_df), 0)
         ).tolist()
@@ -417,7 +426,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             photopic_response,
             pd_responsivity,
             cie_reference,
-            calibration,
+            spectrometer_calibration,
         ) = ef.read_calibration_files(
             global_settings["photopic_response_path"],
             global_settings["pd_responsivity_path"],
@@ -467,14 +476,20 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 ] = raw_spectrum["0.0"].to_list()
 
                 # Interpolate and correct spectrum
-                interpolated_spectrum = ef.interpolate_and_correct_spectrum(
-                    raw_spectrum, photopic_response, calibration
+                interpolate_spectrum = ef.interpolate_spectrum(
+                    raw_spectrum, photopic_response
                 )
+                calibrated_spectrum = ef.calibrate_spectrum(
+                    interpolate_spectrum, spectrometer_calibration
+                )
+                # interpolated_spectrum = ef.interpolate_and_correct_spectrum(
+                # raw_spectrum, photopic_response, calibration
+                # )
 
                 # Calculate correction factors
-                e_correction_factor = ef.calculate_e_correction(interpolated_spectrum)
+                e_correction_factor = ef.calculate_e_correction(calibrated_spectrum)
                 v_correction_factor = ef.calculate_v_correction(
-                    interpolated_spectrum, photopic_response
+                    calibrated_spectrum, photopic_response
                 )
                 self.spectrum_data_df["correction_factor"].iloc[i] = [
                     e_correction_factor,
@@ -507,13 +522,20 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                     skip_blank_lines=False,
                 )
 
-                self.spectrum_data_df.loc[
-                    self.assigned_groups_df.index.to_list()[i], "intensity"
+                # self.spectrum_data_df.loc[
+                #     self.assigned_groups_df.index.to_list()[i], "intensity"
+                # ] = raw_spectrum["intensity"].to_list()
+                # self.spectrum_data_df["intensity"].iloc[i] = [0,0]
+                self.spectrum_data_df["intensity"].loc[
+                    self.assigned_groups_df.index.to_list()[i]
                 ] = raw_spectrum["intensity"].to_list()
 
                 # self.spectrum_data_df["correction_factor"].iloc[i] = [0, 0]
-                self.spectrum_data_df.loc[
-                    self.spectrum_data_df.index[i], "correction_factor"
+                # self.spectrum_data_df.loc[
+                # self.spectrum_data_df.index[i], "correction_factor"
+                # ] = [0, 0]
+                self.spectrum_data_df["correction_factor"].loc[
+                    self.assigned_groups_df.index.to_list()[i]
                 ] = [0, 0]
                 cf.log_message(
                     "Spectrum data found for device "
@@ -525,12 +547,33 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 cf.log_message("Selected spectrum file does not have a valid name")
                 continue
 
-            self.spectrum_data_df.loc[
-                self.assigned_groups_df.index.to_list()[i], "wavelength"
+            self.spectrum_data_df["wavelength"].loc[
+                self.assigned_groups_df.index.to_list()[i]
             ] = raw_spectrum["wavelength"].to_list()
-            self.spectrum_data_df.loc[
-                self.assigned_groups_df.index.to_list()[i], "background"
+            # self.spectrum_data_df.loc[
+            # self.assigned_groups_df.index.to_list()[i], "wavelength"
+            # ] = raw_spectrum["wavelength"].to_list()
+            self.spectrum_data_df["background"].loc[
+                self.assigned_groups_df.index.to_list()[i]
             ] = raw_spectrum["background"].to_list()
+            # self.spectrum_data_df.loc[
+            #     self.assigned_groups_df.index.to_list()[i], "background"
+            # ] = raw_spectrum["background"].to_list()
+
+            # This can probably be merged with the above spectrum
+            # calibration. However, the spectrum should not be interpolated
+            # and I am not 100% sure if I can reverse the order of
+            # interpolation and calibration (probably yes). To keep things
+            # working I don't reverse it for now, however, and repeat the
+            # calculation.
+            # self.spectrum_data_df.loc[
+            #     self.assigned_groups_df.index.to_list()[i], "calibrated_intensity"
+            # ] = ef.calibrate_spectrum(self.spectrum_data_df, calibration)
+            self.spectrum_data_df["calibrated_intensity"].loc[
+                self.assigned_groups_df.index.to_list()[i]
+            ] = ef.calibrate_spectrum(raw_spectrum, spectrometer_calibration)[
+                "intensity"
+            ].to_list()
 
         # Iterate over all loaded data
         for index, row in self.data_df.iterrows():
@@ -554,8 +597,14 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             )
 
             # Interpolate and correct spectrum
-            interpolated_spectrum = ef.interpolate_and_correct_spectrum(
-                reshaped_spectrum, photopic_response, calibration
+            # interpolated_spectrum = ef.interpolate_and_correct_spectrum(
+            # reshaped_spectrum, photopic_response, calibration
+            # )
+            interpolate_spectrum = ef.interpolate_spectrum(
+                reshaped_spectrum, photopic_response
+            )
+            calibrated_spectrum = ef.calibrate_spectrum(
+                interpolate_spectrum, spectrometer_calibration
             )
 
             # Now get an instance of the JVL class that on instanciating,
@@ -563,7 +612,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             # functions depending on goniometer correction or not
             jvl_instance = ef.JVLData(
                 jvl_data=row,
-                perpendicular_spectrum=interpolated_spectrum,
+                perpendicular_spectrum=calibrated_spectrum,
                 photopic_response=photopic_response,
                 pd_responsivity=pd_responsivity,
                 cie_reference=cie_reference,
@@ -797,8 +846,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         spectrum_data = temp_df.join(self.spectrum_data_df, on="device_number")
         self.eval_ax[1, 1].plot(
             spectrum_data["wavelength"][0],
-            np.array(spectrum_data["intensity"][0])
-            - np.array(spectrum_data["background"][0]),
+            np.array(spectrum_data["calibrated_intensity"][0])
+            / np.max(np.array(spectrum_data["calibrated_intensity"][0])),
             color=color,
         )
         self.eval_ax[1, 1].set_xlabel("Wavelength (nm)")
@@ -1146,7 +1195,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             ## Radiant intensity polar coordinates
             # theta = np.linspace(0, np.pi)
             angles = np.radians(temp.columns.to_numpy(float))
-            luminous_intensity = temp.sum()
+            # luminous_intensity = temp.sum()
 
             ri = temp.apply(ef.calculate_ri, axis=0)
 
@@ -1186,11 +1235,16 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             wavelength = self.spectrum_data_df.loc[
                 device_number, "wavelength"
             ].to_list()[0]
-            intensity = np.array(
-                self.spectrum_data_df.loc[device_number, "intensity"].to_list()[0]
-            ) - np.array(
-                self.spectrum_data_df.loc[device_number, "background"].to_list()[0]
-            )
+
+            intensity = self.spectrum_data_df.loc[
+                device_number, "calibrated_intensity"
+            ].to_list()[0]
+
+            # intensity = np.array(
+            # self.spectrum_data_df.loc[device_number, "intensity"].to_list()[0]
+            # ) - np.array(
+            # self.spectrum_data_df.loc[device_number, "background"].to_list()[0]
+            # )
 
             self.eval_ax.plot(wavelength, intensity / np.max(intensity), color=color)
             self.eval_ax.set_xlabel("Wavelength (nm)")
@@ -1320,11 +1374,114 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             cf.save_file(df, file_path, header_lines)
 
             cf.log_message(
-                "Saved d"
+                "Saved performance data for d"
                 + str(int(row["device_number"]))
                 + "p"
                 + str((row["pixel_number"]))
             )
+
+            # Format the dataframe for saving (no. of digits)
+            # df_spectrum_data["wavelength"] = df_spectrum_data["wavelength"].map(
+            #     lambda x: "{0:.2f}".format(x)
+            # )
+
+        calibration_file_path = cf.read_global_settings()[
+            "spectrometer_calibration_path"
+        ]
+
+        # Now save the correct spectra
+        for device_number in unmasked_data.device_number.unique():
+            # Create folder if it does not exist yet
+            Path(self.global_path + "/eval/").mkdir(parents=True, exist_ok=True)
+
+            # Save data
+            file_path = (
+                self.global_path
+                + "/eval/"
+                + date.today().strftime("%Y-%m-%d_")
+                + self.batch_name
+                + "_d"
+                + str(device_number)
+                + "_spec_eval"
+                + ".csv"
+            )
+
+            # Define header line with voltage and integration time
+            header_lines = []
+            line01 = (
+                "Corrected Spectrum:   "
+                + self.assigned_groups_df.loc[
+                    self.assigned_groups_df.index == device_number,
+                    "spectrum_path",
+                ]
+                .to_list()[0]
+                .split("/")[-1]
+            )
+            header_lines.append(line01)
+
+            line02 = "Calibration File:   " + calibration_file_path.split("/")[-1]
+            header_lines.append(line02)
+
+            if self.spectrum_data_df.loc[device_number, "angle_resolved"]:
+                line04 = (
+                    "Assigned group: "
+                    + str(self.assigned_groups_df.loc[device_number, "group_name"])
+                    + "Photon Number Correction Factor: "
+                    + str(
+                        round(
+                            2
+                            * self.spectrum_data_df["correction_factor"].loc[
+                                device_number
+                            ][0],
+                            4,
+                        )
+                    )
+                    + "\t Photometric Correction Factor: "
+                    + str(
+                        round(
+                            2
+                            * self.spectrum_data_df["correction_factor"].loc[
+                                device_number
+                            ][1],
+                            4,
+                        )
+                    )
+                )
+                header_lines.append(line04)
+
+            line05 = "### Measurement data ###"
+            header_lines.append(line05)
+
+            line06 = "Wavelength\t Background\t Intensity\t Calibrated Intensity\t"
+            header_lines.append(line06)
+
+            line07 = "nm\t counts\t counts\t counts\n"
+            header_lines.append(line07)
+
+            # Drop columns that are not saved to main part of file
+            series_to_save = self.spectrum_data_df.loc[device_number].drop(
+                ["angle_resolved", "correction_factor"]
+            )
+
+            df = pd.DataFrame(
+                np.array(
+                    np.split(
+                        np.concatenate(series_to_save.to_numpy()), len(series_to_save)
+                    )
+                ).T,
+                columns=series_to_save.index,
+            )
+
+            df["wavelength"] = df["wavelength"].map(lambda x: "{0:.2f}".format(x))
+            df["background"] = df["background"].map(lambda x: "{0:.0f}".format(x))
+            df["intensity"] = df["intensity"].map(lambda x: "{0:.0f}".format(x))
+            df["calibrated_intensity"] = df["calibrated_intensity"].map(
+                lambda x: "{0:.0f}".format(x)
+            )
+
+            cf.save_file(df, file_path, header_lines)
+
+            cf.log_message("Saved spectrum data for d" + str(int(device_number)))
 
             # Format the dataframe for saving (no. of digits)
             # df_spectrum_data["wavelength"] = df_spectrum_data["wavelength"].map(

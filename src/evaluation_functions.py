@@ -199,14 +199,14 @@ def read_calibration_files(
         names=["wavelength", "sensitivity"],
     )
 
-    # interpolate spectrometer calibration factor onto correct axis
-    calibration = np.interp(
-        photopic_response["wavelength"].to_numpy(),
-        spectrometer_calibration["wavelength"].to_numpy(),
-        spectrometer_calibration["sensitivity"].to_numpy(),
-    )
+    # # interpolate spectrometer calibration factor onto correct axis
+    # calibration = np.interp(
+    #     photopic_response["wavelength"].to_numpy(),
+    #     spectrometer_calibration["wavelength"].to_numpy(),
+    #     spectrometer_calibration["sensitivity"].to_numpy(),
+    # )
 
-    return photopic_response, pd_responsivity, cie_reference, calibration
+    return photopic_response, pd_responsivity, cie_reference, spectrometer_calibration
 
 
 # Loading the V(λ) and R(λ) spectra against wavelength
@@ -356,9 +356,11 @@ def read_calibration_files(
 # ) = read_calibration_files()
 
 
-def interpolate_and_correct_spectrum(spectrum, photopic_response, calibration):
+def interpolate_spectrum(spectrum, photopic_response):
     """
-    Function that interpolates a given spectrum and corrects it according to the calibration files
+    Function that does the interpolation of a given pandas dataframe on the
+    photopic response calibration wavelengths. This is later needed for the
+    integrals.
     """
 
     def interpolate(column):
@@ -375,16 +377,30 @@ def interpolate_and_correct_spectrum(spectrum, photopic_response, calibration):
     # the photopic_response file
     spectrum_interpolated_df = spectrum.apply(interpolate)
 
-    # Now subtract background and multiply with calibration
-    spectrum_corrected = (
-        spectrum_interpolated_df.loc[
-            :, ~np.isin(spectrum_interpolated_df.columns, ["background", "wavelength"])
-        ]
-        .subtract(spectrum_interpolated_df["background"], axis=0)
-        .multiply(calibration, axis=0)
+    return spectrum_interpolated_df
+
+
+def calibrate_spectrum(spectrum, calibration):
+    """
+    Function that takes a pandas dataframe spectrum and corrects it according to
+    the calibration files
+    """
+    # interpolate spectrometer calibration factor onto correct axis (so that it
+    # can be multiplied with the spectrum itself)
+    interpolated_calibration = np.interp(
+        spectrum["wavelength"].to_numpy(),
+        calibration["wavelength"].to_numpy(),
+        calibration["sensitivity"].to_numpy(),
     )
 
-    spectrum_corrected["wavelength"] = spectrum_interpolated_df["wavelength"]
+    # Now subtract background and multiply with calibration
+    spectrum_corrected = (
+        spectrum.loc[:, ~np.isin(spectrum.columns, ["background", "wavelength"])]
+        .subtract(spectrum["background"], axis=0)
+        .multiply(interpolated_calibration, axis=0)
+    )
+
+    spectrum_corrected["wavelength"] = spectrum["wavelength"]
 
     return spectrum_corrected
 

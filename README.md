@@ -113,14 +113,14 @@ In general data is organised in pandas dataframe in a relational database manner
 
 - spectrum_data_df: Contains all the spectrum data for the different groups
 
-| index (PM) | wavelength     | background     | intensity      | angle_resolved | correction_factor |
-| ---------- | -------------- | -------------- | -------------- | -------------- | ----------------- |
-| 21         | [1, 2, 3, ...] | [3, 4, 5, ...] | [6, 7, 8, ...] | True           | [0.1, 0.2]        |
-| 24         | [1, 2, 3, ...] | [3, 4, 5, ...] | [6, 7, 8, ...] | False          | -                 |
-| 31         | [1, 2, 3, ...] | [3, 4, 5, ...] | [6, 7, 8, ...] | False          | -                 |
-| 34         | [1, 2, 3, ...] | [3, 4, 5, ...] | [6, 7, 8, ...] | False          | -                 |
-| 41         | [1, 2, 3, ...] | [3, 4, 5, ...] | [6, 7, 8, ...] | False          | -                 |
-| 44         | [1, 2, 3, ...] | [3, 4, 5, ...] | [6, 7, 8, ...] | False          | -                 |
+| index (PM) | wavelength     | background     | intensity      | calibrated_intensity | angle_resolved | correction_factor |
+| ---------- | -------------- | -------------- | -------------- | -------------------- | -------------- | ----------------- |
+| 21         | [1, 2, 3, ...] | [3, 4, 5, ...] | [6, 7, 8, ...] | [9, 10, 11, ...]     | True           | [0.1, 0.2]        |
+| 24         | [1, 2, 3, ...] | [3, 4, 5, ...] | [6, 7, 8, ...] | [9, 10, 11, ...]     | False          | -                 |
+| 31         | [1, 2, 3, ...] | [3, 4, 5, ...] | [6, 7, 8, ...] | [9, 10, 11, ...]     | False          | -                 |
+| 34         | [1, 2, 3, ...] | [3, 4, 5, ...] | [6, 7, 8, ...] | [9, 10, 11, ...]     | False          | -                 |
+| 41         | [1, 2, 3, ...] | [3, 4, 5, ...] | [6, 7, 8, ...] | [9, 10, 11, ...]     | False          | -                 |
+| 44         | [1, 2, 3, ...] | [3, 4, 5, ...] | [6, 7, 8, ...] | [9, 10, 11, ...]     | False          | -                 |
 
 - files_df: Contains the file names and all relevant information extracted from them for all files in the selected folder
 
