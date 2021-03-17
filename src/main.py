@@ -565,10 +565,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
             # The following is overcomplicated but it works. Has to be improved
             # in a future implementation
-
-            self.spectrum_data_df["calibrated_intensity"].loc[
-                self.assigned_groups_df.index.to_list()[i]
-            ] = ef.calibrate_spectrum(
+            calibrated_spectrum = ef.calibrate_spectrum(
                 self.spectrum_data_df.loc[
                     [
                         self.assigned_groups_df.index.to_list()[i],
@@ -576,9 +573,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                     ["wavelength", "background", "intensity"],
                 ].apply(pd.Series.explode),
                 spectrometer_calibration,
-            )[
-                "intensity"
-            ].to_list()
+            )["intensity"].to_numpy()
+
+            self.spectrum_data_df["calibrated_intensity"].loc[
+                self.assigned_groups_df.index.to_list()[i]
+            ] = calibrated_spectrum / np.max(calibrated_spectrum)
 
         # Iterate over all loaded data
         for index, row in self.data_df.iterrows():
@@ -851,8 +850,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         spectrum_data = temp_df.join(self.spectrum_data_df, on="device_number")
         self.eval_ax[1, 1].plot(
             spectrum_data["wavelength"][0],
-            np.array(spectrum_data["calibrated_intensity"][0])
-            / np.max(np.array(spectrum_data["calibrated_intensity"][0])),
+            np.array(spectrum_data["calibrated_intensity"][0]),
             color=color,
         )
         self.eval_ax[1, 1].set_xlabel("Wavelength (nm)")
@@ -1251,7 +1249,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             # self.spectrum_data_df.loc[device_number, "background"].to_list()[0]
             # )
 
-            self.eval_ax.plot(wavelength, intensity / np.max(intensity), color=color)
+            self.eval_ax.plot(wavelength, intensity, color=color)
             self.eval_ax.set_xlabel("Wavelength (nm)")
             self.eval_ax.set_ylabel("Intensity (a.u.)")
             self.eval_ax.grid(True)
@@ -1454,54 +1452,94 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 )
                 header_lines.append(line04)
 
-                # spectrum_path = self.assigned_groups_df["spectrum_path"].iloc[i]
+                spectrum_path = self.assigned_groups_df.loc[
+                    device_number, "spectrum_path"
+                ]
 
-                if self.spectrum_data_df["angle_resolved"].loc[device_number]:
-                    # Goniometer file
-                    # Read in the angle resolved file again
-                    raw_spectrum = pd.read_csv(spectrum_path, sep="\t", skiprows=3)
+                # Goniometer file
+                # Read in the angle resolved file again
+                raw_spectrum = pd.read_csv(spectrum_path, sep="\t", skiprows=3)
 
-                    # Extract the foward spectrum and save to self.spectrum_data_df
-                    self.spectrum_data_df.loc[
-                        self.assigned_groups_df.index.to_list()[i], "intensity"
-                    ] = raw_spectrum["0.0"].to_list()
+                # Read in global settings
+                global_settings = cf.read_global_settings()
 
-                    calibrated_spectrum = ef.calibrate_spectrum(
-                        self.spectrum_data_df, spectrometer_calibration
-                    )
-                    print("test")
+                # Read in calibration files
+                (
+                    photopic_response,
+                    pd_responsivity,
+                    cie_reference,
+                    spectrometer_calibration,
+                ) = ef.read_calibration_files(
+                    global_settings["photopic_response_path"],
+                    global_settings["pd_responsivity_path"],
+                    global_settings["cie_reference_path"],
+                    global_settings["spectrometer_calibration_path"],
+                )
 
-            line05 = "### Measurement data ###"
-            header_lines.append(line05)
+                raw_spectrum = pd.read_csv(spectrum_path, sep="\t", skiprows=3)
 
-            line06 = "Wavelength\t Background\t Intensity\t Calibrated Intensity\t"
-            header_lines.append(line06)
+                # calibrated_spectrum = ef.calibrate_spectrum(
+                #     raw_spectrum, spectrometer_calibration
+                # )
+                calibrated_spectrum = ef.calibrate_spectrum(
+                    raw_spectrum, spectrometer_calibration
+                )
+                normalized_spectrum = (
+                    calibrated_spectrum.loc[
+                        :,
+                        ~np.isin(
+                            calibrated_spectrum.columns, ["background", "wavelength"]
+                        ),
+                    ]
+                    / calibrated_spectrum["0.0"].max()
+                )
 
-            line07 = "nm\t counts\t counts\t counts\n"
-            header_lines.append(line07)
+                # Add wavelength at beginning
+                normalized_spectrum.insert(
+                    loc=0, column="wavelength", value=calibrated_spectrum["wavelength"]
+                )
 
-            # Drop columns that are not saved to main part of file
-            series_to_save = self.spectrum_data_df.loc[device_number].drop(
-                ["angle_resolved", "correction_factor"]
-            )
+                line05 = "### Measurement data ###\n"
+                header_lines.append(line05)
 
-            df = pd.DataFrame(
-                np.array(
-                    np.split(
-                        np.concatenate(series_to_save.to_numpy()), len(series_to_save)
-                    )
-                ).T,
-                columns=series_to_save.index,
-            )
+                cf.save_file(
+                    normalized_spectrum, file_path, header_lines, save_header=True
+                )
 
-            df["wavelength"] = df["wavelength"].map(lambda x: "{0:.2f}".format(x))
-            df["background"] = df["background"].map(lambda x: "{0:.0f}".format(x))
-            df["intensity"] = df["intensity"].map(lambda x: "{0:.0f}".format(x))
-            df["calibrated_intensity"] = df["calibrated_intensity"].map(
-                lambda x: "{0:.0f}".format(x)
-            )
+            else:
 
-            cf.save_file(df, file_path, header_lines)
+                line05 = "### Measurement data ###"
+                header_lines.append(line05)
+
+                line06 = "Wavelength\t Background\t Intensity\t Calibrated Intensity\t"
+                header_lines.append(line06)
+
+                line07 = "nm\t counts\t counts\t counts\n"
+                header_lines.append(line07)
+
+                # Drop columns that are not saved to main part of file
+                series_to_save = self.spectrum_data_df.loc[device_number].drop(
+                    ["angle_resolved", "correction_factor"]
+                )
+
+                df = pd.DataFrame(
+                    np.array(
+                        np.split(
+                            np.concatenate(series_to_save.to_numpy()),
+                            len(series_to_save),
+                        )
+                    ).T,
+                    columns=series_to_save.index,
+                )
+
+                df["wavelength"] = df["wavelength"].map(lambda x: "{0:.2f}".format(x))
+                df["background"] = df["background"].map(lambda x: "{0:.0f}".format(x))
+                df["intensity"] = df["intensity"].map(lambda x: "{0:.0f}".format(x))
+                df["calibrated_intensity"] = df["calibrated_intensity"].map(
+                    lambda x: "{0:.6f}".format(x)
+                )
+
+                cf.save_file(df, file_path, header_lines)
 
             cf.log_message("Saved spectrum data for d" + str(int(device_number)))
 
