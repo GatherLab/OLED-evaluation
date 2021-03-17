@@ -755,8 +755,7 @@ class JVLData:
         self.absolute_current_density = np.array(abs(self.current_density))
 
         self.cie_coordinates = self.calculate_cie_coordinates(
-            perpendicular_spectrum["wavelength"],
-            perpendicular_spectrum["intensity"],
+            perpendicular_spectrum,
             cie_reference,
         )
         self.calculate_integrals(
@@ -814,25 +813,22 @@ class JVLData:
         )
 
     # Calculating CIE coordinates
-    def calculate_cie_coordinates(
-        self, wavelength, perpendicular_spectrum, cie_reference
-    ):
+    def calculate_cie_coordinates(self, perpendicular_spectrum, cie_reference):
         """
         Calculates wavelength of maximum spectral intensity and the CIE color coordinates
         """
-        for i, j in enumerate(perpendicular_spectrum):
-            if j == np.max(perpendicular_spectrum):
-                max_intensity_wavelength = wavelength[i]
+        # max_intensity_wavelength = perpendicular_spectrum.loc[
+        #     perpendicular_spectrum.intensity == perpendicular_spectrum.intensity.max(),
+        #     "wavelength",
+        # ].to_list()[0]
 
-        X = sum(perpendicular_spectrum * cie_reference.x_cie)
-        Y = sum(perpendicular_spectrum * cie_reference.y_cie)
-        Z = sum(perpendicular_spectrum * cie_reference.z_cie)
+        X = sum(perpendicular_spectrum.intensity * cie_reference.x_cie)
+        Y = sum(perpendicular_spectrum.intensity * cie_reference.y_cie)
+        Z = sum(perpendicular_spectrum.intensity * cie_reference.z_cie)
 
         CIE = np.array([X / (X + Y + Z), Y / (X + Y + Z)])
-        return (
-            max_intensity_wavelength,
-            ("(" + ", ".join(["%.3f"] * 2) + ")") % tuple(CIE),
-        )
+
+        return CIE
 
     def calculate_non_lambertian_e_coeff(self):
         """
@@ -1009,7 +1005,7 @@ class JVLData:
         df["current"] = self.current
         df["current_density"] = self.current_density
         df["absolute_current_density"] = self.absolute_current_density
-        df["cie_coordinate"] = self.cie_coordinates
+        df["cie"] = self.cie_coordinates
         df["luminance"] = self.luminance
         df["eqe"] = self.eqe
         df["luminous_efficacy"] = self.luminous_efficacy

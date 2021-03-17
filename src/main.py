@@ -1308,7 +1308,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 + str(row["cie"])
                 + "\t Scan Number: "
                 + str(row["scan_number"])
-                + "Assigned group: "
+                + "\t Assigned group: "
                 + str(self.assigned_groups_df.loc[row["device_number"], "group_name"])
             )
             header_lines.append(line02)
