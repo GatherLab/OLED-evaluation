@@ -1359,10 +1359,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             )
 
             df["voltage"] = df["voltage"].map(lambda x: "{0:.2f}".format(x))
-            df["current"] = df["current"].map(lambda x: "{0:.5f}".format(x))
-            df["pd_voltage"] = df["pd_voltage"].map(lambda x: "{0:.5f}".format(x))
+            df["current"] = df["current"].map(lambda x: "{0:.6f}".format(x))
+            df["pd_voltage"] = df["pd_voltage"].map(lambda x: "{0:.7f}".format(x))
             df["current_density"] = df["current_density"].map(
-                lambda x: "{0:.2f}".format(x)
+                lambda x: "{0:.5f}".format(x)
             )
             df["luminance"] = df["luminance"].map(lambda x: "{0:.2f}".format(x))
             df["eqe"] = df["eqe"].map(lambda x: "{0:.2f}".format(x))
@@ -1372,7 +1372,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             df["current_efficiency"] = df["current_efficiency"].map(
                 lambda x: "{0:.2f}".format(x)
             )
-            df["power_density"] = df["power_density"].map(lambda x: "{0:.2f}".format(x))
+            df["power_density"] = df["power_density"].map(lambda x: "{0:.5f}".format(x))
 
             cf.save_file(df, file_path, header_lines)
 
