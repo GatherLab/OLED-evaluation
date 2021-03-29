@@ -1,0 +1,56 @@
+{
+  "0": [
+    {
+      "pd_resistance": "100000000",
+      "pd_cutoff": "0.000001"
+    }
+  ],
+  "10": [
+    {
+      "pd_resistance": "4750",
+      "pd_cutoff": "0.000003"
+    }
+  ],
+  "20": [
+    {
+      "pd_resistance": "15000",
+      "pd_cutoff": "0.000005"
+    }
+  ],
+  "30": [
+    {
+      "pd_resistance": "47500",
+      "pd_cutoff": "0.00001"
+    }
+  ],
+  "40": [
+    {
+      "pd_resistance": "151000",
+      "pd_cutoff": "0.0003"
+    }
+  ],
+  "50": [
+    {
+      "pd_resistance": "475000",
+      "pd_cutoff": "0.0009"
+    }
+  ],
+  "60": [
+    {
+      "pd_resistance": "1500000",
+      "pd_cutoff": "0.004"
+    }
+  ],
+  "70": [
+    {
+      "pd_resistance": "4750000",
+      "pd_cutoff": "0.002"
+    }
+  ],
+  "80": [
+    {
+      "pd_resistance": "2200000",
+      "pd_cutoff": "0.00002"
+    }
+  ]
+}
