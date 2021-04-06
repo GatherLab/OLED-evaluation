@@ -233,9 +233,7 @@ class Ui_Settings(object):
             _translate("Settings", "Calibration File Paths")
         )
 
-        self.default_saving_path_label.setText(
-            _translate("Settings", "Default Saving Path")
-        )
+        self.default_saving_path_label.setText(_translate("Settings", "Default Path"))
 
         self.data_evaluation_header_label.setText(
             _translate("Settings", "Settings for Data Evaluation")
@@ -261,7 +259,7 @@ class Ui_Settings(object):
             _translate("Settings", "CIE Reference Calibration File Path")
         )
         self.spectrometer_calibration_path_label.setText(
-            _translate("Settings", "Default Saving Path")
+            _translate("Settings", "Spectrometer Calibration File Path")
         )
 
         self.save_settings_pushButton.setText(_translate("Settings", "Save Settings"))
