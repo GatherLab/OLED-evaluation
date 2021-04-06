@@ -56,42 +56,114 @@ evaluate the JVL data are described in the following in detail.
 
 ### Setting a Directory
 
+The user starts with the following situation. She can only select the folder
+icon to set a directory and read in data. All other buttons on the right are disabled.
+
+<img src="docs/evaluation_overview.png" style="display: block; margin-left: auto; margin-right: auto; width: 50%;"/>
+
 As a first step the user should select the directory where she stored all her
 JVL files. This is done by pressing the first button on the right side with
 the picture of a folder. A file dialog opens that lets the user select a
-directory. When the user presses "Ok" all file names from this folder that
+directory.
+
+<img src="docs/evaluation_overview.png" style="display: block; margin-left: auto; margin-right: auto; width: 50%;"/>
+
+When the user presses "Ok" all file names from this folder that
 end on \_jvl will be read in. The program now knows what data is available.
 
 ### Checking the Settings
 
+If not done already, the user should now check the settings in the top
 The user should now go to the top settings and check if all measurement
 parameters that are entered here are correct.
 
+<img src="docs/options.png" style="display: block; margin-left: auto; margin-right: auto; width: 50%;"/>
+
+The user has the following options:
+
+- Default Saving Path: Change the default saving path to a folder where the files are usually read in from
+- Photodiode Gain (dB): Enter photodiode gain that was used during the measurement (relevant parameters are then read out from photodiode_gain.json)
+- Photodiode Area (mm^2): Enter photodiode area in mm^2
+- Distance Photodiode-OLED (mm): Constant (autotube) or measured distance between photodiode and OLED
+- Active OLED Area (mmm^2): Area of the active OLED pixel in mm^2
+- Photopic Response Calibration File Path: Path to photopic response curve
+- PD Responsivity Calibration File Path: Path to PD responsivity curve (depends on photodiode)
+- CIE Reference Calibration File Path: Path to CIE calibration reference data
+- Spectrometer Calibration File Path: Path to spectrometer (for certain fibre) calibration data
+
+The user should then save the settings and can now continue with the evaluation
+
 ### Assigning Groups
 
-The user can now assign groups of different devices that would be according
-to their composition (e.g. the first four devices have the same properties).
-This can be done by pressing the second, now enabled button on the right. A
-new dialog opens up that allows to select the scan (if a pixel was measured
-more than once). As a second the step the user can define the number of
-different groups using the slider below. It is limited to a maximum of the
-number of devices detected in the folder. Now the user can name the groups
-and assign the devices in the field nearby. Multiple devices are separated by
-commas. Next to the device number field is a pushbutton as is normally red,
-the user has to press on it to select a relevant spectrum for this group that
-is used for the evaluation. As soon as this is done, the pushbutton will be
-green. If this was repeated for all groups then the groups can be saved.
+In the second dialog the user can assign groups before the data is really
+read in. The user has the option to select the scan number (only second scans
+for instance) and by using the below slider the number of different groups
+meaning OLED configurations. The available values of the slider are
+restricted to the number of devices with their numbers listed below the
+slider. The user must then give each group a name and assign the devices to
+the groups with multiple devices separated with a comma (and no space).
+Afterwards by pressing on the spectrum button of each group, the user must
+assign a spectrum to each group only then she can continue with the
+evaluation. Only files ending on \_spec of \_gon-spec can be selected as
+spectrum. Lastly, the user has the option to assign a color to the group.
+This is not obligatory since otherwise colors are preselected.
+
+<img src="docs/assign_groups.png" style="display: block; margin-left: auto; margin-right: auto; width: 50%;"/>
 
 Now the actual reading in of the data happens and all the calculations take
 place. This may take a few seconds.
 
 ### Looking at the Data
 
+To obtain an overview of the different data the user can now select the _Show Groups_ dialog by clicking on the according button. Depending on the selected devices and the defined groups a variety of different buttons is presented to the user.
+
+<img src="docs/show_groups.png" style="display: block; margin-left: auto; margin-right: auto; width: 50%;"/>
+
+By pressing on one of them the user sees all JVL curves for the according device/group.
+
+<img src="docs/plot_device.png" style="display: block; margin-left: auto; margin-right: auto; width: 50%;"/>
+
+The user can now interact with the graph using the bottom toolbar to zoom,
+change the scale etc. Furthermore, by clicking on the according line on the
+legend the user can hide a certain graph that, for instance, doesn't show a
+good performance or looks otherwise odd. Additionally, if all performance
+data of a certain line is of interest the user can click on the mouse wheel
+to be able to see the entire performance data of that pixel (including JVL,
+EQE, Power density and spectrum).
+
+<img src="docs/performance_data.png" style="display: block; margin-left: auto; margin-right: auto; width: 50%;"/>
+
+The user should really go through all curves and unselect all pixels that
+somehow look bad to efficiently use the next feature of the software.
+
 ### Looking at the Statistics
+
+The user can now have a look at the statistics using the next dialog and selecting either to show the stats grouped by device or by group which results in the following graph
+
+<img src="docs/stats.png" style="display: block; margin-left: auto; margin-right: auto; width: 50%;"/>
+
+Like this one can get a fast overview over the most important performance parameters and some statistics that might immediatly (if a large enough control group) which device is better or worse (especially good for performance optimisation).
 
 ### Looking at the Spectra
 
+Lastly the user may have a look at the spectra which is especially relevant for goniometer measurements. A dialog asks the user which group spectrum to plot.
+
+<img src="docs/plot_spectra.png" style="display: block; margin-left: auto; margin-right: auto; width: 50%;"/>
+
+The program automatically plots the spectrum angle resolved (if there is data) or the single spectrum which likewise results in one of the two graphs below.
+
+<img src="docs/angle_resolved_spectrum.png" style="display: block; margin-left: auto; margin-right: auto; width: 50%;"/>
+<img src="docs/normal_spectrum.png" style="display: block; margin-left: auto; margin-right: auto; width: 50%;"/>
+
 ### Saving Data
+
+Finally, the user can save the evaluated data by pressing on the disk (last
+icon). The files are automatically saved to a folder called "eval" within the
+raw data containing folder. If the user wants to do any further evaluation
+she can simply read that data in with every .csv capable program (e.g.
+OriginLab). If the visualisation is not super important and the user is happy
+with the graphs the program spits out, she can also save every graph by
+pressing on the save button of the matplotlib toolbar below each graph.
 
 ## Development
 
