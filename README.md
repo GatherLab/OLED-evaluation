@@ -66,7 +66,7 @@ JVL files. This is done by pressing the first button on the right side with
 the picture of a folder. A file dialog opens that lets the user select a
 directory.
 
-<img src="docs/evaluation_overview.png" style="display: block; margin-left: auto; margin-right: auto; width: 50%;"/>
+<img src="docs/select_folder.png" style="display: block; margin-left: auto; margin-right: auto; width: 50%;"/>
 
 When the user presses "Ok" all file names from this folder that
 end on \_jvl will be read in. The program now knows what data is available.
