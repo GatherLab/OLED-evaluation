@@ -57,30 +57,30 @@ class Settings(QtWidgets.QDialog, Ui_Settings):
 
         # Gather the new settings
         settings_data = {}
-        settings_data["overwrite"] = []
-        settings_data["overwrite"].append(
-            {
-                "default_saving_path": self.default_saving_path_lineEdit.text(),
-                "pd_gain": self.photodiode_gain_lineEdit.text(),
-                "pd_area": self.photodiode_area_lineEdit.text(),
-                "pd_distance": self.distance_photodiode_oled_lineEdit.text(),
-                "pixel_area": self.oled_area_lineEdit.text(),
-                "photopic_response_path": self.photopic_response_calibration_path_lineEdit.text(),
-                "pd_responsivity_path": self.pd_responsivity_calibration_path_lineEdit.text(),
-                "cie_reference_path": self.cie_reference_path_lineEdit.text(),
-                "spectrometer_calibration_path": self.spectrometer_calibration_path_lineEdit.text(),
-            }
-        )
+        settings_data["overwrite"] = {
+            "default_saving_path": self.default_saving_path_lineEdit.text(),
+            "pd_gain": self.photodiode_gain_lineEdit.text(),
+            "pd_area": self.photodiode_area_lineEdit.text(),
+            "pd_distance": self.distance_photodiode_oled_lineEdit.text(),
+            "pixel_area": self.oled_area_lineEdit.text(),
+            "photopic_response_path": self.photopic_response_calibration_path_lineEdit.text(),
+            "pd_responsivity_path": self.pd_responsivity_calibration_path_lineEdit.text(),
+            "cie_reference_path": self.cie_reference_path_lineEdit.text(),
+            "spectrometer_calibration_path": self.spectrometer_calibration_path_lineEdit.text(),
+        }
 
         # Load the default parameter settings
-        with open(
-            os.path.join(Path(__file__).parent.parent, "usr", "global_settings.json")
-        ) as json_file:
-            data = json.load(json_file)
-        #
+        # with open(
+        #     os.path.join(Path(__file__).parent.parent, "usr", "global_settings.json")
+        # ) as json_file:
+        #     data = json.load(json_file)
+        # #
         # Add the default parameters to the new settings json
+        default_data = cf.read_global_settings(default=True)
+
         settings_data["default"] = []
-        settings_data["default"] = data["default"]
+        settings_data["default"] = default_data
+
         print(settings_data)
         #
         # Save the entire thing again to the settings.json file
@@ -100,12 +100,14 @@ class Settings(QtWidgets.QDialog, Ui_Settings):
         Load default settings (in case the user messed up the own settings)
         """
 
-        with open(
-            os.path.join(Path(__file__).parent.parent, "usr", "global_settings.json")
-        ) as json_file:
-            data = json.load(json_file)
+        # with open(
+        #     os.path.join(Path(__file__).parent.parent, "usr", "global_settings.json")
+        # ) as json_file:
+        #     data = json.load(json_file)
 
-        default_settings = data["default"][0]
+        # default_settings = data["default"][0]
+
+        default_settings = cf.read_global_settings(default=True)
 
         self.default_saving_path_lineEdit.setText(
             default_settings["default_saving_path"]

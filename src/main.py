@@ -130,18 +130,26 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.eval_save_pushButton.setEnabled(False)
 
         # -------------------------------------------------------------------- #
-        # --------------------------- Setup Widget --------------------------- #
-        # -------------------------------------------------------------------- #
-        # self.sw_browse_pushButton.clicked.connect(self.browse_folder)
-
-        # -------------------------------------------------------------------- #
-        # --------------------- Set Standard Parameters ---------------------- #
+        # ------------------------- Default Values --------------------------- #
         # -------------------------------------------------------------------- #
 
-        # Set standard parameters for autotube measurement
-        # self.aw_min_voltage_spinBox.setValue(-2)
-        # self.aw_min_voltage_spinBox.setMinimum(-50)
-        # self.aw_max_voltage_spinBox.setValue(5)
+        # Automatically overwrite the overwrite values with the defaults when
+        # the program is started to ensure that defaults are defaults by default
+        default_settings = cf.read_global_settings(default=True)
+        settings_data = {}
+        settings_data["overwrite"] = []
+        settings_data["overwrite"] = default_settings
+        settings_data["default"] = []
+        settings_data["default"] = default_settings
+
+        # Save the entire thing again to the settings.json file
+        with open(
+            os.path.join(Path(__file__).parent.parent, "usr", "global_settings.json"),
+            "w",
+        ) as json_file:
+            json.dump(settings_data, json_file, indent=4)
+
+        cf.log_message("Overwrite Settings set to Default")
 
     # -------------------------------------------------------------------- #
     # ---------------------------- Load Folder --------------------------- #
