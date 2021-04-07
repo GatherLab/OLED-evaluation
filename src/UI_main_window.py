@@ -638,8 +638,8 @@ class Ui_MainWindow(object):
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 973, 31))
         self.menubar.setObjectName("menubar")
-        self.menudfg = QtWidgets.QMenu(self.menubar)
-        self.menudfg.setObjectName("menudfg")
+        # self.menudfg = QtWidgets.QMenu(self.menubar)
+        # self.menudfg.setObjectName("menudfg")
         self.menuSettings = QtWidgets.QMenu(self.menubar)
         self.menuSettings.setObjectName("menuSettings")
         MainWindow.setMenuBar(self.menubar)
@@ -671,12 +671,12 @@ class Ui_MainWindow(object):
         )
         self.actionOpen_Log = QtWidgets.QAction(MainWindow)
         self.actionOpen_Log.setObjectName("actionOpen_Log")
-        self.menudfg.addAction(self.actionLoad_Measurement_Parameters)
-        self.menudfg.addAction(self.actionSave_Measurement_Parameters)
+        # self.menudfg.addAction(self.actionLoad_Measurement_Parameters)
+        # self.menudfg.addAction(self.actionSave_Measurement_Parameters)
         self.menuSettings.addAction(self.actionOptions)
         self.menuSettings.addAction(self.actionDocumentation)
         self.menuSettings.addAction(self.actionOpen_Log)
-        self.menubar.addAction(self.menudfg.menuAction())
+        # self.menubar.addAction(self.menudfg.menuAction())
         self.menubar.addAction(self.menuSettings.menuAction())
 
         # -------------------------------------------------------------------- #
@@ -827,7 +827,7 @@ class Ui_MainWindow(object):
             _translate("MainWindow", "JVL Evaluation"),
         )
 
-        self.menudfg.setTitle(_translate("MainWindow", "File"))
+        # self.menudfg.setTitle(_translate("MainWindow", "File"))
         self.menuSettings.setTitle(_translate("MainWindow", "Settings"))
 
         # self.actionOpen_Logs.setText(_translate("MainWindow", "Open Logs"))

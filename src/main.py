@@ -1267,7 +1267,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def save_evaluated_data(self):
         """
-        Function that saves the evaluated data to files
+        Function that saves the evaluated data to files (jvl data, spectral
+        data and overview file to recover state of software)
         """
         unmasked_data = self.data_df.loc[self.data_df["masked"] == False].join(
             self.files_df.loc[:, ["scan_number", "pixel_number"]]
