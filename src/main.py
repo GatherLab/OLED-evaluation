@@ -443,9 +443,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         )
 
         # Read in photodiode lookup table
-        with open(
-            os.path.join(Path(__file__).parent.parent, "usr", "photodiode_gain.json")
-        ) as json_file:
+        with open(global_settings["photodiode_gain_path"]) as json_file:
             data = json.load(json_file)
 
         pd_parameters = data[str(int(global_settings["pd_gain"]))][0]

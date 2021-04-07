@@ -208,6 +208,16 @@ class Ui_Settings(object):
             self.spectrometer_calibration_path_lineEdit, 14, 1, 1, 1
         )
 
+        # Photodiode gain path
+        self.photodiode_gain_path_label = QtWidgets.QLabel(Settings)
+        self.photodiode_gain_path_label.setObjectName("photodiode_gain_path_label")
+        self.gridLayout.addWidget(self.photodiode_gain_path_label, 15, 0, 1, 1)
+        self.photodiode_gain_path_lineEdit = QtWidgets.QLineEdit(Settings)
+        self.photodiode_gain_path_lineEdit.setObjectName(
+            "photodiode_gain_path_lineEdit"
+        )
+        self.gridLayout.addWidget(self.photodiode_gain_path_lineEdit, 15, 1, 1, 1)
+
         # Push Buttons
         self.buttons_HBoxLayout = QtWidgets.QHBoxLayout()
         self.load_defaults_pushButton = QtWidgets.QPushButton(Settings)
@@ -218,7 +228,7 @@ class Ui_Settings(object):
         self.save_settings_pushButton.setObjectName("save_settings_pushButton")
         self.buttons_HBoxLayout.addWidget(self.save_settings_pushButton)
 
-        self.gridLayout.addLayout(self.buttons_HBoxLayout, 15, 0, 1, 2)
+        self.gridLayout.addLayout(self.buttons_HBoxLayout, 16, 0, 1, 2)
 
         self.retranslateUi(Settings)
         QtCore.QMetaObject.connectSlotsByName(Settings)
@@ -260,6 +270,10 @@ class Ui_Settings(object):
         )
         self.spectrometer_calibration_path_label.setText(
             _translate("Settings", "Spectrometer Calibration File Path")
+        )
+
+        self.photodiode_gain_path_label.setText(
+            _translate("Settings", "Photodiode Gain Conversion File Path")
         )
 
         self.save_settings_pushButton.setText(_translate("Settings", "Save Settings"))

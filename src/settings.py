@@ -38,6 +38,9 @@ class Settings(QtWidgets.QDialog, Ui_Settings):
         self.spectrometer_calibration_path_lineEdit.setText(
             str(settings["spectrometer_calibration_path"])
         )
+        self.photodiode_gain_path_lineEdit.setText(
+            str(settings["photodiode_gain_path"])
+        )
 
         # self.keithley_source_address_lineEdit.setText(
         #     default_settings["keithley_source_address"]
@@ -67,6 +70,7 @@ class Settings(QtWidgets.QDialog, Ui_Settings):
             "pd_responsivity_path": self.pd_responsivity_calibration_path_lineEdit.text(),
             "cie_reference_path": self.cie_reference_path_lineEdit.text(),
             "spectrometer_calibration_path": self.spectrometer_calibration_path_lineEdit.text(),
+            "photodiode_gain_path": self.photodiode_gain_path_lineEdit.text(),
         }
 
         # Load the default parameter settings
@@ -129,4 +133,7 @@ class Settings(QtWidgets.QDialog, Ui_Settings):
         )
         self.spectrometer_calibration_path_lineEdit.setText(
             str(default_settings["spectrometer_calibration_path"])
+        )
+        self.photodiode_gain_path_lineEdit.setText(
+            str(default_settings["photodiode_gain_path"])
         )
