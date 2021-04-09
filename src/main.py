@@ -1199,10 +1199,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 global_settings["cie_reference_path"],
                 global_settings["spectrometer_calibration_path"],
             )
-            temp_interpolated = ef.interpolate_spectrum(temp, photopic_response)
-            temp_calibrated = ef.calibrate_spectrum(
-                temp_interpolated, spectrometer_calibration
-            )
+            # temp_interpolated = ef.interpolate_spectrum(temp, photopic_response)
+            temp_calibrated = ef.calibrate_spectrum(temp, spectrometer_calibration)
 
             # And set the wavelength as index of the dataframe and drop the background instead now
             temp_calibrated = temp.set_index("wavelength").drop(["background"], axis=1)
