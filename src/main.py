@@ -63,12 +63,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.folder_path_selected = False
         self.groups_assigned = False
 
-        # Assigned groups that contain all information returned by the assign
-        # group dialog
-        self.assigned_groups_df = pd.DataFrame(
-            columns=["group_name", "spectrum_path", "color"]
-        )
-
         # Data that shall later be put into settings window
         # self.measurement_parameters = cf.read_global_settings()
 
@@ -260,6 +254,12 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # return the maximum scan number in the investigated batch
         self.max_scan_number = np.max(scan_number)
 
+        # Assigned groups that contain all information returned by the assign
+        # group dialog (must be reset to zero again after new folder is read in)
+        self.assigned_groups_df = pd.DataFrame(
+            columns=["group_name", "spectrum_path", "color"]
+        )
+
         cf.log_message(
             "Found "
             + str(len(jvl_file_names))
@@ -313,7 +313,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 ],
                 ["voltage", "current", "pd_voltage"],
                 selected_files.index.to_list(),
-                skip_row=10,
+                skip_row=7,
             )
 
             # Do a left join on the files_df to obtain the device numbers
