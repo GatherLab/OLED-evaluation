@@ -696,7 +696,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         )
         self.eval_ax2.set_yscale("log")
         self.eval_ax1.set_xlabel("Voltage (V)")
-        self.eval_ax1.set_ylabel("Current Density (mA cm$^{-2}$)")
+        self.eval_ax1.set_ylabel("Abs. Current Density (mA cm$^{-2}$)")
         self.eval_ax2.set_ylabel("Luminance (cd m$^{-2}$)")
 
         self.eval_ax2.format_coord = self.make_format(self.eval_ax2, self.eval_ax1)
@@ -719,7 +719,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.current_lines.append(
                 self.eval_ax1.plot(
                     df_to_plot.iloc[index]["voltage"],
-                    df_to_plot.iloc[index]["current_density"],
+                    np.abs(df_to_plot.iloc[index]["current_density"]),
                     label=df_to_plot.index[index],
                     color=device_color[index],
                 )
@@ -813,11 +813,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         )
         self.eval_ax5.set_yscale("log")
         self.eval_ax[0, 0].set_xlabel("Voltage (V)")
-        self.eval_ax[0, 0].set_ylabel("Current Density (mA cm$^{-2}$)")
+        self.eval_ax[0, 0].set_ylabel("Abs. Current Density (mA cm$^{-2}$)")
         self.eval_ax5.set_ylabel("Luminance (cd m$^{-2}$)")
 
         self.eval_ax[0, 0].plot(
-            temp_df["voltage"][0], temp_df["current_density"][0], color=color
+            temp_df["voltage"][0], np.abs(temp_df["current_density"][0]), color=color
         )
         self.eval_ax5.plot(
             temp_df["voltage"][0], temp_df["luminance"][0], linestyle="--", color=color
