@@ -1291,9 +1291,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 + date.today().strftime("%Y-%m-%d_")
                 + self.batch_name
                 + "_d"
-                + str(row["device_number"])
+                + str(int(row["device_number"]))
                 + "_p"
-                + str(row["pixel_number"])
+                + str(int(row["pixel_number"]))
                 + "_eval"
                 + ".csv"
             )
@@ -1411,7 +1411,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 + date.today().strftime("%Y-%m-%d_")
                 + self.batch_name
                 + "_d"
-                + str(device_number)
+                + str(int(device_number))
                 + "_spec_eval"
                 + ".csv"
             )
