@@ -1186,27 +1186,45 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             # Now add the wavelength to the dataframe again
             temp["wavelength"] = spectrum["wavelength"]
 
+            # Interpolate and calibrate spectrum
+            global_settings = cf.read_global_settings()
+            (
+                photopic_response,
+                pd_responsivity,
+                cie_reference,
+                spectrometer_calibration,
+            ) = ef.read_calibration_files(
+                global_settings["photopic_response_path"],
+                global_settings["pd_responsivity_path"],
+                global_settings["cie_reference_path"],
+                global_settings["spectrometer_calibration_path"],
+            )
+            temp_interpolated = ef.interpolate_spectrum(temp, photopic_response)
+            temp_calibrated = ef.calibrate_spectrum(
+                temp_interpolated, spectrometer_calibration
+            )
+
             # And set the wavelength as index of the dataframe and drop the background instead now
-            temp = temp.set_index("wavelength").drop(["background"], axis=1)
+            temp_calibrated = temp.set_index("wavelength").drop(["background"], axis=1)
 
             # Plot current data
             # This is the best way I could come up with so far. There must be a better one, however.
-            x = temp.index.values.tolist()
-            y = list(map(float, temp.columns.values.tolist()))
+            x = temp_calibrated.index.values.tolist()
+            y = list(map(float, temp_calibrated.columns.values.tolist()))
 
             X, Y = np.meshgrid(x, y)
 
             self.eval_ax0.set_xlabel("Angle (°)")
             self.eval_ax0.set_ylabel("Wavelength (nm)")
 
-            self.eval_ax0.pcolormesh(Y, X, temp.to_numpy().T, shading="auto")
+            self.eval_ax0.pcolormesh(Y, X, temp_calibrated.to_numpy().T, shading="auto")
 
             ## Radiant intensity polar coordinates
             # theta = np.linspace(0, np.pi)
-            angles = np.radians(temp.columns.to_numpy(float))
+            angles = np.radians(temp_calibrated.columns.to_numpy(float))
             # luminous_intensity = temp.sum()
 
-            ri = temp.apply(ef.calculate_ri, axis=0)
+            ri = temp_calibrated.apply(ef.calculate_ri, axis=0)
 
             non_lambertian_spectrum = ri / ri[np.where(angles == 0)[0][0]]
 

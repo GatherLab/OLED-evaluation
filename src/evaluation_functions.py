@@ -450,14 +450,16 @@ def calibrate_spectrum(spectrum, calibration):
 
 def calculate_ri(column):
     """
-    Function that calculates RI
+    Function that calculates radiant intensity
     """
     return float(sc.h * sc.c / 1e-9 * np.sum(column))
 
 
 def calculate_li(column, photopic_response):
     """
-    Function that calculates RI
+    Function that calculates the luminous intensity
+    Emission in terms of photometric response, so taking into account the
+    spectral shifts and sensitivity of the eye/photopic response
     """
     return float(
         sc.physical_constants["luminous efficacy"][0]
