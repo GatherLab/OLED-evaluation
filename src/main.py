@@ -938,6 +938,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         power_density_4v = []
 
         evaluation_voltage = max(self.data_df["voltage"].explode())
+        if evaluation_voltage > 4:
+            evaluation_voltage = 4
 
         for index, row in self.data_df.loc[self.data_df["masked"] == False].iterrows():
             idx_4v = np.where(row["voltage"] == evaluation_voltage)
