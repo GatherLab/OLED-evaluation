@@ -937,8 +937,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         eqe_4v = []
         power_density_4v = []
 
+        evaluation_voltage = max(self.data_df["voltage"].explode())
+
         for index, row in self.data_df.loc[self.data_df["masked"] == False].iterrows():
-            idx_4v = np.where(row["voltage"] == 4.0)
+            idx_4v = np.where(row["voltage"] == evaluation_voltage)
             # idx_4v = np.where(np.array(self.data_df["voltage"][0]) == 4.0)[0][0]
 
             current_density_4v.append(row["current_density"][idx_4v][0])
@@ -997,13 +999,20 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             luminance_4v_grouped,
             eqe_4v_grouped,
             power_density_4v_grouped,
+            evaluation_voltage,
             labels=np.unique(
                 np.concatenate(avg_values[groupby].apply(list).to_numpy())
             ),
         )
 
     def boxplot_statistics(
-        self, current_density_4v, luminance_4v, eqe_4v, power_density_4v, labels
+        self,
+        current_density_4v,
+        luminance_4v,
+        eqe_4v,
+        power_density_4v,
+        evaluation_voltage,
+        labels,
     ):
         """
         Does the plotting for the device statistics calculations
@@ -1044,7 +1053,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             temp_x = np.random.normal(1 + i, 0.04, size=len(temp_y))
 
             self.eval_ax[0, 0].plot(temp_x, temp_y, "b.", color=color)
-        self.eval_ax[0, 0].set_ylabel("Current Density @ 4V (mA cm$^{-2}$)")
+        self.eval_ax[0, 0].set_ylabel(
+            "Current Density @ " + str(evaluation_voltage) + "V (mA cm$^{-2}$)"
+        )
 
         # Luminance at 4 V
         self.eval_ax[0, 1].boxplot(
@@ -1065,7 +1076,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
             self.eval_ax[0, 1].plot(temp_x, temp_y, "b.", color=color)
 
-        self.eval_ax[0, 1].set_ylabel("Luminance @ 4V (cd m$^{-2}$)")
+        self.eval_ax[0, 1].set_ylabel(
+            "Luminance @" + str(evaluation_voltage) + "V (cd m$^{-2}$)"
+        )
 
         # EQE at 4 V
         self.eval_ax[1, 0].boxplot(
@@ -1086,7 +1099,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
             self.eval_ax[1, 0].plot(temp_x, temp_y, "b.", color=color)
 
-        self.eval_ax[1, 0].set_ylabel("EQE @ 4V (%)")
+        self.eval_ax[1, 0].set_ylabel("EQE @ " + str(evaluation_voltage) + "V (%)")
 
         # Power Density at 4 V
         self.eval_ax[1, 1].boxplot(
@@ -1107,7 +1120,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
             self.eval_ax[1, 1].plot(temp_x, temp_y, "b.", color=color)
 
-        self.eval_ax[1, 1].set_ylabel("Power Density @ 4V (mA mm$^{-2}$)")
+        self.eval_ax[1, 1].set_ylabel(
+            "Power Density @ " + str(evaluation_voltage) + "V (mA mm$^{-2}$)"
+        )
 
         self.eval_fig.figure.tight_layout()
         self.eval_fig.draw()
