@@ -141,7 +141,7 @@ class Ui_MainWindow(object):
         # self.gatherlab_picture = QtWidgets.QWidget(self.centralwidget)
         # self.gatherlab_picture.setObjectName("gatherlab_picture")
         self.gatherlab_label = QtWidgets.QLabel()
-        pixmap = QtGui.QPixmap("icons/logo_cropped.jpg")
+        pixmap = QtGui.QPixmap("icons/yellow_cropped.png")
         self.gatherlab_label.setPixmap(pixmap)
         self.gatherlab_label.setScaledContents(True)
         # self.horizontalLayout_2 = QtWidgets.QHBoxLayout()
