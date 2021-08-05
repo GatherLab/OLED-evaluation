@@ -831,16 +831,13 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         )
         self.eval_ax[0, 1].set_xscale("log")
         self.eval_ax[0, 1].set_xlabel("Current Density (mA cm$^{-2}$)")
-        self.eval_ax[0, 1].set_ylabel("External Quantum Efficiency (%)")
+        self.eval_ax[0, 1].set_ylabel("EQE ())")
         self.eval_ax[0, 1].set_xlim([1e-2, max(temp_df.iloc[0]["current_density"])])
         # Find maximum non infinite eqe value and set that +1 as the limits
         self.eval_ax[0, 1].set_ylim(
             [
                 0,
-                np.where(
-                    np.isinf(temp_df.iloc[0]["eqe"]), -np.Inf, temp_df.iloc[0]["eqe"]
-                ).max()
-                + 1,
+                round(temp_df.iloc[0]["eqe"][np.where(temp_df["luminance"][0]>5)].max()+1, 1),
             ]
         )
 
@@ -947,7 +944,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
             current_density_4v.append(row["current_density"][idx_4v][0])
             luminance_4v.append(row["luminance"][idx_4v][0])
-            eqe_4v.append(row["eqe"][idx_4v][0])
+            # EQE at 4V
+            # eqe_4v.append(row["eqe"][idx_4v][0])
+            # Max EQE
+            eqe_4v.append(max(row["eqe"][np.where(row["luminance"]>5)]))
             power_density_4v.append(row["power_density"][idx_4v][0])
 
         device_numbers = (
@@ -1101,7 +1101,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
             self.eval_ax[1, 0].plot(temp_x, temp_y, "b.", color=color)
 
-        self.eval_ax[1, 0].set_ylabel("EQE @ " + str(evaluation_voltage) + "V (%)")
+        self.eval_ax[1, 0].set_ylabel("Max. EQE (%)")
 
         # Power Density at 4 V
         self.eval_ax[1, 1].boxplot(
