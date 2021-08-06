@@ -170,6 +170,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # Now get the file paths for all files at top level in this folder
         self.file_names = cf.read_file_names(self.global_path)
 
+        # Check if an evaluation folder already exists
+        if os.path.isdir(self.global_path + "/eval/"):
+            self.load_evaluated_data(self.global_path + "/eval/")
+
         # Now check if there are some files and how many in the folder
         if len(self.file_names) == 0:
             cf.log_message("Couldn't find any files in the selected top level folder.")
@@ -179,7 +183,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 + str(len(self.file_names))
                 + " files at top level in the selected folder."
             )
-            self.investigate_file_names(self.file_names)
+            self.files_df = self.investigate_file_names(self.file_names)
 
             # Now set the folder path as selected and allow for assignment of groups
             self.folder_path_selected = True
@@ -193,7 +197,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # First dissect the file names by splitting at each _
         # This returns normally 4 fields and if there are multiple scans it
         # returns a fifth one
-        self.files_df = pd.DataFrame()
+        files_df = pd.DataFrame()
 
         dates = []
         batch_names = []
@@ -242,14 +246,14 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 "The batch name does not match for all files. If there are different OLEDs with the same device number this could lead to a problem."
             )
 
-        self.files_df["file_name"] = jvl_file_names
-        self.files_df["device_number"] = device_numbers
-        self.files_df["pixel_number"] = pixel_numbers
-        self.files_df["scan_number"] = scan_number
+        files_df["file_name"] = jvl_file_names
+        files_df["device_number"] = device_numbers
+        files_df["pixel_number"] = pixel_numbers
+        files_df["scan_number"] = scan_number
         self.batch_name = np.unique(batch_names)[0]
 
         # Now set the identifier as index
-        self.files_df = self.files_df.set_index(np.array(identifier))
+        files_df = files_df.set_index(np.array(identifier))
 
         # return the maximum scan number in the investigated batch
         self.max_scan_number = np.max(scan_number)
@@ -266,6 +270,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             + " jvl files at top level in selected folder."
         )
         cf.log_message("Maximum scan number found: " + str(self.max_scan_number))
+        return files_df
 
         # Now generate a dictionary containing the device numbers as keys and
         # an array of the pixel numbers as values
@@ -275,6 +280,23 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         #     self.devices_and_pixels[i] = np.array(pixel_numbers)[
         #         np.where(np.array(device_numbers, dtype=int) == i)[0]
         #     ]
+
+    def load_evaluated_data(self, filename):
+        """
+        Function that loads the evaluated data if it was already evaluated.
+        It basically fills in the assign group dialog with previous data
+        """
+        print("Dummy function")
+
+        # file_names = cf.read_file_names(filename)
+
+        # # Now check if there are some files and how many in the folder
+        # if len(file_names) == 0:
+        #     cf.log_message("Couldn't find any files in the selected top level folder.")
+        # else:
+        #     investigated_file_names = self.investigate_file_names(file_names)
+
+        # print("blub")
 
     # -------------------------------------------------------------------- #
     # -------------------------- Assign Groups --------------------------- #
@@ -837,7 +859,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.eval_ax[0, 1].set_ylim(
             [
                 0,
-                round(temp_df.iloc[0]["eqe"][np.where(temp_df["luminance"][0]>5)].max()+1, 1),
+                round(
+                    temp_df.iloc[0]["eqe"][np.where(temp_df["luminance"][0] > 5)].max()
+                    + 1,
+                    1,
+                ),
             ]
         )
 
@@ -947,7 +973,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             # EQE at 4V
             # eqe_4v.append(row["eqe"][idx_4v][0])
             # Max EQE
-            eqe_4v.append(max(row["eqe"][np.where(row["luminance"]>5)]))
+            eqe_4v.append(max(row["eqe"][np.where(row["luminance"] > 5)]))
             power_density_4v.append(row["power_density"][idx_4v][0])
 
         device_numbers = (
@@ -1327,7 +1353,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 + str(int(row["device_number"]))
                 + "_p"
                 + str(int(row["pixel_number"]))
-                + "_eval"
+                + "_jvl_eval"
                 + ".csv"
             )
 
