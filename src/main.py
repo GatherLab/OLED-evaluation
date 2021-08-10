@@ -302,11 +302,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 )
                 # scan_number = head[1].split("\t")[1].split("Scan Number: ")[-1]
                 self.assigned_groups_df.loc[i, "spectrum_path"] = (
-                    self.global_path
-                    + "/"
-                    + head[0].split("Evaluation Spectrum:   ")[-1].split("\n")[0]
+                    head[0].split("Evaluation Spectrum:   ")[-1].split("\n")[0]
                 )
-                self.assigned_groups_df = self.assigned_groups_df.rename(index = {i: evaluated_meta_data["device_number"].to_numpy()[0]})
+                self.assigned_groups_df = self.assigned_groups_df.rename(
+                    index={i: evaluated_meta_data["device_number"].to_numpy()[0]}
+                )
 
             i += 1
 
@@ -1388,9 +1388,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 + self.assigned_groups_df.loc[
                     self.assigned_groups_df.index == row["device_number"],
                     "spectrum_path",
-                ]
-                .to_list()[0]
-                .split("/")[-1]
+                ].to_list()[0]
             )
             header_lines.append(line01)
             line02 = (
@@ -1506,9 +1504,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 + self.assigned_groups_df.loc[
                     self.assigned_groups_df.index == device_number,
                     "spectrum_path",
-                ]
-                .to_list()[0]
-                .split("/")[-1]
+                ].to_list()[0]
             )
             header_lines.append(line01)
 
