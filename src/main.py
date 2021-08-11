@@ -181,10 +181,15 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             )
             self.files_df = self.investigate_file_names(self.file_names)
 
-            # Check if an evaluation folder already exists
-            if os.path.isdir(self.global_path + "/eval/"):
-                evaluated_file_names = cf.read_file_names(self.global_path + "/eval/")
-                self.load_evaluated_data(evaluated_file_names)
+            try:
+                # Check if an evaluation folder already exists
+                if os.path.isdir(self.global_path + "/eval/"):
+                    evaluated_file_names = cf.read_file_names(
+                        self.global_path + "/eval/"
+                    )
+                    self.load_evaluated_data(evaluated_file_names)
+            except:
+                cf.log_message("Evaluation data could not be reloaded.")
 
             # Now set the folder path as selected and allow for assignment of groups
             self.folder_path_selected = True
@@ -294,13 +299,14 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # Read in the headers of the files to obtain group name, scan number and
         # evaluation spectrum
         i = 0
+        scan_number = []
         for file_name in evaluated_meta_data["file_name"]:
             with open(self.global_path + "/eval/" + file_name) as myfile:
                 head = [next(myfile) for x in range(2)]
                 self.assigned_groups_df.loc[i, "group_name"] = (
                     head[1].split("\t")[-1].split("Assigned group: ")[-1].split("\n")[0]
                 )
-                # scan_number = head[1].split("\t")[1].split("Scan Number: ")[-1]
+                scan_number.append(head[1].split("\t")[1].split("Scan Number: ")[-1])
                 self.assigned_groups_df.loc[i, "spectrum_path"] = (
                     head[0].split("Evaluation Spectrum:   ")[-1].split("\n")[0]
                 )
@@ -309,6 +315,13 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 )
 
             i += 1
+
+        self.selected_scan_number = int(scan_number[0])
+
+        cmap = mpl.cm.get_cmap("Dark2", self.assigned_groups_df.shape[0])
+        self.assigned_groups_df.color = np.array(
+            [mpl.colors.rgb2hex(cmap(i)) for i in range(cmap.N)], dtype=object
+        )
 
         print("Blub")
 
@@ -332,6 +345,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """
         parameters = {
             "no_of_scans": self.max_scan_number,
+            "selected_scan_number": self.selected_scan_number,
             "device_number": np.unique(self.files_df["device_number"].to_list()),
             "assigned_groups_df": self.assigned_groups_df,
         }

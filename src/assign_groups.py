@@ -55,6 +55,17 @@ class AssignGroups(QtWidgets.QDialog, Ui_AssignGroup):
         self.close_pushButton.clicked.connect(self.close_without_saving)
         self.save_pushButton.clicked.connect(self.save_groups)
 
+        # Set the scan number of the combobox
+        idx = self.select_scan_number_ComboBox.findText(
+            str(self.parameters["selected_scan_number"])
+        )
+        if idx >= 0:
+            self.select_scan_number_ComboBox.setCurrentIndex(idx)
+
+        # self.select_scan_number_ComboBox.setCurrentIndex(
+        #     self.parameters["selected_scan_number"]
+        # )
+
         # In case groups were already assigned the dialog should be directly
         # initalised with those groups
         groups = self.parameters["assigned_groups_df"]["group_name"].unique()
