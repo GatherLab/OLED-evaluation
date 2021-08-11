@@ -170,10 +170,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # Now get the file paths for all files at top level in this folder
         self.file_names = cf.read_file_names(self.global_path)
 
-        # Check if an evaluation folder already exists
-        if os.path.isdir(self.global_path + "/eval/"):
-            self.load_evaluated_data(self.global_path + "/eval/")
-
         # Now check if there are some files and how many in the folder
         if len(self.file_names) == 0:
             cf.log_message("Couldn't find any files in the selected top level folder.")
@@ -184,6 +180,16 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 + " files at top level in the selected folder."
             )
             self.files_df = self.investigate_file_names(self.file_names)
+
+            try:
+                # Check if an evaluation folder already exists
+                if os.path.isdir(self.global_path + "/eval/"):
+                    evaluated_file_names = cf.read_file_names(
+                        self.global_path + "/eval/"
+                    )
+                    self.load_evaluated_data(evaluated_file_names)
+            except:
+                cf.log_message("Evaluation data could not be reloaded.")
 
             # Now set the folder path as selected and allow for assignment of groups
             self.folder_path_selected = True
@@ -209,6 +215,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         for name in file_names:
             split_name = name.split("_")
+            if split_name[-1] == "eval.csv":
+                split_name = split_name[:-1]
             if len(split_name) == 5:
                 # Right file name but only one scan
                 if str(split_name[4].split(".")[0]) != "jvl":
@@ -286,7 +294,36 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         Function that loads the evaluated data if it was already evaluated.
         It basically fills in the assign group dialog with previous data
         """
-        print("Dummy function")
+        evaluated_meta_data = self.investigate_file_names(filename)
+
+        # Read in the headers of the files to obtain group name, scan number and
+        # evaluation spectrum
+        i = 0
+        scan_number = []
+        for file_name in evaluated_meta_data["file_name"]:
+            with open(self.global_path + "/eval/" + file_name) as myfile:
+                head = [next(myfile) for x in range(2)]
+                self.assigned_groups_df.loc[i, "group_name"] = (
+                    head[1].split("\t")[-1].split("Assigned group: ")[-1].split("\n")[0]
+                )
+                scan_number.append(head[1].split("\t")[1].split("Scan Number: ")[-1])
+                self.assigned_groups_df.loc[i, "spectrum_path"] = (
+                    head[0].split("Evaluation Spectrum:   ")[-1].split("\n")[0]
+                )
+                self.assigned_groups_df = self.assigned_groups_df.rename(
+                    index={i: evaluated_meta_data["device_number"].to_numpy()[0]}
+                )
+
+            i += 1
+
+        self.selected_scan_number = int(scan_number[0])
+
+        cmap = mpl.cm.get_cmap("Dark2", self.assigned_groups_df.shape[0])
+        self.assigned_groups_df.color = np.array(
+            [mpl.colors.rgb2hex(cmap(i)) for i in range(cmap.N)], dtype=object
+        )
+
+        print("Blub")
 
         # file_names = cf.read_file_names(filename)
 
@@ -308,6 +345,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """
         parameters = {
             "no_of_scans": self.max_scan_number,
+            "selected_scan_number": self.selected_scan_number,
             "device_number": np.unique(self.files_df["device_number"].to_list()),
             "assigned_groups_df": self.assigned_groups_df,
         }
@@ -1364,9 +1402,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 + self.assigned_groups_df.loc[
                     self.assigned_groups_df.index == row["device_number"],
                     "spectrum_path",
-                ]
-                .to_list()[0]
-                .split("/")[-1]
+                ].to_list()[0]
             )
             header_lines.append(line01)
             line02 = (
@@ -1482,9 +1518,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 + self.assigned_groups_df.loc[
                     self.assigned_groups_df.index == device_number,
                     "spectrum_path",
-                ]
-                .to_list()[0]
-                .split("/")[-1]
+                ].to_list()[0]
             )
             header_lines.append(line01)
 
