@@ -496,7 +496,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
                 # Goniometer file
                 # Read in the angle resolved file
-                raw_spectrum = pd.read_csv(spectrum_path, sep="\t", skiprows=3)
+                raw_spectrum = pd.read_csv(spectrum_path, sep="\t", skiprows=4)
 
                 # Extract the foward spectrum and save to self.spectrum_data_df
                 # self.spectrum_data_df.loc[
@@ -1208,7 +1208,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.assigned_groups_df["group_name"] == group, "spectrum_path"
             ].to_list()[0]
 
-            spectrum = pd.read_csv(file_name, sep="\t", skiprows=3)
+            spectrum = pd.read_csv(file_name, sep="\t", skiprows=4)
 
             # first subtract the background from all columns but the wavelength
             try:
