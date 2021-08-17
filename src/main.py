@@ -143,6 +143,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         ) as json_file:
             json.dump(settings_data, json_file, indent=4)
 
+        self.selected_scan = 1
+
         cf.log_message("Overwrite Settings set to Default")
 
     # -------------------------------------------------------------------- #
@@ -181,6 +183,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             )
             self.files_df = self.investigate_file_names(self.file_names)
 
+            self.old_evaluation_df = pd.DataFrame()
             try:
                 # Check if an evaluation folder already exists
                 if os.path.isdir(self.global_path + "/eval/"):
@@ -189,6 +192,13 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                     )
                     self.load_evaluated_data(evaluated_file_names)
             except:
+                # If that doesn't work for some reason, start over
+                del self.assigned_groups_df
+                self.assigned_groups_df = pd.DataFrame(
+                    columns=["group_name", "spectrum_path", "color"]
+                )
+                self.selected_scan = 1
+                self.old_evaluation_df = pd.DataFrame()
                 cf.log_message("Evaluation data could not be reloaded.")
 
             # Now set the folder path as selected and allow for assignment of groups
@@ -289,18 +299,23 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         #         np.where(np.array(device_numbers, dtype=int) == i)[0]
         #     ]
 
-    def load_evaluated_data(self, filename):
+    def load_evaluated_data(self, folder_path):
         """
         Function that loads the evaluated data if it was already evaluated.
         It basically fills in the assign group dialog with previous data
         """
-        evaluated_meta_data = self.investigate_file_names(filename)
+        self.old_evaluation_df = self.investigate_file_names(folder_path)
+
+        # Only scan the files for unique device numbers
+        unique_devices = self.old_evaluation_df[
+            ~self.old_evaluation_df["device_number"].duplicated()
+        ]
 
         # Read in the headers of the files to obtain group name, scan number and
         # evaluation spectrum
         i = 0
         scan_number = []
-        for file_name in evaluated_meta_data["file_name"]:
+        for file_name in unique_devices["file_name"]:
             with open(self.global_path + "/eval/" + file_name) as myfile:
                 head = [next(myfile) for x in range(2)]
                 self.assigned_groups_df.loc[i, "group_name"] = (
@@ -311,29 +326,17 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                     head[0].split("Evaluation Spectrum:   ")[-1].split("\n")[0]
                 )
                 self.assigned_groups_df = self.assigned_groups_df.rename(
-                    index={i: evaluated_meta_data["device_number"].to_numpy()[0]}
+                    index={i: unique_devices["device_number"].to_numpy()[0]}
                 )
 
             i += 1
 
-        self.selected_scan_number = int(scan_number[0])
+        self.selected_scan = int(scan_number[0])
 
         cmap = mpl.cm.get_cmap("Dark2", self.assigned_groups_df.shape[0])
         self.assigned_groups_df.color = np.array(
             [mpl.colors.rgb2hex(cmap(i)) for i in range(cmap.N)], dtype=object
         )
-
-        print("Blub")
-
-        # file_names = cf.read_file_names(filename)
-
-        # # Now check if there are some files and how many in the folder
-        # if len(file_names) == 0:
-        #     cf.log_message("Couldn't find any files in the selected top level folder.")
-        # else:
-        #     investigated_file_names = self.investigate_file_names(file_names)
-
-        # print("blub")
 
     # -------------------------------------------------------------------- #
     # -------------------------- Assign Groups --------------------------- #
@@ -345,7 +348,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """
         parameters = {
             "no_of_scans": self.max_scan_number,
-            "selected_scan_number": self.selected_scan_number,
+            "selected_scan_number": self.selected_scan,
             "device_number": np.unique(self.files_df["device_number"].to_list()),
             "assigned_groups_df": self.assigned_groups_df,
         }
@@ -397,6 +400,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 cf.log_message(
                     "Can not evaluate data without spectrum files for all groups."
                 )
+
+            # In case there was old data successfully loaded in, check which
+            # pixels to mask (because they were masked previously)
+            if self.old_evaluation_df.shape != (0, 0):
+                self.data_df.loc[~self.data_df.index.isin(self.old_evaluation_df.index), "masked"] = True
 
             # Set variables that define the program's state
             self.groups_assigned = True
