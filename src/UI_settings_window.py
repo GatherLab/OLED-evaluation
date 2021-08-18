@@ -13,7 +13,7 @@ class Ui_Settings(object):
         self.parent = parent
 
         Settings.setObjectName("Settings")
-        Settings.resize(509, 317)
+        Settings.resize(800, 400)
         Settings.setStyleSheet(
             "QWidget {\n"
             "            background-color: rgb(44, 49, 60);\n"
@@ -78,9 +78,20 @@ class Ui_Settings(object):
         self.default_saving_path_label = QtWidgets.QLabel(Settings)
         self.default_saving_path_label.setObjectName("default_saving_path_label")
         self.gridLayout.addWidget(self.default_saving_path_label, 2, 0, 1, 1)
+
+        self.default_saving_path_HLayout = QtWidgets.QHBoxLayout()
+        self.select_default_saving_path_pushButton = QtWidgets.QPushButton(Settings)
+        self.select_default_saving_path_pushButton.setObjectName(
+            "select_default_saving_path_pushButton"
+        )
+
         self.default_saving_path_lineEdit = QtWidgets.QLineEdit(Settings)
         self.default_saving_path_lineEdit.setObjectName("default_saving_path_lineEdit")
-        self.gridLayout.addWidget(self.default_saving_path_lineEdit, 2, 1, 1, 1)
+        self.default_saving_path_HLayout.addWidget(self.default_saving_path_lineEdit)
+        self.default_saving_path_HLayout.addWidget(
+            self.select_default_saving_path_pushButton
+        )
+        self.gridLayout.addLayout(self.default_saving_path_HLayout, 2, 1, 1, 1)
 
         # Data Evaluation Settings
         self.data_evaluation_header_label = QtWidgets.QLabel(Settings)
@@ -162,13 +173,24 @@ class Ui_Settings(object):
         self.gridLayout.addWidget(
             self.photopic_response_calibration_path_label, 11, 0, 1, 1
         )
+
+        self.photopic_response_path_HLayout = QtWidgets.QHBoxLayout()
+        self.select_photopic_response_path_pushButton = QtWidgets.QPushButton(Settings)
+        self.select_photopic_response_path_pushButton.setObjectName(
+            "select_photopic_response_path_pushButton"
+        )
+
         self.photopic_response_calibration_path_lineEdit = QtWidgets.QLineEdit(Settings)
         self.photopic_response_calibration_path_lineEdit.setObjectName(
             "photopic_response_calibration_path_lineEdit"
         )
-        self.gridLayout.addWidget(
-            self.photopic_response_calibration_path_lineEdit, 11, 1, 1, 1
+        self.photopic_response_path_HLayout.addWidget(
+            self.photopic_response_calibration_path_lineEdit
         )
+        self.photopic_response_path_HLayout.addWidget(
+            self.select_photopic_response_path_pushButton
+        )
+        self.gridLayout.addLayout(self.photopic_response_path_HLayout, 11, 1, 1, 1)
 
         # PD responsivity path
         self.pd_responsivity_calibration_path_label = QtWidgets.QLabel(Settings)
@@ -178,21 +200,46 @@ class Ui_Settings(object):
         self.gridLayout.addWidget(
             self.pd_responsivity_calibration_path_label, 12, 0, 1, 1
         )
+
+        self.pd_responsivity_calibration_path_HLayout = QtWidgets.QHBoxLayout()
+        self.select_pd_responsivity_calibration_path_pushButton = QtWidgets.QPushButton(
+            Settings
+        )
+        self.select_pd_responsivity_calibration_path_pushButton.setObjectName(
+            "select_pd_responsivity_calibration_path_pushButton"
+        )
         self.pd_responsivity_calibration_path_lineEdit = QtWidgets.QLineEdit(Settings)
         self.pd_responsivity_calibration_path_lineEdit.setObjectName(
             "pd_responsivity_calibration_path_lineEdit"
         )
-        self.gridLayout.addWidget(
-            self.pd_responsivity_calibration_path_lineEdit, 12, 1, 1, 1
+
+        self.pd_responsivity_calibration_path_HLayout.addWidget(
+            self.pd_responsivity_calibration_path_lineEdit
+        )
+        self.pd_responsivity_calibration_path_HLayout.addWidget(
+            self.select_pd_responsivity_calibration_path_pushButton
+        )
+        self.gridLayout.addLayout(
+            self.pd_responsivity_calibration_path_HLayout, 12, 1, 1, 1
         )
 
         # CIE reference path
         self.cie_reference_path_label = QtWidgets.QLabel(Settings)
         self.cie_reference_path_label.setObjectName("cie_reference_path_label")
         self.gridLayout.addWidget(self.cie_reference_path_label, 13, 0, 1, 1)
+
+        self.cie_reference_path_HLayout = QtWidgets.QHBoxLayout()
+        self.cie_reference_path_pushButton = QtWidgets.QPushButton(Settings)
+        self.cie_reference_path_pushButton.setObjectName(
+            "cie_reference_path_pushButton"
+        )
+
         self.cie_reference_path_lineEdit = QtWidgets.QLineEdit(Settings)
         self.cie_reference_path_lineEdit.setObjectName("cie_reference_path_lineEdit")
-        self.gridLayout.addWidget(self.cie_reference_path_lineEdit, 13, 1, 1, 1)
+
+        self.cie_reference_path_HLayout.addWidget(self.cie_reference_path_lineEdit)
+        self.cie_reference_path_HLayout.addWidget(self.cie_reference_path_pushButton)
+        self.gridLayout.addLayout(self.cie_reference_path_HLayout, 13, 1, 1, 1)
 
         # Spectrometer Calibration path
         self.spectrometer_calibration_path_label = QtWidgets.QLabel(Settings)
@@ -200,23 +247,47 @@ class Ui_Settings(object):
             "spectrometer_calibration_path_label"
         )
         self.gridLayout.addWidget(self.spectrometer_calibration_path_label, 14, 0, 1, 1)
+
+        self.spectrometer_calibration_HLayout = QtWidgets.QHBoxLayout()
+        self.spectrometer_calibration_pushButton = QtWidgets.QPushButton(Settings)
+        self.spectrometer_calibration_pushButton.setObjectName(
+            "spectrometer_calibration_pushButton"
+        )
+
         self.spectrometer_calibration_path_lineEdit = QtWidgets.QLineEdit(Settings)
         self.spectrometer_calibration_path_lineEdit.setObjectName(
             "spectrometer_calibration_path_lineEdit"
         )
-        self.gridLayout.addWidget(
-            self.spectrometer_calibration_path_lineEdit, 14, 1, 1, 1
+
+        self.spectrometer_calibration_HLayout.addWidget(
+            self.spectrometer_calibration_path_lineEdit
         )
+        self.spectrometer_calibration_HLayout.addWidget(
+            self.spectrometer_calibration_pushButton
+        )
+        self.gridLayout.addLayout(self.spectrometer_calibration_HLayout, 14, 1, 1, 1)
 
         # Photodiode gain path
         self.photodiode_gain_path_label = QtWidgets.QLabel(Settings)
         self.photodiode_gain_path_label.setObjectName("photodiode_gain_path_label")
         self.gridLayout.addWidget(self.photodiode_gain_path_label, 15, 0, 1, 1)
+
+        self.photodiode_gain_path_HLayout = QtWidgets.QHBoxLayout()
+        self.photodiode_gain_path_pushButton = QtWidgets.QPushButton(Settings)
+        self.photodiode_gain_path_pushButton.setObjectName(
+            "photodiode_gain_path_pushButton"
+        )
+
         self.photodiode_gain_path_lineEdit = QtWidgets.QLineEdit(Settings)
         self.photodiode_gain_path_lineEdit.setObjectName(
             "photodiode_gain_path_lineEdit"
         )
-        self.gridLayout.addWidget(self.photodiode_gain_path_lineEdit, 15, 1, 1, 1)
+
+        self.photodiode_gain_path_HLayout.addWidget(self.photodiode_gain_path_lineEdit)
+        self.photodiode_gain_path_HLayout.addWidget(
+            self.photodiode_gain_path_pushButton
+        )
+        self.gridLayout.addLayout(self.photodiode_gain_path_HLayout, 15, 1, 1, 1)
 
         # Push Buttons
         self.buttons_HBoxLayout = QtWidgets.QHBoxLayout()
@@ -244,6 +315,20 @@ class Ui_Settings(object):
         )
 
         self.default_saving_path_label.setText(_translate("Settings", "Default Path"))
+        self.select_default_saving_path_pushButton.setText(
+            _translate("Settings", " Select ")
+        )
+        self.select_pd_responsivity_calibration_path_pushButton.setText(
+            _translate("Settings", " Select ")
+        )
+        self.select_photopic_response_path_pushButton.setText(
+            _translate("Settings", " Select ")
+        )
+        self.cie_reference_path_pushButton.setText(_translate("Settings", " Select "))
+        self.spectrometer_calibration_pushButton.setText(
+            _translate("Settings", " Select ")
+        )
+        self.photodiode_gain_path_pushButton.setText(_translate("Settings", " Select "))
 
         self.data_evaluation_header_label.setText(
             _translate("Settings", "Settings for Data Evaluation")

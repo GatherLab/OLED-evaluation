@@ -50,6 +50,22 @@ class Settings(QtWidgets.QDialog, Ui_Settings):
         # )
 
         # Connect buttons to functions
+        self.select_default_saving_path_pushButton.clicked.connect(
+            self.select_default_saving_path
+        )
+        self.select_photopic_response_path_pushButton.clicked.connect(
+            self.select_photopic_response_path
+        )
+        self.select_pd_responsivity_calibration_path_pushButton.clicked.connect(
+            self.select_pd_responsivity_calibration_path
+        )
+        self.cie_reference_path_pushButton.clicked.connect(
+            self.select_cie_reference_path
+        )
+        self.spectrometer_calibration_pushButton.clicked.connect(
+            self.select_spectrometer_calibration_path
+        )
+        self.photodiode_gain_path_pushButton.clicked.connect(self.select_pd_gain_path)
         self.load_defaults_pushButton.clicked.connect(self.load_defaults)
         self.save_settings_pushButton.clicked.connect(self.save_settings)
 
@@ -137,3 +153,88 @@ class Settings(QtWidgets.QDialog, Ui_Settings):
         self.photodiode_gain_path_lineEdit.setText(
             str(default_settings["photodiode_gain_path"])
         )
+
+    def select_default_saving_path(self):
+        """
+        Function that opens dialog to select default saving path
+        """
+        path = QtWidgets.QFileDialog.getExistingDirectory(
+            QtWidgets.QFileDialog(),
+            "Select a Default Saving Path",
+            self.default_saving_path_lineEdit.text(),
+            QtWidgets.QFileDialog.ShowDirsOnly,
+        )
+        if path == "":
+            return
+        else:
+            self.default_saving_path_lineEdit.setText(path)
+
+    def select_photopic_response_path(self):
+        """
+        Function that opens dialog to select default saving path
+        """
+        path = QtWidgets.QFileDialog.getOpenFileName(
+            QtWidgets.QFileDialog(),
+            "Select a Photopic Response File",
+            self.photopic_response_calibration_path_lineEdit.text(),
+        )[0]
+        if path == "":
+            return
+        else:
+            self.photopic_response_calibration_path_lineEdit.setText(path)
+
+    def select_pd_responsivity_calibration_path(self):
+        """
+        Function that opens dialog to select default saving path
+        """
+        path = QtWidgets.QFileDialog.getOpenFileName(
+            QtWidgets.QFileDialog(),
+            "Select a PD Responsivity File",
+            self.pd_responsivity_calibration_path_lineEdit.text(),
+        )[0]
+        if path == "":
+            return
+        else:
+            self.pd_responsivity_calibration_path_lineEdit.setText(path)
+
+    def select_cie_reference_path(self):
+        """
+        Function that opens dialog to select default saving path
+        """
+        path = QtWidgets.QFileDialog.getOpenFileName(
+            QtWidgets.QFileDialog(),
+            "Select a CIE Reference File",
+            self.cie_reference_path_lineEdit.text(),
+        )[0]
+        if path == "":
+            return
+        else:
+            self.cie_reference_path_lineEdit.setText(path)
+
+    def select_spectrometer_calibration_path(self):
+        """
+        Function that opens dialog to select default saving path
+        """
+        path = QtWidgets.QFileDialog.getOpenFileName(
+            QtWidgets.QFileDialog(),
+            "Select a Spectrometer Calibration File",
+            self.spectrometer_calibration_path_lineEdit.text(),
+        )[0]
+        if path == "":
+            return
+        else:
+            self.spectrometer_calibration_path_lineEdit.setText(path)
+
+    def select_pd_gain_path(self):
+        """
+        Function that opens dialog to select default saving path
+        """
+        path = QtWidgets.QFileDialog.getOpenFileName(
+            QtWidgets.QFileDialog(),
+            "Select a PD Gain File",
+            self.photodiode_gain_path_lineEdit.text(),
+        )[0]
+        if path == "":
+            return
+        else:
+            self.photodiode_gain_path_lineEdit.setText(path)
