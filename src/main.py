@@ -12,6 +12,7 @@ from PySide2 import QtCore, QtGui, QtWidgets
 
 import time
 import os
+import shutil
 import json
 import sys
 from pathlib import Path
@@ -404,7 +405,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             # In case there was old data successfully loaded in, check which
             # pixels to mask (because they were masked previously)
             if self.old_evaluation_df.shape != (0, 0):
-                self.data_df.loc[~self.data_df.index.isin(self.old_evaluation_df.index), "masked"] = True
+                self.data_df.loc[
+                    ~self.data_df.index.isin(self.old_evaluation_df.index), "masked"
+                ] = True
 
             # Set variables that define the program's state
             self.groups_assigned = True
@@ -1384,10 +1387,40 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         unmasked_data = self.data_df.loc[self.data_df["masked"] == False].join(
             self.files_df.loc[:, ["scan_number", "pixel_number"]]
         )
+        # Check if folder already exists if so, ask user if we should overwrite
+        # it (delete it and then write again)
+        if os.path.isdir(self.global_path + "/eval/"):
+            print("Delete folder and overwrite")
+            msgBox = QtWidgets.QMessageBox()
+            msgBox.setText(
+                "Evaluation data already exists. Do you want to overwrite it?"
+            )
+            msgBox.setStandardButtons(
+                QtWidgets.QMessageBox.Save | QtWidgets.QMessageBox.Cancel
+            )
+            save_button = msgBox.button(QtWidgets.QMessageBox.Save)
+            cancel_button = msgBox.button(QtWidgets.QMessageBox.Cancel)
+            msgBox.setStyleSheet(
+                "background-color: rgb(44, 49, 60);\n"
+                "color: rgb(255, 255, 255);\n"
+                'font: 63 bold 10pt "Segoe UI";\n'
+                ""
+            )
+            msgBox.exec()
+
+            if msgBox.clickedButton() == save_button:
+                cf.log_message("Old evaluation data is deleted and overwritten.")
+
+                # Delete folder
+                shutil.rmtree(self.global_path + "/eval/")
+
+                # Create folder if it does not exist yet
+                Path(self.global_path + "/eval/").mkdir(parents=True, exist_ok=True)
+            elif msgBox.clickedButton() == cancel_button:
+                cf.log_message("Saving process aborted.")
+                return
 
         for index, row in unmasked_data.iterrows():
-            # Create folder if it does not exist yet
-            Path(self.global_path + "/eval/").mkdir(parents=True, exist_ok=True)
 
             # Save data
             file_path = (
