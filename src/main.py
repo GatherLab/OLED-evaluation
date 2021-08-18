@@ -183,6 +183,29 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 + " files at top level in the selected folder."
             )
             self.files_df = self.investigate_file_names(self.file_names)
+            # If there are duplicates of device, pixel and scan number there is
+            # a naming issue that originates from different batch names for the same batch.
+            if self.files_df.duplicated(
+                subset=["device_number", "pixel_number", "scan_number"]
+            ).any():
+                msgBox = QtWidgets.QMessageBox()
+                msgBox.setText(
+                    "There exist multiple files with the same combination of device number, pixel number and scan number. This might be due to different batch names within this folder. Data can not be evaluated. Please delete additional files."
+                )
+                msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
+                msgBox.setStyleSheet(
+                    "background-color: rgb(44, 49, 60);\n"
+                    "color: rgb(255, 255, 255);\n"
+                    'font: 63 bold 10pt "Segoe UI";\n'
+                    ""
+                )
+                msgBox.exec()
+
+                del self.file_names
+                cf.log_message(
+                    "File loading aborted due to multiple files with same combination of device, pixel and scan number."
+                )
+                return
 
             self.old_evaluation_df = pd.DataFrame()
             try:
@@ -191,6 +214,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                     evaluated_file_names = cf.read_file_names(
                         self.global_path + "/eval/"
                     )
+
                     self.load_evaluated_data(evaluated_file_names)
             except:
                 # If that doesn't work for some reason, start over
@@ -200,7 +224,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 )
                 self.selected_scan = 1
                 self.old_evaluation_df = pd.DataFrame()
-                cf.log_message("Evaluation data could not be reloaded.")
+                cf.log_message("Previously evaluated meta data could not be loaded.")
 
             # Now set the folder path as selected and allow for assignment of groups
             self.folder_path_selected = True
@@ -255,15 +279,15 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                     + split_name[5].split(".")[0][1:]
                 )
                 scan_number.append(int(split_name[5].split(".")[0][1:]))
-            else:
-                # File name is not in the correct format
-                cf.log_message(
-                    "The file name does not follow the naming convention date_batch-name_d<no>_p<no>_<no>.csv"
-                )
-        if np.size(np.unique(batch_names)) > 1:
-            cf.log_message(
-                "The batch name does not match for all files. If there are different OLEDs with the same device number this could lead to a problem."
-            )
+            # else:
+            #     # File name is not in the correct format
+            #     cf.log_message(
+            #         "The file name does not follow the naming convention date_batch-name_d<no>_p<no>_<no>.csv"
+            #     )
+        # if np.size(np.unique(batch_names)) > 1:
+        #     cf.log_message(
+        #         "The batch name does not match for all files. If there are different OLEDs with the same device number this could lead to a problem."
+        #     )
 
         files_df["file_name"] = jvl_file_names
         files_df["device_number"] = device_numbers
@@ -327,7 +351,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                     head[0].split("Evaluation Spectrum:   ")[-1].split("\n")[0]
                 )
                 self.assigned_groups_df = self.assigned_groups_df.rename(
-                    index={i: unique_devices["device_number"].to_numpy()[0]}
+                    index={i: unique_devices["device_number"].to_numpy()[i]}
                 )
 
             i += 1
