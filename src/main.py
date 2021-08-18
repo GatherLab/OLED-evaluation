@@ -927,7 +927,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         )
         self.eval_ax[0, 1].set_xscale("log")
         self.eval_ax[0, 1].set_xlabel("Current Density (mA cm$^{-2}$)")
-        self.eval_ax[0, 1].set_ylabel("EQE (%))")
+        self.eval_ax[0, 1].set_ylabel("EQE (%)")
         self.eval_ax[0, 1].set_xlim([1e-2, max(temp_df.iloc[0]["current_density"])])
         # Find maximum non infinite eqe value and set that +1 as the limits
         self.eval_ax[0, 1].set_ylim(
