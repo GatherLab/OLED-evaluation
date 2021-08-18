@@ -726,6 +726,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 pd_resistance=pd_parameters["pd_resistance"],
                 pd_radius=pd_parameters["pd_radius"],
                 pd_distance=global_settings["pd_distance"] * 1e-3,
+                pd_cutoff=pd_parameters["pd_cutoff"],
                 correction_factor=spectrum["correction_factor"].to_list()[0],
             )
             self.data_df.loc[index] = jvl_instance.to_series()
@@ -926,7 +927,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         )
         self.eval_ax[0, 1].set_xscale("log")
         self.eval_ax[0, 1].set_xlabel("Current Density (mA cm$^{-2}$)")
-        self.eval_ax[0, 1].set_ylabel("EQE ())")
+        self.eval_ax[0, 1].set_ylabel("EQE (%))")
         self.eval_ax[0, 1].set_xlim([1e-2, max(temp_df.iloc[0]["current_density"])])
         # Find maximum non infinite eqe value and set that +1 as the limits
         self.eval_ax[0, 1].set_ylim(

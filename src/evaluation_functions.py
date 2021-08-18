@@ -1,66 +1,4 @@
 # coding: utf-8
-"""
-Created by Gather Lab
-
-This is the code for the analysis of EL measurements. It corrects the IVL measurement for non-Lambertian emission. The spectral intensities within 180deg (or 90deg)
-were measured with the spectrometer and from this the characteristics is corrected. 
-For the analysis the data from 0 to 90deg is considered (not-90 to 0deg), care should be taken that the cut-out of the holder is positioned accordingly.
-
-Required files:
-	- 'library' folder with 
-		- "Responsivity_PD.txt" 
-		- "Photopic_response.txt"
-		- "NormCurves_400-800.txt"
-		- 'CalibrationData.txt'(converison from counts into intensity)
-	- 'data' folder
-	  with sample folder
-		-'batch' folder
-		with sample folder again
-	- in both sample folders:
-			'datetime' folder
-				'raw' folder
-					'keithleydata' and 'spectrumdata' folder
-						*'keithleydata' there should be the files: keithleyOLEDvoltages.txt, keithleyPDvoltages.txt, specifickeithleyPDvoltages.txt
-						For ANALYSIS especially the keithleyPDvoltages.txt file can be copied into the folder as a PD measurement might not be needed for every single device
-						*'spectrumdata' there should be the text files (depending on your recodring choice) from Angle-90.txt over Angle0.txt to Angle90.txt
-						AND a background file (all recorded within the run)				
-
-The default values for the parameters in this code are          
-	- distance of PD and OLED 0.115m
-	- PDarea = 0.000075 # m2; area of the used photodiode
-	- PDres = 4.75e5 # Ohm; at 50dB gain
-	- our analysis software subtracts the background spectrum, and smoothens the spectrum, typically by applying a 10 nm sliding average filter (line 327). Depending on the signal-to-noise ratio this smoothing can be commented out
-		   
-The output of this program is created in the sample folder in the 'data' folder (sample folder in 'batch' is kept unchanged):    
-    - creates a 'processedEL' folder with the results
-		'sample_name'_effdata_LAM.txt
-			Measurement code : 'sample name''datetime'
-			Calculation programme :	NonLamLIV-EQE_vfinal.py
-			Credits :	GatherLab, University of St Andrews, 2020
-			Measurement time : 201907031258	Analysis time :201907031524
-			OLED active area:     4e-06 m2
-			Distance OLED - Photodiode:   0.115 m
-			Photodiode area:    7.54296396127e-05m2
-			Maximum intensity at:     570.0 nm
-			CIE coordinates:      (0.522, 0.476)
-			V            I           J         Abs(J)        L         EQE        LE         CE        PoD
-		'sample_name'_effdata_NONLAM.txt
-			V            I           J         Abs(J)        L         AvLum    EQE        LE         CE        PoD
-		'sample_name'_lamdata.txt (this includes not only the angle-dependent emission but also a correction for the photopic response due to spectral changes)
-		'sample_name'_specdata.txt
-		'sample_name'_specdatafull_LAM.txt
-		'sample_name'_specdatahalf.txt
-		and
-		7 PNG files containing some of the comparison between NONLAM and LAM.
-
-Important parameters for the analysis:    
-    - distance PD to OLED: fixed in EL setup to 0.115m
-    - PD paramters: PDA100A2 (area: 75mm2, PDgain (usually 50dB))
-	- size of OLED
-
-"""
-
-"IMPORTING REQUIRED MODULES"
 # General Modules
 # import os, shutil
 # import re, string
@@ -70,6 +8,8 @@ import math
 import numpy as np
 import pandas as pd
 import datetime as dt
+import copy
+
 
 import scipy.constants as sc  # natural constants
 
@@ -361,6 +301,7 @@ class JVLData:
         pd_resistance,
         pd_radius,
         pd_distance,
+        pd_cutoff,
         correction_factor=[],
     ):
         """
@@ -384,6 +325,11 @@ class JVLData:
 
         self.voltage = np.array(jvl_data["voltage"])
         self.pd_voltage = np.array(jvl_data["pd_voltage"])
+
+        # All pd voltages that are below cutoff are now cut off and set to zero.
+        # This is done using a helper array to preserve the original data
+        self.pd_voltage_cutoff = copy.copy(self.pd_voltage)
+        self.pd_voltage_cutoff[self.pd_voltage_cutoff <= pd_cutoff] = 0
 
         self.current = np.array(jvl_data["current"]) / 1000
         # Current density directly in mA/cm^2
@@ -470,7 +416,7 @@ class JVLData:
         """
         Calculate e_coeff
         """
-        return self.pd_voltage / self.pd_resistance / self.sqsinalpha * 2
+        return self.pd_voltage_cutoff / self.pd_resistance / self.sqsinalpha * 2
 
     def calculate_non_lambertian_v_coeff(self):
         """
@@ -478,7 +424,7 @@ class JVLData:
         """
         return (
             sc.physical_constants["luminous efficacy"][0]
-            * self.pd_voltage
+            * self.pd_voltage_cutoff
             / self.pd_resistance
             / self.sqsinalpha
             * 2
@@ -499,19 +445,19 @@ class JVLData:
             ),
             where=1e9 * sc.h * sc.c * self.current * self.integral_4 != 0,
         )
-        eqe = 100 * (
-            sc.e
-            / 1e9
-            / sc.h
-            / sc.c
-            / self.current
-            * e_coeff
-            * self.integral_1
-            / self.integral_4
-            * e_correction_factor
-        )
+        # eqe = 100 * (
+        #     sc.e
+        #     / 1e9
+        #     / sc.h
+        #     / sc.c
+        #     / self.current
+        #     * e_coeff
+        #     * self.integral_1
+        #     / self.integral_4
+        #     * e_correction_factor
+        # )
 
-        return eqe
+        # return eqe
 
     def calculate_non_lambertian_luminance(self, v_coeff):
         """
@@ -578,7 +524,7 @@ class JVLData:
         """
         Calculate e_coeff
         """
-        return self.pd_voltage / self.pd_resistance / self.sqsinalpha
+        return self.pd_voltage_cutoff / self.pd_resistance / self.sqsinalpha
 
     def calculate_lambertian_v_coeff(self):
         """
@@ -586,7 +532,7 @@ class JVLData:
         """
         return (
             sc.physical_constants["luminous efficacy"][0]
-            * self.pd_voltage
+            * self.pd_voltage_cutoff
             / self.pd_resistance
             / self.sqsinalpha
         )
@@ -622,10 +568,9 @@ class JVLData:
         # v_coeff = calculate_lambertian_v_coeff(jvl_data)
         return np.divide(
             1 * v_coeff * self.integral_3,
-            np.pi * self.pixel_area * v_coeff * self.integral_3 * self.integral_4,
+            np.pi * self.pixel_area * self.integral_4,
             out=np.zeros_like(1 * v_coeff * self.integral_3),
-            where=np.pi * self.pixel_area * v_coeff * self.integral_3 * self.integral_4
-            != 0,
+            where=np.pi * self.pixel_area * self.integral_4 != 0,
         )
         # return 1 / np.pi / self.pixel_area * v_coeff * self.integral_3 / self.integral_4
 
