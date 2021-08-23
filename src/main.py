@@ -350,11 +350,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.assigned_groups_df.loc[i, "spectrum_path"] = (
                     head[0].split("Evaluation Spectrum:   ")[-1].split("\n")[0]
                 )
-                self.assigned_groups_df = self.assigned_groups_df.rename(
-                    index={i: unique_devices["device_number"].to_numpy()[i]}
-                )
 
             i += 1
+
+        # Now reindex
+        self.assigned_groups_df = self.assigned_groups_df.set_index(unique_devices["device_number"].to_numpy())
 
         self.selected_scan = int(scan_number[0])
 
@@ -570,6 +570,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 # Goniometer file
                 # Read in the angle resolved file
                 raw_spectrum = pd.read_csv(spectrum_path, sep="\t", skiprows=4)
+
+                # Drop degradation check columns (all column names containing _deg)
+                raw_spectrum = raw_spectrum.drop(
+                    columns=[col for col in raw_spectrum.columns if "_deg" in col]
+                )
 
                 # Extract the foward spectrum and save to self.spectrum_data_df
                 # self.spectrum_data_df.loc[
@@ -1284,21 +1289,17 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
             spectrum = pd.read_csv(file_name, sep="\t", skiprows=4)
 
+            spectrum = spectrum.drop(
+                columns=[col for col in spectrum.columns if "_deg" in col]
+            )
+
             # first subtract the background from all columns but the wavelength
-            try:
-                temp = (
-                    spectrum.drop(["wavelength", "0_deg"], axis=1)
-                    .transpose()
-                    .sub(spectrum["background"])
-                    .transpose()
-                )
-            except:
-                temp = (
-                    spectrum.drop(["wavelength"], axis=1)
-                    .transpose()
-                    .sub(spectrum["background"])
-                    .transpose()
-                )
+            temp = (
+                spectrum.drop(["wavelength"], axis=1)
+                .transpose()
+                .sub(spectrum["background"])
+                .transpose()
+            )
 
             # Now add the wavelength to the dataframe again
             temp["wavelength"] = spectrum["wavelength"]
@@ -1444,6 +1445,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             elif msgBox.clickedButton() == cancel_button:
                 cf.log_message("Saving process aborted.")
                 return
+        else:
+            # Create folder since it doesn't exist yet
+            Path(self.global_path + "/eval/").mkdir(parents=True, exist_ok=True)
 
         for index, row in unmasked_data.iterrows():
 
@@ -1642,7 +1646,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                     global_settings["spectrometer_calibration_path"],
                 )
 
-                raw_spectrum = pd.read_csv(spectrum_path, sep="\t", skiprows=3)
+                raw_spectrum = pd.read_csv(spectrum_path, sep="\t", skiprows=4)
 
                 # calibrated_spectrum = ef.calibrate_spectrum(
                 #     raw_spectrum, spectrometer_calibration
