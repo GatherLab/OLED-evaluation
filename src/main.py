@@ -354,7 +354,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             i += 1
 
         # Now reindex
-        self.assigned_groups_df = self.assigned_groups_df.set_index(unique_devices["device_number"].to_numpy())
+        self.assigned_groups_df = self.assigned_groups_df.set_index(
+            unique_devices["device_number"].to_numpy()
+        )
 
         self.selected_scan = int(scan_number[0])
 
@@ -1410,6 +1412,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         Function that saves the evaluated data to files (jvl data, spectral
         data and overview file to recover state of software)
         """
+        global_settings = cf.read_global_settings()
+
         unmasked_data = self.data_df.loc[self.data_df["masked"] == False].join(
             self.files_df.loc[:, ["scan_number", "pixel_number"]]
         )
@@ -1484,6 +1488,16 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 + str(self.assigned_groups_df.loc[row["device_number"], "group_name"])
             )
             header_lines.append(line02)
+            line03 = (
+                "OLED-PD distance: "
+                + str(global_settings["pd_distance"])
+                + " mm\t Pixel area: "
+                + str(global_settings["pixel_area"])
+                + " mm2\t PD gain: "
+                + str(global_settings["pd_gain"])
+                + "dB"
+            )
+            header_lines.append(line03)
             if self.spectrum_data_df.loc[row["device_number"], "angle_resolved"]:
                 line04 = (
                     "Photon Number Correction Factor: "
