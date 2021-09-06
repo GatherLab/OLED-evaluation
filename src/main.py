@@ -64,6 +64,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # Logs if folder path was already selected
         self.folder_path_selected = False
         self.groups_assigned = False
+        self.data_saved = False
 
         # Data that shall later be put into settings window
         # self.measurement_parameters = cf.read_global_settings()
@@ -482,6 +483,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
             # Set variables that define the program's state
             self.groups_assigned = True
+            self.data_saved = False
             self.eval_plot_groups_pushButton.setEnabled(True)
             self.eval_plot_statistics_pushButton.setEnabled(True)
             self.eval_plot_heros_pushButton.setEnabled(True)
@@ -1526,7 +1528,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # Check if folder already exists if so, ask user if we should overwrite
         # it (delete it and then write again)
         if os.path.isdir(self.global_path + "/eval/"):
-            print("Delete folder and overwrite")
             msgBox = QtWidgets.QMessageBox()
             msgBox.setText(
                 "Evaluation data already exists. Do you want to overwrite it?"
@@ -1837,6 +1838,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             "Evaluated Data Saved at "
             + str(time.strftime("%H:%M:%S", time.localtime()))
         )
+        self.data_saved = True
 
         # Format the dataframe for saving (no. of digits)
         # df_spectrum_data["wavelength"] = df_spectrum_data["wavelength"].map(
@@ -1904,21 +1906,34 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """
         Function that shall allow for save closing of the program
         """
+        if not self.data_saved:
+            # Ask the user if he really wants to close if data was not saved yet
+            msgBox = QtWidgets.QMessageBox()
+            msgBox.setText("Do you want to leave without saving the data?")
+            msgBox.setStandardButtons(
+                QtWidgets.QMessageBox.Ok | QtWidgets.QMessageBox.Cancel
+            )
+            ok_button = msgBox.button(QtWidgets.QMessageBox.Ok)
+            cancel_button = msgBox.button(QtWidgets.QMessageBox.Cancel)
+            msgBox.setStyleSheet(
+                "background-color: rgb(44, 49, 60);\n"
+                "color: rgb(255, 255, 255);\n"
+                'font: 63 bold 10pt "Segoe UI";\n'
+                ""
+            )
+            msgBox.exec()
 
-        # Ask the user if he really wants to close if data was not saved yet
-        cf.log_message("Program closed")
+            if msgBox.clickedButton() == ok_button:
+                cf.log_message("Program closed")
 
-        # Kill spectrometer thread
-        # try:
-        #     self.spectrum_measurement.kill()
-        # except Exception as e:
-        #     cf.log_message("Spectrometer thread could not be killed")
-        #     cf.log_message(e)
-
-        # if can_exit:
-        event.accept()  # let the window close
-        # else:
-        #     event.ignore()
+                event.accept()  # let the window close
+            elif msgBox.clickedButton() == cancel_button:
+                cf.log_message("Program closing canceled")
+                event.ignore()
+                return
+        else:
+            cf.log_message("Program closed")
+            event.accept()
 
 
 # Logging
