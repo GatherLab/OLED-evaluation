@@ -2,6 +2,7 @@ from UI_main_window import Ui_MainWindow
 from settings import Settings
 from assign_groups import AssignGroups
 from show_group import ShowGroup
+from show_heros import ShowHeros
 from statistics import Statistics
 from spectrum import EvaluateSpectrum
 
@@ -111,6 +112,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.eval_assign_groups_pushButton.clicked.connect(self.assign_groups)
         self.eval_plot_groups_pushButton.clicked.connect(self.plot_groups)
         self.eval_plot_statistics_pushButton.clicked.connect(self.plot_statistics)
+        self.eval_plot_heros_pushButton.clicked.connect(self.plot_heros)
         self.eval_spectrum_analysis_pushButton.clicked.connect(
             self.open_spectrum_dialog
         )
@@ -121,6 +123,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.eval_assign_groups_pushButton.setEnabled(False)
         self.eval_plot_groups_pushButton.setEnabled(False)
         self.eval_plot_statistics_pushButton.setEnabled(False)
+        self.eval_plot_heros_pushButton.setEnabled(False)
         self.eval_spectrum_analysis_pushButton.setEnabled(False)
         self.eval_save_pushButton.setEnabled(False)
 
@@ -440,6 +443,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.groups_assigned = True
             self.eval_plot_groups_pushButton.setEnabled(True)
             self.eval_plot_statistics_pushButton.setEnabled(True)
+            self.eval_plot_heros_pushButton.setEnabled(True)
             self.eval_spectrum_analysis_pushButton.setEnabled(True)
             self.eval_save_pushButton.setEnabled(True)
         else:
@@ -1247,6 +1251,24 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.eval_fig.figure.tight_layout()
         self.eval_fig.draw()
         self.current_plot_type = "boxplot_stats"
+
+    # -------------------------------------------------------------------- #
+    # --------------------------- Plot Heros ----------------------------- #
+    # -------------------------------------------------------------------- #
+
+    def plot_heros(self):
+        """
+        Function that allows plotting of the hero devices according to several paramters
+        """
+        self.statusbar.showMessage("Plot Hero Pixels")
+        parameters = {
+            "device_number": self.assigned_groups_df.index,
+            "group_name": self.assigned_groups_df["group_name"].unique(),
+        }
+
+        self.show_heros_dialog = ShowHeros(parameters, self)
+        self.show_heros_dialog.show()
+        button = self.show_heros_dialog.exec_()
 
     # -------------------------------------------------------------------- #
     # ----------------------------- Spectrum ----------------------------- #

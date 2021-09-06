@@ -589,6 +589,21 @@ class Ui_MainWindow(object):
         self.eval_plot_statistics_pushButton.setToolTip("Plot Statistics")
         self.eval_scrollArea_VBoxLayout.addWidget(self.eval_plot_statistics_pushButton)
 
+        # Plot Relevant Pixels (Hero pixels)
+        self.eval_plot_heros_pushButton = QtWidgets.QPushButton(
+            self.eval_scrollAreaWidgetContents
+        )
+        self.eval_plot_heros_pushButton.setObjectName("eval_plot_heros_pushButton")
+        self.eval_plot_heros_pushButton.setIcon(QtGui.QIcon("./icons/plot-stats.png"))
+        self.eval_plot_heros_pushButton.setIconSize(QtCore.QSize(50, 50))
+        self.eval_plot_heros_pushButton.setSizePolicy(
+            QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Expanding
+        )
+        self.eval_plot_heros_pushButton.setMinimumWidth(58)
+        self.eval_plot_heros_pushButton.setMinimumHeight(58)
+        self.eval_plot_heros_pushButton.setToolTip("Plot Heros")
+        self.eval_scrollArea_VBoxLayout.addWidget(self.eval_plot_heros_pushButton)
+
         # Spectrum Analysis
         self.eval_spectrum_analysis_pushButton = QtWidgets.QPushButton(
             self.eval_scrollAreaWidgetContents
@@ -719,7 +734,7 @@ class Ui_MainWindow(object):
         self.statusbar.setAccessibleName("")
         self.statusbar.setObjectName("statusbar")
         self.statusbar.addPermanentWidget(self.progressBar)
-        self.statusbar.showMessage("Ready", 10000000)
+        # self.statusbar.showMessage("Ready", 10000000)
 
         MainWindow.setStatusBar(self.statusbar)
 
