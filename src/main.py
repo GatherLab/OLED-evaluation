@@ -801,7 +801,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # Change axis to log and add labels
         self.eval_ax1.set_yscale("log")
         self.eval_ax1.set_xlim(
-            [min(df_to_plot.iloc[0]["voltage"]), max(df_to_plot.iloc[0]["voltage"])]
+            [
+                np.concatenate(df_to_plot.voltage.to_list()).min(),
+                np.concatenate(df_to_plot.voltage.to_list()).max(),
+            ]
         )
         self.eval_ax2.set_yscale("log")
         self.eval_ax1.set_xlabel("Voltage (V)")
@@ -882,24 +885,18 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.current_plot_type = "jvl"
 
-    def plot_single_pixel(self, identifier):
+    def plot_four_graphs(self, identifiers, color_code=True):
         """
         Plot all graphs for a given device number
         """
-
-        temp_df = self.data_df.loc[self.data_df.index == identifier]
-        color = self.assigned_groups_df.loc[
-            self.assigned_groups_df.index
-            == self.data_df.loc[
-                self.data_df.index == identifier, "device_number"
-            ].to_list()[0],
-            "color",
-        ].to_list()[0]
 
         if not self.current_plot_type == "single":
             # Clear figure and define axis
             self.eval_fig.figure.clf()
             self.eval_ax = self.eval_fig.figure.subplots(2, 2)
+
+            # Plot absolute current density and luminance over voltage
+            self.eval_ax5 = self.eval_ax[0, 0].twinx()
 
             # Some more visuals
             self.eval_ax[0, 0].set_facecolor("#E0E0E0")
@@ -908,12 +905,63 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.eval_ax[1, 1].set_facecolor("#E0E0E0")
         else:
             self.eval_ax[0, 0].cla()
+            # self.eval_ax[0, 0].cla()
+            self.eval_ax5.cla()
             self.eval_ax[0, 1].cla()
             self.eval_ax[1, 0].cla()
             self.eval_ax[1, 1].cla()
 
-        # Plot absolute current density and luminance over voltage
-        self.eval_ax5 = self.eval_ax[0, 0].twinx()
+        cmap = mpl.cm.get_cmap("Dark2", len(identifiers))
+        colors = np.array(
+            [mpl.colors.rgb2hex(cmap(i)) for i in range(cmap.N)], dtype=object
+        )
+        i = 0
+
+        for identifier in identifiers:
+            temp_df = self.data_df.loc[self.data_df.index == identifier]
+
+            # If color code is true then use the group color.
+            if color_code:
+                color = self.assigned_groups_df.loc[
+                    self.assigned_groups_df.index
+                    == self.data_df.loc[
+                        self.data_df.index == identifier, "device_number"
+                    ].to_list()[0],
+                    "color",
+                ].to_list()[0]
+            else:
+                # Else generate random colors
+                color = colors[i]
+
+            spectrum_data = temp_df.join(self.spectrum_data_df, on="device_number")
+
+            # Loop to plot data
+            self.eval_ax[0, 0].plot(
+                temp_df["voltage"][0],
+                np.abs(temp_df["current_density"][0]),
+                color=color,
+            )
+            self.eval_ax5.plot(
+                temp_df["voltage"][0],
+                temp_df["luminance"][0],
+                linestyle="--",
+                color=color,
+            )
+            self.eval_ax[0, 1].plot(
+                temp_df["current_density"][0], temp_df["eqe"][0], color=color
+            )
+            self.eval_ax[1, 0].plot(
+                temp_df["voltage"][0],
+                temp_df["power_density"][0],
+                color=color,
+                label=identifier,
+            )
+            self.eval_ax[1, 1].plot(
+                spectrum_data["wavelength"][0],
+                np.array(spectrum_data["calibrated_intensity"][0]),
+                color=color,
+            )
+            i += 1
 
         # Change axis to log and add labels
         self.eval_ax[0, 0].set_yscale("log")
@@ -925,19 +973,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.eval_ax[0, 0].set_ylabel("Abs. Current Density (mA cm$^{-2}$)")
         self.eval_ax5.set_ylabel("Luminance (cd m$^{-2}$)")
 
-        self.eval_ax[0, 0].plot(
-            temp_df["voltage"][0], np.abs(temp_df["current_density"][0]), color=color
-        )
-        self.eval_ax5.plot(
-            temp_df["voltage"][0], temp_df["luminance"][0], linestyle="--", color=color
-        )
-
         self.eval_ax5.format_coord = self.make_format(self.eval_ax5, self.eval_ax[0, 0])
 
         # Plot eqe over absolute current density
-        self.eval_ax[0, 1].plot(
-            temp_df["current_density"][0], temp_df["eqe"][0], color=color
-        )
         self.eval_ax[0, 1].set_xscale("log")
         self.eval_ax[0, 1].set_xlabel("Current Density (mA cm$^{-2}$)")
         self.eval_ax[0, 1].set_ylabel("EQE (%)")
@@ -955,25 +993,18 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         )
 
         # Plot power density over voltage
-        self.eval_ax[1, 0].plot(
-            temp_df["voltage"][0], temp_df["power_density"][0], color=color
-        )
         self.eval_ax[1, 0].set_yscale("log")
         self.eval_ax[1, 0].set_xlabel("Voltage (V)")
         self.eval_ax[1, 0].set_ylabel("Power Density (mW mm$^{-2}$)")
 
         # Plot spectrum over wavelength
-        spectrum_data = temp_df.join(self.spectrum_data_df, on="device_number")
-        self.eval_ax[1, 1].plot(
-            spectrum_data["wavelength"][0],
-            np.array(spectrum_data["calibrated_intensity"][0]),
-            color=color,
-        )
         self.eval_ax[1, 1].set_xlabel("Wavelength (nm)")
         self.eval_ax[1, 1].set_ylabel("Spectrum (a.u.)")
 
         # Draw figure
         self.eval_fig.figure.tight_layout()
+        leg = self.eval_ax[1, 0].legend()
+        leg.set_draggable(True)
         self.eval_fig.draw()
 
         # Set the current plot type for speed enhancement
@@ -1013,7 +1044,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         elif event.mouseevent.button == 2:
             # On mouse wheel press, plot the four relevant graphs of that pixel
-            self.plot_single_pixel(self.lineLabel[legline])
+            self.plot_four_graphs([self.lineLabel[legline]])
             self.statusbar.showMessage(
                 "Device "
                 + self.lineLabel[legline].split("d")[1].split("p")[0]
