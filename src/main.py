@@ -155,6 +155,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """
         Open file dialog to browse through directories
         """
+        self.statusbar.showMessage("Browse Folder")
         global_variables = cf.read_global_settings()
 
         path = QtWidgets.QFileDialog.getExistingDirectory(
@@ -182,7 +183,18 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 + str(len(self.file_names))
                 + " files at top level in the selected folder."
             )
-            self.files_df = self.investigate_file_names(self.file_names)
+            self.files_df, scan_number = self.investigate_file_names(self.file_names)
+
+            # return the maximum scan number in the investigated batch
+            self.max_scan_number = np.max(scan_number)
+
+            # Assigned groups that contain all information returned by the assign
+            # group dialog (must be reset to zero again after new folder is read in)
+            self.assigned_groups_df = pd.DataFrame(
+                columns=["group_name", "spectrum_path", "color"]
+            )
+            cf.log_message("Maximum scan number found: " + str(self.max_scan_number))
+
             # If there are duplicates of device, pixel and scan number there is
             # a naming issue that originates from different batch names for the same batch.
             if self.files_df.duplicated(
@@ -298,22 +310,12 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # Now set the identifier as index
         files_df = files_df.set_index(np.array(identifier))
 
-        # return the maximum scan number in the investigated batch
-        self.max_scan_number = np.max(scan_number)
-
-        # Assigned groups that contain all information returned by the assign
-        # group dialog (must be reset to zero again after new folder is read in)
-        self.assigned_groups_df = pd.DataFrame(
-            columns=["group_name", "spectrum_path", "color"]
-        )
-
         cf.log_message(
             "Found "
             + str(len(jvl_file_names))
             + " jvl files at top level in selected folder."
         )
-        cf.log_message("Maximum scan number found: " + str(self.max_scan_number))
-        return files_df
+        return files_df, scan_number
 
         # Now generate a dictionary containing the device numbers as keys and
         # an array of the pixel numbers as values
@@ -329,7 +331,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         Function that loads the evaluated data if it was already evaluated.
         It basically fills in the assign group dialog with previous data
         """
-        self.old_evaluation_df = self.investigate_file_names(folder_path)
+        self.old_evaluation_df, scan_number = self.investigate_file_names(folder_path)
 
         # Only scan the files for unique device numbers
         unique_devices = self.old_evaluation_df[
@@ -339,14 +341,12 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # Read in the headers of the files to obtain group name, scan number and
         # evaluation spectrum
         i = 0
-        scan_number = []
         for file_name in unique_devices["file_name"]:
             with open(self.global_path + "/eval/" + file_name) as myfile:
                 head = [next(myfile) for x in range(2)]
                 self.assigned_groups_df.loc[i, "group_name"] = (
                     head[1].split("\t")[-1].split("Assigned group: ")[-1].split("\n")[0]
                 )
-                scan_number.append(head[1].split("\t")[1].split("Scan Number: ")[-1])
                 self.assigned_groups_df.loc[i, "spectrum_path"] = (
                     head[0].split("Evaluation Spectrum:   ")[-1].split("\n")[0]
                 )
@@ -358,7 +358,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             unique_devices["device_number"].to_numpy()
         )
 
-        self.selected_scan = int(scan_number[0])
+        self.selected_scan = int(min(scan_number))
 
         cmap = mpl.cm.get_cmap("Dark2", self.assigned_groups_df.shape[0])
         self.assigned_groups_df.color = np.array(
@@ -373,6 +373,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """
         Function that opens the assign group dialog and allows to assign groups
         """
+        self.statusbar.showMessage("Assign Groups")
         parameters = {
             "no_of_scans": self.max_scan_number,
             "selected_scan_number": self.selected_scan,
@@ -748,6 +749,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """
         Function that allows the plotting of previously assigned groups
         """
+        self.statusbar.showMessage("Plot Groups")
 
         parameters = {
             "device_number": self.assigned_groups_df.index,
@@ -1008,6 +1010,14 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         elif event.mouseevent.button == 2:
             # On mouse wheel press, plot the four relevant graphs of that pixel
             self.plot_single_pixel(self.lineLabel[legline])
+            self.statusbar.showMessage(
+                "Device "
+                + self.lineLabel[legline].split("d")[1].split("p")[0]
+                + ", Pixel "
+                + self.lineLabel[legline].split("d")[1].split("p")[1].split("s")[0]
+                + ", Scan: "
+                + self.lineLabel[legline].split("d")[1].split("p")[1].split("s")[1]
+            )
 
     # -------------------------------------------------------------------- #
     # ------------------------ Show Statistics --------------------------- #
@@ -1016,6 +1026,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """
         Function that opens dialog to plot statistisc
         """
+        self.statusbar.showMessage("Plot Statistics")
         self.show_group_dialog = Statistics(self)
         self.show_group_dialog.show()
         button = self.show_group_dialog.exec_()
@@ -1245,6 +1256,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """
         Opens dialog to plot important graphs for each spectrum
         """
+        self.statusbar.showMessage("Plot Spectrum")
         parameters = {
             "device_number": self.assigned_groups_df.index,
             "group_name": self.assigned_groups_df["group_name"].unique(),
@@ -1727,10 +1739,15 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
             cf.log_message("Saved spectrum data for d" + str(int(device_number)))
 
-            # Format the dataframe for saving (no. of digits)
-            # df_spectrum_data["wavelength"] = df_spectrum_data["wavelength"].map(
-            #     lambda x: "{0:.2f}".format(x)
-            # )
+        self.statusbar.showMessage(
+            "Evaluated Data Saved at "
+            + str(time.strftime("%H:%M:%S", time.localtime()))
+        )
+
+        # Format the dataframe for saving (no. of digits)
+        # df_spectrum_data["wavelength"] = df_spectrum_data["wavelength"].map(
+        #     lambda x: "{0:.2f}".format(x)
+        # )
 
     # -------------------------------------------------------------------- #
     # ------------------------- Global Functions ------------------------- #
