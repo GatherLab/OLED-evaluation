@@ -1572,7 +1572,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 + str(int(row["device_number"]))
                 + "_p"
                 + str(int(row["pixel_number"]))
-                + "_jvl_eval"
+                + "_jvl_s"
+                + str(int(row["scan_number"]))
+                + "_eval"
                 + ".csv"
             )
 
@@ -1698,7 +1700,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 + self.batch_name
                 + "_d"
                 + str(int(device_number))
-                + "_spec_eval"
+                + "_spec_s"
+                + str(int(row["scan_number"]))
+                + "_eval"
                 + ".csv"
             )
 
