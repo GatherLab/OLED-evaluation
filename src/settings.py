@@ -25,6 +25,9 @@ class Settings(QtWidgets.QDialog, Ui_Settings):
         self.default_saving_path_lineEdit.setText(settings["default_saving_path"])
         self.photodiode_gain_lineEdit.setText(str(settings["pd_gain"]))
         self.photodiode_area_lineEdit.setText(str(settings["pd_area"]))
+        self.read_in_all_scans_toggleSwitch.setChecked(
+            bool(settings["include_all_scans"])
+        )
         self.distance_photodiode_oled_lineEdit.setText(str(settings["pd_distance"]))
         self.oled_area_lineEdit.setText(str(settings["pixel_area"]))
 
@@ -40,6 +43,9 @@ class Settings(QtWidgets.QDialog, Ui_Settings):
         )
         self.photodiode_gain_path_lineEdit.setText(
             str(settings["photodiode_gain_path"])
+        )
+        self.read_in_all_scans_toggleSwitch.setChecked(
+            bool(settings["include_all_scans"])
         )
 
         # self.keithley_source_address_lineEdit.setText(
@@ -78,6 +84,7 @@ class Settings(QtWidgets.QDialog, Ui_Settings):
         settings_data = {}
         settings_data["overwrite"] = {
             "default_saving_path": self.default_saving_path_lineEdit.text(),
+            "include_all_scans": self.read_in_all_scans_toggleSwitch.isChecked(),
             "pd_gain": self.photodiode_gain_lineEdit.text(),
             "pd_area": self.photodiode_area_lineEdit.text(),
             "pd_distance": self.distance_photodiode_oled_lineEdit.text(),
@@ -134,6 +141,9 @@ class Settings(QtWidgets.QDialog, Ui_Settings):
         )
         self.photodiode_gain_lineEdit.setText(str(default_settings["pd_gain"]))
         self.photodiode_area_lineEdit.setText(str(default_settings["pd_area"]))
+        self.read_in_all_scans_toggleSwitch.setChecked(
+            bool(default_settings["include_all_scans"])
+        )
         self.distance_photodiode_oled_lineEdit.setText(
             str(default_settings["pd_distance"])
         )
