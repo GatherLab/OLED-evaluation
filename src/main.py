@@ -336,6 +336,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """
         self.old_evaluation_df, scan_number = self.investigate_file_names(folder_path)
 
+        global_variables = cf.read_global_settings()
+
         # Only scan the files for unique device numbers
         unique_devices = self.old_evaluation_df[
             ~self.old_evaluation_df["device_number"].duplicated()
@@ -344,9 +346,33 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # Read in the headers of the files to obtain group name, scan number and
         # evaluation spectrum
         i = 0
+        warning_message = False
+
         for file_name in unique_devices["file_name"]:
             with open(self.global_path + "/eval/" + file_name) as myfile:
                 head = [next(myfile) for x in range(2)]
+                pd_data = [next(myfile)]
+                oled_pd_distance = pd_data[0].split("\t")[0].split(" ")[2]
+                oled_area = pd_data[0].split("\t")[1].split(" ")[3]
+                pd_gain = pd_data[0].split("\t")[2].split(" ")[3].split("d")[0]
+
+                # In case for any file the distance, area or gain for the
+                # evaluation are different then in the current configuraiton,
+                # issue a warning
+                if (
+                    not math.isclose(
+                        float(oled_pd_distance),
+                        float(global_variables["pd_distance"]),
+                    )
+                    or not math.isclose(
+                        float(oled_area), float(global_variables["pixel_area"])
+                    )
+                    or not math.isclose(
+                        float(pd_gain), float(global_variables["pd_gain"])
+                    )
+                ):
+                    warning_message = True
+
                 self.assigned_groups_df.loc[i, "group_name"] = (
                     head[1].split("\t")[-1].split("Assigned group: ")[-1].split("\n")[0]
                 )
@@ -355,6 +381,21 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 )
 
             i += 1
+
+        # If any of the above quantities does not match what is currently used for the evaluation give a warning to the user
+        if warning_message:
+            msgBox = QtWidgets.QMessageBox()
+            msgBox.setText(
+                "Warning: The oled distance, area and or pd gain of at least some of the previously evaluated data are different from the current evaluation parameters chosen. You might want to check in the files."
+            )
+            msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
+            msgBox.setStyleSheet(
+                "background-color: rgb(44, 49, 60);\n"
+                "color: rgb(255, 255, 255);\n"
+                'font: 63 bold 10pt "Segoe UI";\n'
+                ""
+            )
+            msgBox.exec()
 
         # Now reindex
         self.assigned_groups_df = self.assigned_groups_df.set_index(
