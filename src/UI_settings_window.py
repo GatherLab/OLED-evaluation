@@ -103,6 +103,16 @@ class Ui_Settings(object):
         self.read_in_all_scans_HLayout.addWidget(self.read_in_all_scans_label)
         self.gridLayout.addLayout(self.read_in_all_scans_HLayout, 3, 1, 1, 1)
 
+        # Toggle Switch to autodetect spectrum
+        self.autodetect_spectrum_HLayout = QtWidgets.QHBoxLayout()
+        self.autodetect_spectrum_toggleSwitch = ToggleSwitch()
+        self.autodetect_spectrum_label = QtWidgets.QLabel("Autodetect Spectrum")
+        self.autodetect_spectrum_HLayout.addWidget(
+            self.autodetect_spectrum_toggleSwitch
+        )
+        self.autodetect_spectrum_HLayout.addWidget(self.autodetect_spectrum_label)
+        self.gridLayout.addLayout(self.autodetect_spectrum_HLayout, 4, 1, 1, 1)
+
         # Data Evaluation Settings
         self.data_evaluation_header_label = QtWidgets.QLabel(Settings)
         self.data_evaluation_header_label.setMinimumSize(QtCore.QSize(0, 20))
@@ -110,12 +120,12 @@ class Ui_Settings(object):
             'font: 75 bold 10pt "Segoe UI";'
         )
         self.data_evaluation_header_label.setObjectName("data_evaluation_header_label")
-        self.gridLayout.addWidget(self.data_evaluation_header_label, 4, 0, 1, 2)
+        self.gridLayout.addWidget(self.data_evaluation_header_label, 5, 0, 1, 2)
 
         self.header_line_2 = QtWidgets.QFrame()
         self.header_line_2.setFrameShape(QtWidgets.QFrame.HLine)
         self.header_line_2.setFrameShadow(QtWidgets.QFrame.Sunken)
-        self.gridLayout.addWidget(self.header_line_2, 5, 0, 1, 2)
+        self.gridLayout.addWidget(self.header_line_2, 6, 0, 1, 2)
         self.header_line_2.setStyleSheet(
             "QFrame {\n" "            border: 2px solid rgb(52, 59, 72);\n" "}\n"
         )
@@ -123,38 +133,38 @@ class Ui_Settings(object):
         # Photodiode gain
         self.photodiode_gain_label = QtWidgets.QLabel(Settings)
         self.photodiode_gain_label.setObjectName("photodiode_gain_label")
-        self.gridLayout.addWidget(self.photodiode_gain_label, 6, 0, 1, 1)
+        self.gridLayout.addWidget(self.photodiode_gain_label, 7, 0, 1, 1)
         self.photodiode_gain_lineEdit = QtWidgets.QLineEdit(Settings)
         self.photodiode_gain_lineEdit.setObjectName("photodiode_gain_lineEdit")
-        self.gridLayout.addWidget(self.photodiode_gain_lineEdit, 6, 1, 1, 1)
+        self.gridLayout.addWidget(self.photodiode_gain_lineEdit, 7, 1, 1, 1)
 
         # Photodiode area
         self.photodiode_area_label = QtWidgets.QLabel(Settings)
         self.photodiode_area_label.setObjectName("photodiode_area_label")
-        self.gridLayout.addWidget(self.photodiode_area_label, 7, 0, 1, 1)
+        self.gridLayout.addWidget(self.photodiode_area_label, 8, 0, 1, 1)
         self.photodiode_area_lineEdit = QtWidgets.QLineEdit(Settings)
         self.photodiode_area_lineEdit.setObjectName("photodiode_area_lineEdit")
-        self.gridLayout.addWidget(self.photodiode_area_lineEdit, 7, 1, 1, 1)
+        self.gridLayout.addWidget(self.photodiode_area_lineEdit, 8, 1, 1, 1)
 
         # Distance photodiode, OLED
         self.distance_photodiode_oled_label = QtWidgets.QLabel(Settings)
         self.distance_photodiode_oled_label.setObjectName(
             "distance_photodiode_oled_label"
         )
-        self.gridLayout.addWidget(self.distance_photodiode_oled_label, 8, 0, 1, 1)
+        self.gridLayout.addWidget(self.distance_photodiode_oled_label, 9, 0, 1, 1)
         self.distance_photodiode_oled_lineEdit = QtWidgets.QLineEdit(Settings)
         self.distance_photodiode_oled_lineEdit.setObjectName(
             "distance_photodiode_oled_lineEdit"
         )
-        self.gridLayout.addWidget(self.distance_photodiode_oled_lineEdit, 8, 1, 1, 1)
+        self.gridLayout.addWidget(self.distance_photodiode_oled_lineEdit, 9, 1, 1, 1)
 
         # Active OLED area
         self.oled_area_label = QtWidgets.QLabel(Settings)
         self.oled_area_label.setObjectName("oled_area_label")
-        self.gridLayout.addWidget(self.oled_area_label, 9, 0, 1, 1)
+        self.gridLayout.addWidget(self.oled_area_label, 10, 0, 1, 1)
         self.oled_area_lineEdit = QtWidgets.QLineEdit(Settings)
         self.oled_area_lineEdit.setObjectName("oled_area_lineEdit")
-        self.gridLayout.addWidget(self.oled_area_lineEdit, 9, 1, 1, 1)
+        self.gridLayout.addWidget(self.oled_area_lineEdit, 10, 1, 1, 1)
 
         # Calibration File Paths
         self.calibration_file_path_header_label = QtWidgets.QLabel(Settings)
@@ -165,12 +175,12 @@ class Ui_Settings(object):
         self.calibration_file_path_header_label.setObjectName(
             "calibration_file_path_header_label"
         )
-        self.gridLayout.addWidget(self.calibration_file_path_header_label, 10, 0, 1, 2)
+        self.gridLayout.addWidget(self.calibration_file_path_header_label, 11, 0, 1, 2)
 
         self.header_line_4 = QtWidgets.QFrame()
         self.header_line_4.setFrameShape(QtWidgets.QFrame.HLine)
         self.header_line_4.setFrameShadow(QtWidgets.QFrame.Sunken)
-        self.gridLayout.addWidget(self.header_line_3, 11, 0, 1, 2)
+        self.gridLayout.addWidget(self.header_line_3, 12, 0, 1, 2)
         self.header_line_4.setStyleSheet(
             "QFrame {\n" "            border: 2px solid rgb(52, 59, 72);\n" "}\n"
         )
@@ -181,7 +191,7 @@ class Ui_Settings(object):
             "photopic_response_calibration_path_label"
         )
         self.gridLayout.addWidget(
-            self.photopic_response_calibration_path_label, 12, 0, 1, 1
+            self.photopic_response_calibration_path_label, 13, 0, 1, 1
         )
 
         self.photopic_response_path_HLayout = QtWidgets.QHBoxLayout()
@@ -200,7 +210,7 @@ class Ui_Settings(object):
         self.photopic_response_path_HLayout.addWidget(
             self.select_photopic_response_path_pushButton
         )
-        self.gridLayout.addLayout(self.photopic_response_path_HLayout, 12, 1, 1, 1)
+        self.gridLayout.addLayout(self.photopic_response_path_HLayout, 13, 1, 1, 1)
 
         # PD responsivity path
         self.pd_responsivity_calibration_path_label = QtWidgets.QLabel(Settings)
@@ -208,7 +218,7 @@ class Ui_Settings(object):
             "pd_responsivity_calibration_path_label"
         )
         self.gridLayout.addWidget(
-            self.pd_responsivity_calibration_path_label, 13, 0, 1, 1
+            self.pd_responsivity_calibration_path_label, 14, 0, 1, 1
         )
 
         self.pd_responsivity_calibration_path_HLayout = QtWidgets.QHBoxLayout()
@@ -230,13 +240,13 @@ class Ui_Settings(object):
             self.select_pd_responsivity_calibration_path_pushButton
         )
         self.gridLayout.addLayout(
-            self.pd_responsivity_calibration_path_HLayout, 13, 1, 1, 1
+            self.pd_responsivity_calibration_path_HLayout, 14, 1, 1, 1
         )
 
         # CIE reference path
         self.cie_reference_path_label = QtWidgets.QLabel(Settings)
         self.cie_reference_path_label.setObjectName("cie_reference_path_label")
-        self.gridLayout.addWidget(self.cie_reference_path_label, 14, 0, 1, 1)
+        self.gridLayout.addWidget(self.cie_reference_path_label, 15, 0, 1, 1)
 
         self.cie_reference_path_HLayout = QtWidgets.QHBoxLayout()
         self.cie_reference_path_pushButton = QtWidgets.QPushButton(Settings)
@@ -249,14 +259,14 @@ class Ui_Settings(object):
 
         self.cie_reference_path_HLayout.addWidget(self.cie_reference_path_lineEdit)
         self.cie_reference_path_HLayout.addWidget(self.cie_reference_path_pushButton)
-        self.gridLayout.addLayout(self.cie_reference_path_HLayout, 14, 1, 1, 1)
+        self.gridLayout.addLayout(self.cie_reference_path_HLayout, 15, 1, 1, 1)
 
         # Spectrometer Calibration path
         self.spectrometer_calibration_path_label = QtWidgets.QLabel(Settings)
         self.spectrometer_calibration_path_label.setObjectName(
             "spectrometer_calibration_path_label"
         )
-        self.gridLayout.addWidget(self.spectrometer_calibration_path_label, 15, 0, 1, 1)
+        self.gridLayout.addWidget(self.spectrometer_calibration_path_label, 16, 0, 1, 1)
 
         self.spectrometer_calibration_HLayout = QtWidgets.QHBoxLayout()
         self.spectrometer_calibration_pushButton = QtWidgets.QPushButton(Settings)
@@ -275,12 +285,12 @@ class Ui_Settings(object):
         self.spectrometer_calibration_HLayout.addWidget(
             self.spectrometer_calibration_pushButton
         )
-        self.gridLayout.addLayout(self.spectrometer_calibration_HLayout, 15, 1, 1, 1)
+        self.gridLayout.addLayout(self.spectrometer_calibration_HLayout, 16, 1, 1, 1)
 
         # Photodiode gain path
         self.photodiode_gain_path_label = QtWidgets.QLabel(Settings)
         self.photodiode_gain_path_label.setObjectName("photodiode_gain_path_label")
-        self.gridLayout.addWidget(self.photodiode_gain_path_label, 16, 0, 1, 1)
+        self.gridLayout.addWidget(self.photodiode_gain_path_label, 17, 0, 1, 1)
 
         self.photodiode_gain_path_HLayout = QtWidgets.QHBoxLayout()
         self.photodiode_gain_path_pushButton = QtWidgets.QPushButton(Settings)
@@ -297,7 +307,7 @@ class Ui_Settings(object):
         self.photodiode_gain_path_HLayout.addWidget(
             self.photodiode_gain_path_pushButton
         )
-        self.gridLayout.addLayout(self.photodiode_gain_path_HLayout, 16, 1, 1, 1)
+        self.gridLayout.addLayout(self.photodiode_gain_path_HLayout, 17, 1, 1, 1)
 
         # Push Buttons
         self.buttons_HBoxLayout = QtWidgets.QHBoxLayout()
@@ -309,7 +319,7 @@ class Ui_Settings(object):
         self.save_settings_pushButton.setObjectName("save_settings_pushButton")
         self.buttons_HBoxLayout.addWidget(self.save_settings_pushButton)
 
-        self.gridLayout.addLayout(self.buttons_HBoxLayout, 17, 0, 1, 2)
+        self.gridLayout.addLayout(self.buttons_HBoxLayout, 18, 0, 1, 2)
 
         self.retranslateUi(Settings)
         QtCore.QMetaObject.connectSlotsByName(Settings)

@@ -84,18 +84,21 @@ class Ui_AssignGroup(object):
         # dialog.setWindowTitle("Group Assignement Dialog")
 
         # Select the scan that shall be evaluated
-        self.select_scan_number_label = QtWidgets.QLabel()
-        self.select_scan_number_label.setObjectName("select_scan_number_label")
-        self.verticalLayout.addWidget(self.select_scan_number_label)
+        if not self.include_all_scans:
+            self.select_scan_number_label = QtWidgets.QLabel()
+            self.select_scan_number_label.setObjectName("select_scan_number_label")
+            self.verticalLayout.addWidget(self.select_scan_number_label)
 
-        self.select_scan_number_ComboBox = QtWidgets.QComboBox()
-        self.select_scan_number_ComboBox.setObjectName("select_scan_number_ComboBox")
+            self.select_scan_number_ComboBox = QtWidgets.QComboBox()
+            self.select_scan_number_ComboBox.setObjectName(
+                "select_scan_number_ComboBox"
+            )
 
-        for i in range(self.parameters["no_of_scans"]):
-            self.select_scan_number_ComboBox.addItem(str(int(i + 1)))
+            for i in range(self.parameters["no_of_scans"]):
+                self.select_scan_number_ComboBox.addItem(str(int(i + 1)))
 
-        self.select_scan_number_ComboBox.setCurrentIndex(0)
-        self.verticalLayout.addWidget(self.select_scan_number_ComboBox)
+            self.select_scan_number_ComboBox.setCurrentIndex(0)
+            self.verticalLayout.addWidget(self.select_scan_number_ComboBox)
 
         # Select the number of groups to define
         self.no_groups_label = QtWidgets.QLabel()
@@ -147,19 +150,22 @@ class Ui_AssignGroup(object):
         )
 
         # Assign a spectrum file to the group
-        self.spectrum_file_label = QtWidgets.QLabel()
-        self.group_definition_gridLayout.addWidget(self.spectrum_file_label, 1, 2, 1, 1)
+        if not self.autodetect_spectrum:
+            self.spectrum_file_label = QtWidgets.QLabel()
+            self.group_definition_gridLayout.addWidget(
+                self.spectrum_file_label, 1, 2, 1, 1
+            )
 
-        self.group_spectrum_PushButton_container = np.empty(0, dtype="object")
-        self.group_spectrum_PushButton_container = np.append(
-            self.group_spectrum_PushButton_container, QtWidgets.QPushButton("")
-        )
-        self.group_spectrum_PushButton_container[0].setStyleSheet(
-            "background-color: red"
-        )
-        self.group_definition_gridLayout.addWidget(
-            self.group_spectrum_PushButton_container[0], 2, 2
-        )
+            self.group_spectrum_PushButton_container = np.empty(0, dtype="object")
+            self.group_spectrum_PushButton_container = np.append(
+                self.group_spectrum_PushButton_container, QtWidgets.QPushButton("")
+            )
+            self.group_spectrum_PushButton_container[0].setStyleSheet(
+                "background-color: red"
+            )
+            self.group_definition_gridLayout.addWidget(
+                self.group_spectrum_PushButton_container[0], 2, 2
+            )
 
         # Definition of a plotting color for the group
         self.group_color_label = QtWidgets.QLabel()
@@ -196,7 +202,10 @@ class Ui_AssignGroup(object):
         _translate = QtCore.QCoreApplication.translate
         AssignGroups.setWindowTitle(_translate("AssignGroups", "Assign Groups"))
 
-        self.select_scan_number_label.setText(_translate("AssignGroups", "Select Scan"))
+        if not self.include_all_scans:
+            self.select_scan_number_label.setText(
+                _translate("AssignGroups", "Select Scan")
+            )
         self.no_groups_label.setText(
             _translate("AssignGroups", "Select Number of Groups")
         )
@@ -211,5 +220,6 @@ class Ui_AssignGroup(object):
         self.device_assignment_label.setText(
             _translate("AssignGroups", "Assign Devices (seperated by ,)")
         )
-        self.spectrum_file_label.setText(_translate("AssignGroups", "Spectrum"))
         self.group_color_label.setText(_translate("AssignGroups", "Color"))
+        if not self.autodetect_spectrum:
+            self.spectrum_file_label.setText(_translate("AssignGroups", "Spectrum"))

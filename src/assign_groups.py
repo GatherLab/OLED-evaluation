@@ -25,6 +25,10 @@ class AssignGroups(QtWidgets.QDialog, Ui_AssignGroup):
         self.parent = parent
         self.parameters = parameters
 
+        global_variables = cf.read_global_settings()
+        self.autodetect_spectrum = bool(global_variables["autodetect_spectrum"])
+        self.include_all_scans = bool(global_variables["include_all_scans"])
+
         cmap = mpl.cm.get_cmap("Dark2", np.size(parameters["device_number"]))
         self.group_color = np.array(
             [mpl.colors.rgb2hex(cmap(i)) for i in range(cmap.N)], dtype=object
@@ -46,9 +50,10 @@ class AssignGroups(QtWidgets.QDialog, Ui_AssignGroup):
 
         # Connect functions to buttons
         self.no_groups_LabeledSlider.valueChanged(self.no_groups_slider_changed)
-        self.group_spectrum_PushButton_container[0].clicked.connect(
-            functools.partial(self.change_spectrum, 0)
-        )
+        if not self.autodetect_spectrum:
+            self.group_spectrum_PushButton_container[0].clicked.connect(
+                functools.partial(self.change_spectrum, 0)
+            )
         self.group_colors_PushButton_container[0].clicked.connect(
             functools.partial(self.change_group_color, 0)
         )
@@ -56,11 +61,12 @@ class AssignGroups(QtWidgets.QDialog, Ui_AssignGroup):
         self.save_pushButton.clicked.connect(self.save_groups)
 
         # Set the scan number of the combobox
-        idx = self.select_scan_number_ComboBox.findText(
-            str(self.parameters["selected_scan_number"])
-        )
-        if idx >= 0:
-            self.select_scan_number_ComboBox.setCurrentIndex(idx)
+        if not self.include_all_scans:
+            idx = self.select_scan_number_ComboBox.findText(
+                str(self.parameters["selected_scan_number"])
+            )
+            if idx >= 0:
+                self.select_scan_number_ComboBox.setCurrentIndex(idx)
 
         # self.select_scan_number_ComboBox.setCurrentIndex(
         #     self.parameters["selected_scan_number"]
@@ -107,10 +113,11 @@ class AssignGroups(QtWidgets.QDialog, Ui_AssignGroup):
                     .to_list()[0]
                 )
                 try:
-                    if os.path.isfile(self.group_spectrum_path[i]):
-                        self.group_spectrum_PushButton_container[i].setStyleSheet(
-                            "background-color: green"
-                        )
+                    if not self.autodetect_spectrum:
+                        if os.path.isfile(self.group_spectrum_path[i]):
+                            self.group_spectrum_PushButton_container[i].setStyleSheet(
+                                "background-color: green"
+                            )
                 except:
                     cf.log_message(
                         "Spectrum file for group "
@@ -150,19 +157,26 @@ class AssignGroups(QtWidgets.QDialog, Ui_AssignGroup):
                 self.group_colors_PushButton_container[-1].clicked.connect(
                     functools.partial(self.change_group_color, self.manual_group_count)
                 )
-                self.group_spectrum_PushButton_container = np.append(
-                    self.group_spectrum_PushButton_container, QtWidgets.QPushButton("")
-                )
-                self.group_spectrum_PushButton_container[-1].clicked.connect(
-                    functools.partial(self.change_spectrum, self.manual_group_count)
-                )
+                if not self.autodetect_spectrum:
+                    self.group_spectrum_PushButton_container = np.append(
+                        self.group_spectrum_PushButton_container,
+                        QtWidgets.QPushButton(""),
+                    )
+                    self.group_spectrum_PushButton_container[-1].clicked.connect(
+                        functools.partial(self.change_spectrum, self.manual_group_count)
+                    )
+                    self.group_spectrum_PushButton_container[-1].setStyleSheet(
+                        "background-color: red"
+                    )
+                    self.group_definition_gridLayout.addWidget(
+                        self.group_spectrum_PushButton_container[-1],
+                        np.size(self.group_name_LineEdit_container) + 1,
+                        2,
+                    )
 
                 self.group_colors_PushButton_container[-1].setStyleSheet(
                     "background-color: "
                     + str(self.group_color[self.manual_group_count])
-                )
-                self.group_spectrum_PushButton_container[-1].setStyleSheet(
-                    "background-color: red"
                 )
 
                 self.group_definition_gridLayout.addWidget(
@@ -174,11 +188,6 @@ class AssignGroups(QtWidgets.QDialog, Ui_AssignGroup):
                     self.device_assignment_LineEdit_container[-1],
                     np.size(self.group_name_LineEdit_container) + 1,
                     1,
-                )
-                self.group_definition_gridLayout.addWidget(
-                    self.group_spectrum_PushButton_container[-1],
-                    np.size(self.group_name_LineEdit_container) + 1,
-                    2,
                 )
                 self.group_definition_gridLayout.addWidget(
                     self.group_colors_PushButton_container[-1],
@@ -201,15 +210,21 @@ class AssignGroups(QtWidgets.QDialog, Ui_AssignGroup):
                 self.group_definition_gridLayout.removeWidget(
                     self.group_colors_PushButton_container[-1]
                 )
-                self.group_definition_gridLayout.removeWidget(
-                    self.group_spectrum_PushButton_container[-1]
-                )
+                if not self.autodetect_spectrum:
+                    self.group_definition_gridLayout.removeWidget(
+                        self.group_spectrum_PushButton_container[-1]
+                    )
+                    self.group_spectrum_PushButton_container[-1].setParent(None)
+                    self.group_spectrum_PushButton_container[-1] = None
+                    self.group_spectrum_PushButton_container = np.delete(
+                        self.group_spectrum_PushButton_container,
+                        np.size(self.group_spectrum_PushButton_container) - 1,
+                    )
+
                 self.group_name_LineEdit_container[-1].setParent(None)
                 self.group_name_LineEdit_container[-1] = None
                 self.device_assignment_LineEdit_container[-1].setParent(None)
                 self.device_assignment_LineEdit_container[-1] = None
-                self.group_spectrum_PushButton_container[-1].setParent(None)
-                self.group_spectrum_PushButton_container[-1] = None
                 self.group_colors_PushButton_container[-1].setParent(None)
                 self.group_colors_PushButton_container[-1] = None
 
@@ -221,10 +236,6 @@ class AssignGroups(QtWidgets.QDialog, Ui_AssignGroup):
                 self.device_assignment_LineEdit_container = np.delete(
                     self.device_assignment_LineEdit_container,
                     np.size(self.device_assignment_LineEdit_container) - 1,
-                )
-                self.group_spectrum_PushButton_container = np.delete(
-                    self.group_spectrum_PushButton_container,
-                    np.size(self.group_spectrum_PushButton_container) - 1,
                 )
                 self.group_colors_PushButton_container = np.delete(
                     self.group_colors_PushButton_container,
@@ -256,25 +267,28 @@ class AssignGroups(QtWidgets.QDialog, Ui_AssignGroup):
         # Now check if the select filepath is a valid one
         if os.path.isfile(file_path):
             self.group_spectrum_path[group_number] = file_path
-            self.group_spectrum_PushButton_container[group_number].setStyleSheet(
-                "background-color: green"
-            )
+            if not self.autodetect_spectrum:
+                self.group_spectrum_PushButton_container[group_number].setStyleSheet(
+                    "background-color: green"
+                )
         else:
             try:
                 if os.path.isfile(self.group_spectrum_path[group_number]):
                     cf.log_message("Window closed without changing the file path")
                 else:
-                    self.group_spectrum_PushButton_container[
-                        group_number
-                    ].setStyleSheet("background-color: red")
+                    if not self.autodetect_spectrum:
+                        self.group_spectrum_PushButton_container[
+                            group_number
+                        ].setStyleSheet("background-color: red")
                     cf.log_message(
                         self.group_spectrum_path[group_number]
                         + " is not a valid file path."
                     )
             except:
-                self.group_spectrum_PushButton_container[group_number].setStyleSheet(
-                    "background-color: red"
-                )
+                if not self.autodetect_spectrum:
+                    self.group_spectrum_PushButton_container[
+                        group_number
+                    ].setStyleSheet("background-color: red")
                 cf.log_message(
                     self.group_spectrum_path[group_number]
                     + " is not a valid file path."
