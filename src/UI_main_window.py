@@ -594,7 +594,9 @@ class Ui_MainWindow(object):
             self.eval_scrollAreaWidgetContents
         )
         self.eval_plot_heros_pushButton.setObjectName("eval_plot_heros_pushButton")
-        self.eval_plot_heros_pushButton.setIcon(QtGui.QIcon("./icons/plot-stats.png"))
+        self.eval_plot_heros_pushButton.setIcon(
+            QtGui.QIcon("./icons/hero_devices_icon2.png")
+        )
         self.eval_plot_heros_pushButton.setIconSize(QtCore.QSize(50, 50))
         self.eval_plot_heros_pushButton.setSizePolicy(
             QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Expanding
