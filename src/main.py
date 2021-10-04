@@ -1150,7 +1150,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             # EQE at 4V
             # eqe_4v.append(row["eqe"][idx_4v][0])
             # Max EQE
-            eqe_4v.append(max(row["eqe"][np.where(row["luminance"] > 5)]))
+            eqe_4v.append(max(row["eqe"]))
             power_density_4v.append(row["power_density"][idx_4v][0])
 
         device_numbers = (
