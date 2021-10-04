@@ -1796,6 +1796,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                     / calibrated_spectrum["0.0"].max()
                 )
 
+                # And set the wavelength as index of the dataframe and drop the background instead now
+
                 # Add wavelength at beginning
                 normalized_spectrum.insert(
                     loc=0, column="wavelength", value=calibrated_spectrum["wavelength"]
@@ -1806,6 +1808,41 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
                 cf.save_file(
                     normalized_spectrum, file_path, header_lines, save_header=True
+                )
+
+                # Save radiant intensity plot
+                file_path = (
+                    self.global_path
+                    + "/eval/"
+                    + date.today().strftime("%Y-%m-%d_")
+                    + self.batch_name
+                    + "_d"
+                    + str(int(device_number))
+                    + "_spec-rad_s"
+                    + str(int(row["scan_number"]))
+                    + "_eval"
+                    + ".csv"
+                )
+
+                temp_calibrated = calibrated_spectrum.set_index("wavelength")
+                angles = np.radians(temp_calibrated.columns.to_numpy(float))
+                ri = temp_calibrated.apply(ef.calculate_ri, axis=0)
+                non_lambertian_spectrum = ri / ri[np.where(angles == 0)[0][0]]
+                radiant_intensity_df = pd.DataFrame(
+                    {
+                        "Angle (rad)": angles,
+                        "Radiant intensity": non_lambertian_spectrum,
+                    }
+                )
+                radiant_intensity_df["Angle (rad)"] = radiant_intensity_df[
+                    "Angle (rad)"
+                ].map(lambda x: "{0:.4f}".format(x))
+                radiant_intensity_df["Radiant intensity"] = radiant_intensity_df[
+                    "Radiant intensity"
+                ].map(lambda x: "{0:.4f}".format(x))
+
+                cf.save_file(
+                    radiant_intensity_df, file_path, header_lines, save_header=True
                 )
 
             else:
