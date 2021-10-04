@@ -96,22 +96,16 @@ class Ui_Settings(object):
         self.gridLayout.addLayout(self.default_saving_path_HLayout, 2, 1, 1, 1)
 
         # Toggle Switch to read in all scans
-        self.read_in_all_scans_HLayout = QtWidgets.QHBoxLayout()
         self.read_in_all_scans_toggleSwitch = ToggleSwitch()
         self.read_in_all_scans_label = QtWidgets.QLabel("Include All Scans")
-        self.read_in_all_scans_HLayout.addWidget(self.read_in_all_scans_toggleSwitch)
-        self.read_in_all_scans_HLayout.addWidget(self.read_in_all_scans_label)
-        self.gridLayout.addLayout(self.read_in_all_scans_HLayout, 3, 1, 1, 1)
+        self.gridLayout.addWidget(self.read_in_all_scans_label, 3, 0, 1, 1)
+        self.gridLayout.addWidget(self.read_in_all_scans_toggleSwitch, 3, 1, 1, 1)
 
         # Toggle Switch to autodetect spectrum
-        self.autodetect_spectrum_HLayout = QtWidgets.QHBoxLayout()
         self.autodetect_spectrum_toggleSwitch = ToggleSwitch()
-        self.autodetect_spectrum_label = QtWidgets.QLabel("Autodetect Spectrum")
-        self.autodetect_spectrum_HLayout.addWidget(
-            self.autodetect_spectrum_toggleSwitch
-        )
-        self.autodetect_spectrum_HLayout.addWidget(self.autodetect_spectrum_label)
-        self.gridLayout.addLayout(self.autodetect_spectrum_HLayout, 4, 1, 1, 1)
+        self.autodetect_spectrum_label = QtWidgets.QLabel("Autodetect Spectra")
+        self.gridLayout.addWidget(self.autodetect_spectrum_label, 4, 0, 1, 1)
+        self.gridLayout.addWidget(self.autodetect_spectrum_toggleSwitch, 4, 1, 1, 1)
 
         # Data Evaluation Settings
         self.data_evaluation_header_label = QtWidgets.QLabel(Settings)
