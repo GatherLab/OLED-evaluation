@@ -1,30 +1,30 @@
 {
     "overwrite": {
-        "default_saving_path": "/home/julianb/Documents/01-Studium/03-Promotion/02-Data/oleds",
-        "include_all_scans": false,
-        "autodetect_spectrum": false,
+        "default_saving_path": "C:/Users/GatherLab/Documents/Data",
+        "include_all_scans": true,
+        "autodetect_spectrum": true,
         "pd_gain": "50.0",
         "pd_area": "75.0",
         "pd_distance": "168.0",
         "pixel_area": "16.0",
-        "photopic_response_path": "/home/julianb/Documents/04-Programming/OLED-evaluation/calibration/Photopic_response.txt",
-        "pd_responsivity_path": "/home/julianb/Documents/04-Programming/OLED-evaluation/calibration/Responsivity_PD.txt",
-        "cie_reference_path": "/home/julianb/Documents/04-Programming/OLED-evaluation/calibration/cie_reference_400-800.txt",
-        "spectrometer_calibration_path": "/home/julianb/Documents/04-Programming/OLED-evaluation/calibration/Calibration_HDX_QP600_2021-08-17.txt",
-        "photodiode_gain_path": "/home/julianb/Documents/04-Programming/OLED-evaluation/usr/photodiode_gain.json"
+        "photopic_response_path": "C:/Users/GatherLab/Documents/Software/OLED-evaluation/calibration/Photopic_response.txt",
+        "pd_responsivity_path": "C:/Users/GatherLab/Documents/Software/OLED-evaluation/calibration/Responsivity_PD.txt",
+        "cie_reference_path": "C:/Users/GatherLab/Documents/Software/OLED-evaluation/calibration/cie_reference_400-800.txt",
+        "spectrometer_calibration_path": "C:/Users/GatherLab/Documents/Software/OLED-evaluation/calibration/Calibration_HDX_QP600_2021-08-17.txt",
+        "photodiode_gain_path": "C:/Users/GatherLab/Documents/Software/OLED-evaluation/usr/photodiode_gain.json"
     },
     "default": {
-        "default_saving_path": "/home/julianb/Documents/01-Studium/03-Promotion/02-Data/oleds",
+        "default_saving_path": "C:/Users/GatherLab/Documents/Data",
         "include_all_scans": 1.0,
         "autodetect_spectrum": 1.0,
         "pd_gain": 50.0,
         "pd_area": 75.0,
         "pd_distance": 168.0,
         "pixel_area": 16.0,
-        "photopic_response_path": "/home/julianb/Documents/04-Programming/OLED-evaluation/calibration/Photopic_response.txt",
-        "pd_responsivity_path": "/home/julianb/Documents/04-Programming/OLED-evaluation/calibration/Responsivity_PD.txt",
-        "cie_reference_path": "/home/julianb/Documents/04-Programming/OLED-evaluation/calibration/cie_reference_400-800.txt",
-        "spectrometer_calibration_path": "/home/julianb/Documents/04-Programming/OLED-evaluation/calibration/Calibration_HDX_QP600_2021-08-17.txt",
-        "photodiode_gain_path": "/home/julianb/Documents/04-Programming/OLED-evaluation/usr/photodiode_gain.json"
+        "photopic_response_path": "C:/Users/GatherLab/Documents/Software/OLED-evaluation/calibration/Photopic_response.txt",
+        "pd_responsivity_path": "C:/Users/GatherLab/Documents/Software/OLED-evaluation/calibration/Responsivity_PD.txt",
+        "cie_reference_path": "C:/Users/GatherLab/Documents/Software/OLED-evaluation/calibration/cie_reference_400-800.txt",
+        "spectrometer_calibration_path": "C:/Users/GatherLab/Documents/Software/OLED-evaluation/calibration/Calibration_HDX_QP600_2021-08-17.txt",
+        "photodiode_gain_path": "C:/Users/GatherLab/Documents/Software/OLED-evaluation/usr/photodiode_gain.json"
     }
 }
