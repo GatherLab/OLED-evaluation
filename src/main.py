@@ -1374,13 +1374,13 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         Plot the spectrum
         """
         color = self.assigned_groups_df.loc[
-            self.assigned_groups_df.group_name == group,
+            self.assigned_groups_df.index == group,
             "color",
         ].to_list()[0]
 
         if (
             self.assigned_groups_df.join(self.spectrum_data_df)
-            .loc[self.assigned_groups_df["group_name"] == group, "angle_resolved"]
+            .loc[self.assigned_groups_df.index == group, "angle_resolved"]
             .to_list()[0]
         ):
             if not self.current_plot_type == "angle_resolved_spectrum":
@@ -1401,7 +1401,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             # The angle resolved spectrum is not stored permanently and
             # therefore has to be read in again
             file_name = self.assigned_groups_df.loc[
-                self.assigned_groups_df["group_name"] == group, "spectrum_path"
+                self.assigned_groups_df.index == group, "spectrum_path"
             ].to_list()[0]
 
             spectrum = pd.read_csv(file_name, sep="\t", skiprows=4)
@@ -1489,7 +1489,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.eval_ax.cla()
 
             device_number = self.assigned_groups_df.loc[
-                self.assigned_groups_df["group_name"] == group
+                self.assigned_groups_df.index == group
             ].index
 
             wavelength = self.spectrum_data_df.loc[

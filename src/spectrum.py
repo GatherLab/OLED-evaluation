@@ -26,12 +26,12 @@ class EvaluateSpectrum(QtWidgets.QDialog, Ui_EvaluateSpectrum):
         self.parameters = parameters
         self.setupUi(self)
 
-        for index in range(np.size(self.parameters["group_name"])):
+        for index in range(np.size(self.parameters["device_number"])):
             # Connect the push buttons for the group buttons
             self.group_pushButton_container[index].clicked.connect(
                 functools.partial(
                     self.parent.plot_spectrum,
-                    self.parameters["group_name"][index],
+                    self.parameters["device_number"][index],
                 )
             )
 

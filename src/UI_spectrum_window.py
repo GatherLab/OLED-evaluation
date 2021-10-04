@@ -115,7 +115,7 @@ class Ui_EvaluateSpectrum(object):
         # self.verticalLayout.addLayout(self.devices_gridLayout)
 
         # If group names were already defined do the same for the groups
-        if np.size(self.parameters["group_name"]) > 0:
+        if np.size(self.parameters["device_number"]) > 0:
             # Add a header label for the groups
             # self.group_label = QtWidgets.QLabel()
             # self.group_label.setObjectName("group_label")
@@ -129,11 +129,11 @@ class Ui_EvaluateSpectrum(object):
             # have a line break every max_row push buttons
             count_row = 0
 
-            for index in range(np.size(self.parameters["group_name"])):
+            for index in range(np.size(self.parameters["device_number"])):
                 # Append a pushbutton for each group
                 self.group_pushButton_container = np.append(
                     self.group_pushButton_container,
-                    QtWidgets.QPushButton(str(self.parameters["group_name"][index])),
+                    QtWidgets.QPushButton(str(self.parameters["device_number"][index])),
                 )
 
                 # Add pushbuttons to grid layout
