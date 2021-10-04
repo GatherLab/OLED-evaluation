@@ -323,6 +323,152 @@ class AssignGroups(QtWidgets.QDialog, Ui_AssignGroup):
         # really wants to close without saving
         self.close()
 
+    def autodetect_matching_spectrum(self):
+        """
+        Function that allows the automatic detection of the right spectru function.
+        """
+        files_df = pd.DataFrame()
+        file_names = self.parent.file_names
+
+        spec_file_names = []
+        dates = []
+        batch_names = []
+        spec_file_names = []
+        device_numbers = []
+        pixel_numbers = []
+        ar_spectrum = []
+        scan_number = []
+        identifier = []
+
+        for name in file_names:
+            split_name = name.split("_")
+            if len(split_name) == 5:
+                if str(split_name[4].split(".")[0]) not in ["spec", "gon-spec"]:
+                    continue
+                # Right file name but only one scan
+                spec_file_names.append(name)
+                dates.append(str(split_name[0]))
+                batch_names.append(str(split_name[1]))
+                device_numbers.append(int(split_name[2][1:]))
+                pixel_numbers.append(int(split_name[3].split(".")[0][1:]))
+                scan_number.append(1)
+                identifier.append(split_name[2] + split_name[3].split(".")[0] + "s1")
+                if str(split_name[4].split(".")[0]) == "gon-spec":
+                    ar_spectrum.append(True)
+                else:
+                    ar_spectrum.append(False)
+            elif len(split_name) == 6:
+                if str(split_name[4].split(".")[0]) not in ["spec", "gon-spec"]:
+                    continue
+                # If this is > first scan
+                spec_file_names.append(name)
+                dates.append(str(split_name[0]))
+                batch_names.append(str(split_name[1]))
+                device_numbers.append(int(split_name[2][1:]))
+                pixel_numbers.append(int(split_name[3][1:]))
+                identifier.append(
+                    split_name[2]
+                    + split_name[3]
+                    + "s"
+                    + split_name[5].split(".")[0][1:]
+                )
+                scan_number.append(int(split_name[5].split(".")[0][1:]))
+                if str(split_name[4].split(".")[0]) == "gon-spec":
+                    ar_spectrum.append(True)
+                else:
+                    ar_spectrum.append(False)
+            # else:
+            #     # File name is not in the correct format
+            #     cf.log_message(
+            #         "The file name does not follow the naming convention date_batch-name_d<no>_p<no>_<no>.csv"
+            #     )
+        # if np.size(np.unique(batch_names)) > 1:
+        #     cf.log_message(
+        #         "The batch name does not match for all files. If there are different OLEDs with the same device number this could lead to a problem."
+        #     )
+
+        files_df["file_name"] = spec_file_names
+        files_df["device_number"] = device_numbers
+        files_df["pixel_number"] = pixel_numbers
+        files_df["scan_number"] = scan_number
+        files_df["ar_spectrum"] = ar_spectrum
+
+        for index, data in self.parent.assigned_groups_df.iterrows():
+            # Search for spectrum of very same pixel
+
+            # Search for spectrum of same device
+            # Try to get an angle resolved spectrum
+            spectrum_path_device = files_df.loc[
+                np.logical_and(
+                    files_df.ar_spectrum, files_df["device_number"] == data.name
+                ),
+                "file_name",
+            ]
+
+            # If there is none, try to get any spectrum
+            if len(spectrum_path_device) == 0:
+                spectrum_path_device = files_df.loc[
+                    files_df["device_number"] == data.name, "file_name"
+                ]
+            else:
+                cf.log_message("Angle resolved spectrum found for device " + str(index))
+
+            spectrum_path = (
+                self.parent.global_path + "/" + next(iter(spectrum_path_device), "")
+            )
+
+            # Search for spectrum of same group
+            if len(spectrum_path_device) == 0:
+                group_name = self.parent.assigned_groups_df.loc[
+                    self.parent.assigned_groups_df.index == data.name, "group_name"
+                ].item()
+
+                devices_in_group = self.parent.assigned_groups_df.loc[
+                    self.parent.assigned_groups_df.group_name == group_name
+                ].index.to_list()
+
+                # Try to get an angle resolved spectrum
+                spectrum_path_list = (
+                    files_df.loc[
+                        np.logical_and(
+                            files_df.ar_spectrum,
+                            files_df["device_number"].isin(devices_in_group),
+                        ),
+                        "file_name",
+                    ]
+                ).to_list()
+
+                # If there is none, try to get any spectrum
+                if len(spectrum_path_list) == 0:
+                    spectrum_path_list = (
+                        files_df.loc[
+                            files_df["device_number"].isin(devices_in_group),
+                            "file_name",
+                        ]
+                    ).to_list()
+
+                else:
+                    cf.log_message(
+                        "Angle resolved spectrum found for device " + str(index)
+                    )
+
+                # Only return first item of that list (if it exists)
+                spectrum_path = (
+                    self.parent.global_path + "/" + next(iter(spectrum_path_list), "")
+                )
+
+            # Show error if non of the above was found in the according folder
+            if len(spectrum_path) == self.parent.global_path + "/":
+                cf.log_message(
+                    "No spectrum found for device "
+                    + str(data.name)
+                    + " pixel "
+                    + str(data["pixel_number"])
+                )
+
+            # Assign spectrum path to dataframe
+            self.parent.assigned_groups_df.loc[index].spectrum_path = spectrum_path
+
     def save_groups(self):
         """
         Saves the assigned groups
@@ -390,12 +536,23 @@ class AssignGroups(QtWidgets.QDialog, Ui_AssignGroup):
         # ]
         # self.parent.assigned_groups_df["color"] = self.group_color[0 : len(group_names)]
 
-        # Assign scan
-        self.parent.selected_scan = int(self.select_scan_number_ComboBox.currentText())
+        # Assign scan number
+        if not self.include_all_scans:
+            self.parent.selected_scan = int(
+                self.select_scan_number_ComboBox.currentText()
+            )
+        else:
+            # If all scans were selected instead, make it zero (because there is
+            # no zero-th scan)
+            self.parent.selected_scan = 0
 
         # Finally, set the indexes to the device numbers
         self.parent.assigned_groups_df = self.parent.assigned_groups_df.set_index(
             np.concatenate(np.array(device_numbers_store)).flatten()
         )
+
+        # If autodetection of the spectra was chosen, do so
+        if self.autodetect_matching_spectrum:
+            self.autodetect_matching_spectrum()
 
         self.accept()

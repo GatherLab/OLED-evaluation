@@ -433,14 +433,21 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # Now check if user pressed close or save
         if button == True:
             # Only select those files that's device numbers were entered by the user
-            selected_files = self.files_df[
-                np.logical_and(
+            if self.selected_scan == 0:
+                selected_files = self.files_df[
                     self.files_df["device_number"].isin(
                         self.assigned_groups_df.index.to_numpy()
-                    ),
-                    self.files_df["scan_number"] == self.selected_scan,
-                )
-            ]
+                    )
+                ]
+            else:
+                selected_files = self.files_df[
+                    np.logical_and(
+                        self.files_df["device_number"].isin(
+                            self.assigned_groups_df.index.to_numpy()
+                        ),
+                        self.files_df["scan_number"] == self.selected_scan,
+                    )
+                ]
             # Now read in the jvl files for selected devices
             self.data_df = cf.read_multiple_files(
                 [
