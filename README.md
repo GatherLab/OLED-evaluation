@@ -3,8 +3,8 @@
 </h1>
 
 <p align="center">
-   <a href="https://github.com/GatherLab/OLED-jvl-evaluation/commits/" title="Last Commit"><img src="https://img.shields.io/github/last-commit/GatherLab/OLED-jvl-evaluation"></a>
-   <a href="https://github.com/GatherLab/OLED-jvl-evaluation/issues" title="Open Issues"><img src="https://img.shields.io/github/issues/GatherLab/OLED-jvl-evaluation"></a>
+   <a href="https://github.com/GatherLab/OLED-jvl-evaluation/commits" title="Last Commit"><img src="https://img.shields.io/github/last-commit/GatherLab/OLED-jvl-evaluation"></a>
+   <a href="https://github.com/GatherLab/OLED-evaluation/issues" title="Open Issues"><img src="https://img.shields.io/github/issues/GatherLab/OLED-jvl-evaluation"></a>
    <a href="./LICENSE" title="License"><img src="https://img.shields.io/github/license/GatherLab/OLED-jvl-evaluation"></a>
 </p>
 
