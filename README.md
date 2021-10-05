@@ -3,16 +3,15 @@
 </h1>
 
 <p align="center">
-   <a href="https://github.com/GatherLab/OLED-jvl-evaluation/commits/" title="Last Commit"><img src="https://img.shields.io/github/last-commit/GatherLab/OLED-jvl-evaluation?style=flat"></a>
-   <a href="https://github.com/GatherLab/OLED-jvl-evaluation/issues" title="Open Issues"><img src="https://img.shields.io/github/issues/GatherLab/OLED-jvl-evaluation?style=flat"></a>
+   <a href="https://github.com/GatherLab/OLED-jvl-evaluation/commits" title="Last Commit"><img src="https://img.shields.io/github/last-commit/GatherLab/OLED-jvl-evaluation"></a>
+   <a href="https://github.com/GatherLab/OLED-evaluation/issues" title="Open Issues"><img src="https://img.shields.io/github/issues/GatherLab/OLED-jvl-evaluation"></a>
    <a href="./LICENSE" title="License"><img src="https://img.shields.io/github/license/GatherLab/OLED-jvl-evaluation"></a>
 </p>
 
 <p align="center">
   <a href="#setup">Setup</a> •
   <a href="#user journey">User Journey</a> •
-  <a href="#development">development</a> •
-  <a href="#licensing">Licensing</a>
+  <a href="#development">development</a>
 </p>
 
 Software for easy evaluation of previously measured data in the data format of https://github.com/GatherLab/OLED-jvl-measurement
