@@ -552,7 +552,7 @@ class AssignGroups(QtWidgets.QDialog, Ui_AssignGroup):
         )
 
         # If autodetection of the spectra was chosen, do so
-        if self.autodetect_matching_spectrum:
+        if self.autodetect_spectrum:
             self.autodetect_matching_spectrum()
 
         self.accept()
