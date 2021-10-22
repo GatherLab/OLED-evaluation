@@ -621,6 +621,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             if (
                 spectrum_path.split("_")[-1].split(".")[0] == "gon-spec"
                 or spectrum_path.split("_")[-2] == "gon-spec"
+                or spectrum_path.split("_")[-1].split(".")[0] == "gon-spec-deg"
+                or spectrum_path.split("_")[-2] == "gon-spec-deg"
             ):
                 self.spectrum_data_df["angle_resolved"].iloc[i] = True
 
