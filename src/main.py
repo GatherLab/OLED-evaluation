@@ -1834,16 +1834,20 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 non_lambertian_spectrum = ri / ri[np.where(angles == 0)[0][0]]
                 radiant_intensity_df = pd.DataFrame(
                     {
-                        "Angle (rad)": angles,
-                        "Radiant intensity": non_lambertian_spectrum,
+                        "Angle (°)": np.rad2deg(angles),
+                        "Lambertian RI (a.u.)": np.cos(angles),
+                        "Radiant intensity (a.u.)": non_lambertian_spectrum,
                     }
                 )
-                radiant_intensity_df["Angle (rad)"] = radiant_intensity_df[
-                    "Angle (rad)"
-                ].map(lambda x: "{0:.4f}".format(x))
-                radiant_intensity_df["Radiant intensity"] = radiant_intensity_df[
-                    "Radiant intensity"
-                ].map(lambda x: "{0:.4f}".format(x))
+                radiant_intensity_df["Angle (°)"] = radiant_intensity_df[
+                    "Angle (°)"
+                ].map(lambda x: "{0:.2f}".format(x))
+                radiant_intensity_df["Lambertian RI (a.u.)"] = radiant_intensity_df[
+                    "Lambertian RI (a.u.)"
+                ].map(lambda x: "{0:.5f}".format(x))
+                radiant_intensity_df["Radiant intensity (a.u.)"] = radiant_intensity_df[
+                    "Radiant intensity (a.u.)"
+                ].map(lambda x: "{0:.5f}".format(x))
 
                 cf.save_file(
                     radiant_intensity_df, file_path, header_lines, save_header=True
