@@ -866,7 +866,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.eval_ax2.format_coord = self.make_format(self.eval_ax2, self.eval_ax1)
 
         # Some more visuals
-        self.eval_ax1.set_facecolor("#E0E0E0")
+        self.eval_ax1.set_facecolor("#FFFFFF")
         # self.eval_ax1.tick_params(axis="x", direction="in", length=8)
 
         # Generate random colors
@@ -951,10 +951,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.eval_ax5 = self.eval_ax[0, 0].twinx()
 
             # Some more visuals
-            self.eval_ax[0, 0].set_facecolor("#E0E0E0")
-            self.eval_ax[0, 1].set_facecolor("#E0E0E0")
-            self.eval_ax[1, 0].set_facecolor("#E0E0E0")
-            self.eval_ax[1, 1].set_facecolor("#E0E0E0")
+            self.eval_ax[0, 0].set_facecolor("#FFFFFF")
+            self.eval_ax[0, 1].set_facecolor("#FFFFFF")
+            self.eval_ax[1, 0].set_facecolor("#FFFFFF")
+            self.eval_ax[1, 1].set_facecolor("#FFFFFF")
         else:
             self.eval_ax[0, 0].cla()
             # self.eval_ax[0, 0].cla()
@@ -1232,10 +1232,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.eval_ax = self.eval_fig.figure.subplots(2, 2)
 
             # Some more visuals
-            self.eval_ax[0, 0].set_facecolor("#E0E0E0")
-            self.eval_ax[0, 1].set_facecolor("#E0E0E0")
-            self.eval_ax[1, 0].set_facecolor("#E0E0E0")
-            self.eval_ax[1, 1].set_facecolor("#E0E0E0")
+            self.eval_ax[0, 0].set_facecolor("#FFFFFF")
+            self.eval_ax[0, 1].set_facecolor("#FFFFFF")
+            self.eval_ax[1, 0].set_facecolor("#FFFFFF")
+            self.eval_ax[1, 1].set_facecolor("#FFFFFF")
         else:
             self.eval_ax[0, 0].cla()
             self.eval_ax[0, 1].cla()
@@ -1394,8 +1394,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 )
 
                 # Some more visuals
-                self.eval_ax0.set_facecolor("#E0E0E0")
-                self.eval_ax1.set_facecolor("#E0E0E0")
+                self.eval_ax0.set_facecolor("#FFFFFF")
+                self.eval_ax1.set_facecolor("#FFFFFF")
             else:
                 self.eval_ax0.cla()
                 self.eval_ax1.cla()
@@ -1486,7 +1486,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.eval_ax = self.eval_fig.figure.subplots()
 
                 # Some more visuals
-                self.eval_ax.set_facecolor("#E0E0E0")
+                self.eval_ax.set_facecolor("#FFFFFF")
             else:
                 self.eval_ax.cla()
 
