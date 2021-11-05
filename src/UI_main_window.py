@@ -339,7 +339,7 @@ class Ui_MainWindow(object):
         self.eval_mpl_graph_gridLayout.addWidget(self.eval_fig)
 
         self.eval_ax = self.eval_fig.figure.subplots()
-        self.eval_ax.set_facecolor("#E0E0E0")
+        self.eval_ax.set_facecolor("#FFFFFF")
         self.eval_ax.grid(True)
         self.eval_ax.set_xlabel("Wavelength (nm)", fontsize=14)
         self.eval_ax.set_ylabel("Intensity (a.u.)", fontsize=14)
@@ -348,9 +348,9 @@ class Ui_MainWindow(object):
         self.eval_ax.axhline(linewidth=1, color="black")
         self.eval_ax.axvline(linewidth=1, color="black")
 
-        self.eval_fig.figure.set_facecolor("#E0E0E0")
+        self.eval_fig.figure.set_facecolor("#FFFFFF")
         self.eval_mplToolbar = NavigationToolbar(self.eval_fig, self.eval_graph_widget)
-        self.eval_mplToolbar.setStyleSheet("background-color:#E0E0E0; color:black;")
+        self.eval_mplToolbar.setStyleSheet("background-color:#FFFFFF; color:black;")
         self.eval_mpl_graph_gridLayout.addWidget(self.eval_mplToolbar)
 
         # ----------------------- Define scroll area ---------------------------
@@ -716,7 +716,7 @@ class Ui_MainWindow(object):
             "QProgressBar"
             "{"
             "border-radius: 5px;"
-            "background-color: #E0E0E0;"
+            "background-color: #FFFFFF;"
             "text-align: center;"
             "color: black;"
             'font: 63 bold 10pt "Segoe UI";'
