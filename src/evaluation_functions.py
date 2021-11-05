@@ -480,14 +480,11 @@ class JVLData:
         """
 
         # v_coeff = self.calculate_non_lambertian_v_coeff(jvl_data)
-        return (
-            1
-            / self.voltage
-            / self.current
-            * v_coeff
-            * self.integral_3
-            / self.integral_4
-            * v_correction_factor
+        return np.divide(
+            v_coeff * self.integral_3 * v_correction_factor,
+            self.voltage * self.current * self.integral_4,
+            out=np.zeros_like(v_coeff * self.integral_3 * v_correction_factor),
+            where=self.voltage * self.current * self.integral_4 != 0,
         )
 
     def calculate_current_efficiency(self):
