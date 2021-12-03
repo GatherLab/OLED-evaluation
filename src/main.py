@@ -23,6 +23,15 @@ import logging
 from logging.handlers import RotatingFileHandler
 
 import matplotlib.pylab as plt
+
+plt.rcParams.update(
+    {
+        "font.size": 15,
+        "font.family": "Arial",
+        "lines.linewidth": 4,
+        "lines.markersize": 20,
+    }
+)
 import numpy as np
 import pandas as pd
 import math
@@ -1261,7 +1270,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
             self.eval_ax[0, 0].plot(temp_x, temp_y, "b.", color=color)
         self.eval_ax[0, 0].set_ylabel(
-            "Current Density @ " + str(evaluation_voltage) + "V (mA cm$^{-2}$)"
+            "Current Density @ " + str(evaluation_voltage) + "V (mA cm$^{-2}$)",
         )
 
         # Luminance at 4 V
@@ -1328,7 +1337,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.eval_ax[1, 1].plot(temp_x, temp_y, "b.", color=color)
 
         self.eval_ax[1, 1].set_ylabel(
-            "Power Density @ " + str(evaluation_voltage) + "V (mA mm$^{-2}$)"
+            "Power Density @ " + str(evaluation_voltage) + "V (mA mm$^{-2}$)",
         )
 
         self.eval_fig.figure.tight_layout()
