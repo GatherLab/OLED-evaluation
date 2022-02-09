@@ -1654,7 +1654,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             header_lines.append(line05)
             line06 = "Voltage\t Current\t PD Voltage\t Current Density\t Luminance\t EQE\t Luminous Efficacy\t Current Efficiency\t Power Density\t"
             header_lines.append(line06)
-            line07 = "V\t A\t V\t mA/cm^2\t cd/m^2\t %\t lm/W\t cd A\t mW/cm^2\n"
+            line07 = "V\t A\t V\t mA/cm^2\t cd/m^2\t %\t lm/W\t cd A\t mW/mm^2\n"
             header_lines.append(line07)
 
             # Drop columns that are not saved to main part of file
