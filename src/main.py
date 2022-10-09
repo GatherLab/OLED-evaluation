@@ -622,6 +622,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # pixel_area = global_settings["pixel_area"]
         # distance = global_settings["distance"]
 
+        only_negative_angles = False
+
         for i in range(np.size(self.assigned_groups_df.index)):
             # Read in the spectrum file for the according device (and check if
             # goniometer or not)
@@ -651,6 +653,23 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.spectrum_data_df["intensity"].loc[
                     self.assigned_groups_df.index.to_list()[i]
                 ] = raw_spectrum["0.0"].to_list()
+
+                # Check if there are angles > 0 that can be used for the evaluation
+                # (otherwise take the negative spectra by inverting them and changing sign)
+                if not np.any(raw_spectrum.columns[2:].astype("float") > 0):
+                    only_negative_angles = True
+
+                    # raw_spectrum = raw_spectrum[
+                    #     np.append(
+                    #         raw_spectrum.columns[0:2], np.flip(raw_spectrum.columns[2:])
+                    #     )
+                    # ]
+
+                    # # Rename columns so that they take positive values (for the evaluation)
+                    # renamed_columns = np.abs(raw_spectrum.columns[2:].astype(float))
+                    # raw_spectrum.columns = np.append(
+                    #     raw_spectrum.columns[0:2],renamed_columns.astype(str)
+                    # )
 
                 # Interpolate and correct spectrum
                 interpolate_spectrum = ef.interpolate_spectrum(
@@ -752,6 +771,21 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.spectrum_data_df["calibrated_intensity"].loc[
                 self.assigned_groups_df.index.to_list()[i]
             ] = calibrated_spectrum / np.max(calibrated_spectrum)
+
+        if only_negative_angles:
+            msgBox = QtWidgets.QMessageBox()
+            msgBox.setText(
+                "Some spectral data does not contain data between 0° and 90° as recommended, taking -90° to 0° instead!"
+            )
+            msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
+            save_button = msgBox.button(QtWidgets.QMessageBox.Ok)
+            msgBox.setStyleSheet(
+                "background-color: rgb(44, 49, 60);\n"
+                "color: rgb(255, 255, 255);\n"
+                'font: 63 bold 10pt "Segoe UI";\n'
+                ""
+            )
+            msgBox.exec()
 
         # Iterate over all loaded data
         for index, row in self.data_df.iterrows():
@@ -2030,7 +2064,7 @@ if __name__ == "__main__":
     if not sys.platform.startswith("linux"):
         import ctypes
 
-        myappid = u"mycompan.myproduct.subproduct.version"  # arbitrary string
+        myappid = "mycompan.myproduct.subproduct.version"  # arbitrary string
         ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 
     app_icon = QtGui.QIcon()

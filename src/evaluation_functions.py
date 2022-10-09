@@ -211,21 +211,42 @@ def calculate_e_correction(df):
 
     # It is now important to only integrate from 0 to 90° and not the entire spectrum
     # It is probably smarter to pull this at some point up but this works.
-    relevant_e_factors = e_factor.loc[
-        np.logical_and(
-            np.array(e_factor.index).astype(float) >= 0,
-            np.array(e_factor.index).astype(float) <= 90,
-        )
-    ]
-
-    relevant_angles = np.array(
-        e_factor.loc[
+    if np.any(df.columns[0:-1].astype("float") > 0):
+        relevant_e_factors = e_factor.loc[
             np.logical_and(
                 np.array(e_factor.index).astype(float) >= 0,
                 np.array(e_factor.index).astype(float) <= 90,
             )
-        ].index
-    ).astype(float)
+        ]
+
+        relevant_angles = np.array(
+            e_factor.loc[
+                np.logical_and(
+                    np.array(e_factor.index).astype(float) >= 0,
+                    np.array(e_factor.index).astype(float) <= 90,
+                )
+            ].index
+        ).astype(float)
+    else:
+        relevant_e_factors = np.flip(
+            e_factor.loc[
+                np.logical_and(
+                    np.array(e_factor.index).astype(float) <= 0,
+                    np.array(e_factor.index).astype(float) >= -90,
+                )
+            ]
+        )
+
+        relevant_angles = np.flip(
+            np.array(
+                e_factor.loc[
+                    np.logical_and(
+                        np.array(e_factor.index).astype(float) <= 0,
+                        np.array(e_factor.index).astype(float) >= -90,
+                    )
+                ].index
+            ).astype(float)
+        )
 
     return np.sum(
         relevant_e_factors
@@ -260,21 +281,42 @@ def calculate_v_correction(df, photopic_response):
 
     # It is now important to only integrate from 0 to 90° and not the entire spectrum
     # It is probably smarter to pull this at some point up but this works.
-    relevant_v_factor = v_factor.loc[
-        np.logical_and(
-            np.array(v_factor.index).astype(float) >= 0,
-            np.array(v_factor.index).astype(float) <= 90,
-        )
-    ]
-
-    relevant_angles = np.array(
-        v_factor.loc[
+    if np.any(df.columns[0:-1].astype("float") > 0):
+        relevant_v_factor = v_factor.loc[
             np.logical_and(
                 np.array(v_factor.index).astype(float) >= 0,
                 np.array(v_factor.index).astype(float) <= 90,
             )
-        ].index
-    ).astype(float)
+        ]
+
+        relevant_angles = np.array(
+            v_factor.loc[
+                np.logical_and(
+                    np.array(v_factor.index).astype(float) >= 0,
+                    np.array(v_factor.index).astype(float) <= 90,
+                )
+            ].index
+        ).astype(float)
+    else:
+        relevant_v_factor = np.flip(
+            v_factor.loc[
+                np.logical_and(
+                    np.array(v_factor.index).astype(float) <= 0,
+                    np.array(v_factor.index).astype(float) >= -90,
+                )
+            ]
+        )
+
+        relevant_angles = np.flip(
+            np.array(
+                v_factor.loc[
+                    np.logical_and(
+                        np.array(v_factor.index).astype(float) <= 0,
+                        np.array(v_factor.index).astype(float) >= -90,
+                    )
+                ].index
+            ).astype(float)
+        )
 
     return np.sum(
         relevant_v_factor
@@ -321,7 +363,7 @@ class JVLData:
         self.pd_resistance = pd_resistance
         self.pixel_area = pixel_area
         # Taking into account finite size of PD
-        self.sqsinalpha = pd_radius ** 2 / (pd_distance ** 2 + pd_radius ** 2)
+        self.sqsinalpha = pd_radius**2 / (pd_distance**2 + pd_radius**2)
 
         self.voltage = np.array(jvl_data["voltage"])
         self.pd_voltage = np.array(jvl_data["pd_voltage"])
