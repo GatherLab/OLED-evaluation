@@ -687,10 +687,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 v_correction_factor = ef.calculate_v_correction(
                     calibrated_spectrum, photopic_response
                 )
-                self.spectrum_data_df["correction_factor"].iloc[i] = [
-                    e_correction_factor,
-                    v_correction_factor,
-                ]
+                self.spectrum_data_df["correction_factor"].iloc[i] = np.array(
+                    [e_correction_factor, v_correction_factor], dtype=object
+                )
 
                 cf.log_message(
                     "Angle resolved spectrum data found for device "
@@ -732,7 +731,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 # ] = [0, 0]
                 self.spectrum_data_df["correction_factor"].loc[
                     self.assigned_groups_df.index.to_list()[i]
-                ] = [0, 0]
+                ] = np.array([0, 0], dtype=object)
                 cf.log_message(
                     "Spectrum data found for device "
                     + str(self.assigned_groups_df.index[i])
