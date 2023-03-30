@@ -10,7 +10,7 @@
         "photopic_response_path": "C:/Users/GatherLab/Documents/Software/OLED-evaluation/calibration/Photopic_response.txt",
         "pd_responsivity_path": "C:/Users/GatherLab/Documents/Software/OLED-evaluation/calibration/Responsivity_PD.txt",
         "cie_reference_path": "C:/Users/GatherLab/Documents/Software/OLED-evaluation/calibration/cie_reference_400-800.txt",
-        "spectrometer_calibration_path": "C:/Users/GatherLab/Documents/Software/OLED-evaluation/calibration/Calibration_HDX_QP600_2021-08-17.txt",
+        "spectrometer_calibration_path": "C:/Users/GatherLab/Documents/Software/OLED-evaluation/calibration/Calibration_HDX_QP600_2023-03-29.txt",
         "photodiode_gain_path": "C:/Users/GatherLab/Documents/Software/OLED-evaluation/usr/photodiode_gain.json"
     },
     "default": {
@@ -24,7 +24,7 @@
         "photopic_response_path": "C:/Users/GatherLab/Documents/Software/OLED-evaluation/calibration/Photopic_response.txt",
         "pd_responsivity_path": "C:/Users/GatherLab/Documents/Software/OLED-evaluation/calibration/Responsivity_PD.txt",
         "cie_reference_path": "C:/Users/GatherLab/Documents/Software/OLED-evaluation/calibration/cie_reference_400-800.txt",
-        "spectrometer_calibration_path": "C:/Users/GatherLab/Documents/Software/OLED-evaluation/calibration/Calibration_HDX_QP600_2021-08-17.txt",
+        "spectrometer_calibration_path": "C:/Users/GatherLab/Documents/Software/OLED-evaluation/calibration/Calibration_HDX_QP600_2023-03-29.txt",
         "photodiode_gain_path": "C:/Users/GatherLab/Documents/Software/OLED-evaluation/usr/photodiode_gain.json"
     }
 }
