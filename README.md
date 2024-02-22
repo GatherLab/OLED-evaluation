@@ -56,8 +56,8 @@ The user journey for this software is quite pre-defined and follows a process
 matched to our taken OLED data. The process is described in the following flow
 chart and illustrated in the screenshots below.
 
-<img src="docs/si-figure-oled-performance-white-background.png" style="display: block; margin-left: auto; margin-right: auto; width: 50%;"/>
-<img src="docs/figure-4-white-background.png" style="display: block; margin-left: auto; margin-right: auto; width: 50%;"/>
+<img src="docs/si-figure-oled-performance-white-background.png" style="display: block; margin-left: auto; margin-right: auto; width: 100%;"/>
+<img src="docs/figure-4-white-background.png" style="display: block; margin-left: auto; margin-right: auto; width: 100%;"/>
 
 ## Development
 
