@@ -1707,6 +1707,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             df["voltage"] = df["voltage"].map(lambda x: "{0:.2f}".format(x))
             df["current"] = df["current"].map(lambda x: "{0:.6f}".format(x))
             df["pd_voltage"] = df["pd_voltage"].map(lambda x: "{0:.7f}".format(x))
+            df["current_density"] = np.abs(df["current_density"])
             df["current_density"] = df["current_density"].map(
                 lambda x: "{0:.5f}".format(x)
             )
