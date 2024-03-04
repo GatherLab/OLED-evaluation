@@ -1075,16 +1075,16 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.eval_ax[0, 1].set_ylabel("EQE (%)")
         self.eval_ax[0, 1].set_xlim([1e-2, max(temp_df.iloc[0]["current_density"])])
         # Find maximum non infinite eqe value and set that +1 as the limits
-        self.eval_ax[0, 1].set_ylim(
-            [
-                0,
-                round(
-                    temp_df.iloc[0]["eqe"][np.where(temp_df["luminance"][0] > 5)].max()
-                    + 1,
-                    1,
-                ),
-            ]
-        )
+        # self.eval_ax[0, 1].set_ylim(
+        #     [
+        #         0,
+        #         round(
+        #             temp_df.iloc[0]["eqe"][np.where(temp_df["luminance"][0] > 5)].max()
+        #             + 1,
+        #             1,
+        #         ),
+        #     ]
+        # )
 
         # Plot power density over voltage
         self.eval_ax[1, 0].set_yscale("log")
@@ -1685,7 +1685,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
             line05 = "### Measurement data ###"
             header_lines.append(line05)
-            line06 = "Voltage\t Current\t PD Voltage\t Current Density\t Luminance\t EQE\t Luminous Efficacy\t Current Efficiency\t Power Density\t"
+            line06 = "Voltage\t Current\t PD Voltage\t Abs. Current Density\t Luminance\t EQE\t Luminous Efficacy\t Current Efficiency\t Power Density\t"
             header_lines.append(line06)
             line07 = "V\t A\t V\t mA/cm^2\t cd/m^2\t %\t lm/W\t cd A\t mW/mm^2\n"
             header_lines.append(line07)
