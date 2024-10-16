@@ -1495,6 +1495,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.eval_ax0.set_ylabel("Wavelength (nm)")
 
             self.eval_ax0.pcolormesh(Y, X, temp_calibrated.to_numpy().T, shading="auto")
+            self.eval_ax0.format_coord = self.make_format_colorplot(temp_calibrated)
 
             ## Radiant intensity polar coordinates
             # theta = np.linspace(0, np.pi)
@@ -1966,7 +1967,29 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             )
 
         return format_coord
+    def make_format_colorplot(self, Z):
+        """
+        Function to allow display of both coordinates for figures with two axes.
+        """
+        def format_coord(x, y):
+            try:
+                # Convert index and columns to numpy arrays
+                index_array = Z.index.to_numpy()
+                columns_array = Z.columns.to_numpy().astype(float)
 
+                # Find the closest x and y values
+                closest_x = index_array[np.abs(index_array - y).argmin()]
+                closest_y = columns_array[np.abs(columns_array - x).argmin()]
+
+                # Get the corresponding z value
+                z = Z.at[closest_x, str(closest_y)]
+
+                return f'x={closest_x:1.4f}, y={closest_y:1.4f}, z={z:1.0f}'
+            except Exception as e:
+                return f'x={x:1.4f}, y={y:1.4f}, error: {e}'
+
+        return format_coord
+    
     def show_settings(self):
         """
         Shows the settings
