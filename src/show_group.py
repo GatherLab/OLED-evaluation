@@ -1,17 +1,7 @@
-# -*- coding: utf-8 -*-
-from PySide2 import QtCore, QtGui, QtWidgets
-
-import json
-import os
-import core_functions as cf
-from pathlib import Path
-import functools
+from PySide6 import QtWidgets
 
 import numpy as np
-import pandas as pd
-
-# import randomcolor
-
+import functools
 from UI_show_group_window import Ui_ShowGroup
 
 

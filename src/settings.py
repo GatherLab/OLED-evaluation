@@ -1,5 +1,4 @@
-# -*- coding: utf-8 -*-
-from PySide2 import QtCore, QtGui, QtWidgets
+from PySide6 import QtWidgets
 
 import json
 import os

@@ -1,17 +1,7 @@
-# -*- coding: utf-8 -*-
-from PySide2 import QtCore, QtGui, QtWidgets
+from PySide6 import QtWidgets
 
-import json
-import os
-import core_functions as cf
-from pathlib import Path
 import functools
-
 import numpy as np
-import pandas as pd
-
-# import randomcolor
-
 from UI_show_heros_window import Ui_ShowHeros
 
 

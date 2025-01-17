@@ -1,4 +1,5 @@
-from PySide2 import QtWidgets, QtCore, QtGui
+from PySide6 import QtWidgets, QtCore, QtGui
+
 
 # This class has to be defined to obtain a labeled slider used in the group
 # assigned dialog. The predefined slider of pyqt has no labels. This solution

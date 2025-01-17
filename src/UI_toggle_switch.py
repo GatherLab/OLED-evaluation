@@ -1,11 +1,8 @@
-from PySide2.QtCore import QPropertyAnimation, QRectF, QSize, Qt, Property
-from PySide2.QtGui import QPainter, QColor, QPalette
-from PySide2.QtWidgets import (
+from PySide6.QtCore import QPropertyAnimation, QRectF, QSize, Qt, Property
+from PySide6.QtGui import QPainter, QColor, QPalette
+from PySide6.QtWidgets import (
     QAbstractButton,
-    QApplication,
-    QHBoxLayout,
     QSizePolicy,
-    QWidget,
 )
 
 

@@ -1,18 +1,13 @@
-# -*- coding: utf-8 -*-
-from PySide2 import QtCore, QtGui, QtWidgets
+from PySide6 import QtWidgets
+from UI_assign_group_window import Ui_AssignGroup
 
-import json
 import os
 import core_functions as cf
-from pathlib import Path
 import functools
 
 import numpy as np
 import pandas as pd
-
 import matplotlib as mpl
-
-from UI_assign_group_window import Ui_AssignGroup
 
 
 class AssignGroups(QtWidgets.QDialog, Ui_AssignGroup):
@@ -516,12 +511,19 @@ class AssignGroups(QtWidgets.QDialog, Ui_AssignGroup):
 
             # Now generate for each device a seperate row in our pandas dataframe
             for number in device_numbers:
-                self.parent.assigned_groups_df = self.parent.assigned_groups_df.append(
-                    {
-                        "group_name": group_name,
-                        "spectrum_path": self.group_spectrum_path[group_index],
-                        "color": self.group_color[group_index],
-                    },
+                self.parent.assigned_groups_df = pd.concat(
+                    [
+                        self.parent.assigned_groups_df,
+                        pd.DataFrame(
+                            {
+                                "group_name": [group_name],
+                                "spectrum_path": [
+                                    self.group_spectrum_path[group_index]
+                                ],
+                                "color": [self.group_color[group_index]],
+                            }
+                        ),
+                    ],
                     ignore_index=True,
                 )
 
@@ -548,7 +550,7 @@ class AssignGroups(QtWidgets.QDialog, Ui_AssignGroup):
 
         # Finally, set the indexes to the device numbers
         self.parent.assigned_groups_df = self.parent.assigned_groups_df.set_index(
-            np.concatenate(np.array(device_numbers_store)).flatten()
+            np.concatenate(device_numbers_store)
         )
 
         # If autodetection of the spectra was chosen, do so

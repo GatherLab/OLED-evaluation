@@ -102,7 +102,7 @@ def read_multiple_files(
         # Since we are readying in the data of multiple files, store this
         # differently in a pandas dataframe
         for name in column_names:
-            data_frame[name].loc[file_synonyms[i]] = file_data_list[name].to_list()
+            data_frame.loc[file_synonyms[i], name] = file_data_list[name].to_list()
 
         i += 1
 

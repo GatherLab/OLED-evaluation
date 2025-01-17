@@ -3,21 +3,21 @@ from settings import Settings
 from assign_groups import AssignGroups
 from show_group import ShowGroup
 from show_heros import ShowHeros
-from statistics import Statistics
+from stats import Statistics
 from spectrum import EvaluateSpectrum
 
 import core_functions as cf
 import evaluation_functions as ef
 
-from PySide2 import QtCore, QtGui, QtWidgets
+from PySide6 import QtCore, QtGui, QtWidgets
 
 import time
 import os
 import shutil
 import json
 import sys
+
 from pathlib import Path
-import functools
 from datetime import date
 import logging
 from logging.handlers import RotatingFileHandler
@@ -414,10 +414,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.selected_scan = int(min(scan_number))
 
-        cmap = mpl.cm.get_cmap("Dark2", self.assigned_groups_df.shape[0])
-        self.assigned_groups_df.color = np.array(
-            [mpl.colors.rgb2hex(cmap(i)) for i in range(cmap.N)], dtype=object
-        )
+        cmap = mpl.colormaps["Dark2"]
+        self.assigned_groups_df["color"] = [
+            mpl.colors.rgb2hex(cmap(i / self.assigned_groups_df.shape[0]))
+            for i in range(self.assigned_groups_df.shape[0])
+        ]
 
     # -------------------------------------------------------------------- #
     # -------------------------- Assign Groups --------------------------- #
@@ -437,7 +438,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.assign_groups_dialog = AssignGroups(parameters, self)
         self.assign_groups_dialog.show()
-        button = self.assign_groups_dialog.exec_()
+        button = self.assign_groups_dialog.exec()
 
         # Now check if user pressed close or save
         if button == True:
@@ -635,7 +636,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 or spectrum_path.split("_")[-1].split(".")[0] == "gon-spec-deg"
                 or spectrum_path.split("_")[-2] == "gon-spec-deg"
             ):
-                self.spectrum_data_df["angle_resolved"].iloc[i] = True
+                self.spectrum_data_df.loc[
+                    self.spectrum_data_df.index[i], "angle_resolved"
+                ] = True
 
                 # Goniometer file
                 # Read in the angle resolved file
@@ -650,8 +653,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 # self.spectrum_data_df.loc[
                 #     self.assigned_groups_df.index.to_list()[i], "intensity"
                 # ] = raw_spectrum["0.0"].to_list()
-                self.spectrum_data_df["intensity"].loc[
-                    self.assigned_groups_df.index.to_list()[i]
+                self.spectrum_data_df.at[
+                    self.assigned_groups_df.index.to_list()[i], "intensity"
                 ] = raw_spectrum["0.0"].to_list()
 
                 # Check if there are angles > 0 that can be used for the evaluation
@@ -687,9 +690,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 v_correction_factor = ef.calculate_v_correction(
                     calibrated_spectrum, photopic_response
                 )
-                self.spectrum_data_df["correction_factor"].iloc[i] = np.array(
-                    [e_correction_factor, v_correction_factor], dtype=object
-                )
+                self.spectrum_data_df.at[
+                    self.assigned_groups_df.index[i], "correction_factor"
+                ] = np.array([e_correction_factor, v_correction_factor], dtype=object)
 
                 cf.log_message(
                     "Angle resolved spectrum data found for device "
@@ -705,7 +708,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 spectrum_path.split("_")[-1].split(".")[0] == "spec"
                 or spectrum_path.split("_")[-2] == "spec"
             ):
-                self.spectrum_data_df["angle_resolved"].iloc[i] = False
+                self.spectrum_data_df.loc[
+                    self.spectrum_data_df.index[i], "angle_resolved"
+                ] = False
 
                 # Regular spectrum file
                 raw_spectrum = pd.read_csv(
@@ -721,16 +726,16 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 #     self.assigned_groups_df.index.to_list()[i], "intensity"
                 # ] = raw_spectrum["intensity"].to_list()
                 # self.spectrum_data_df["intensity"].iloc[i] = [0,0]
-                self.spectrum_data_df["intensity"].loc[
-                    self.assigned_groups_df.index.to_list()[i]
+                self.spectrum_data_df.at[
+                    self.assigned_groups_df.index.to_list()[i], "intensity"
                 ] = raw_spectrum["intensity"].to_list()
 
                 # self.spectrum_data_df["correction_factor"].iloc[i] = [0, 0]
                 # self.spectrum_data_df.loc[
                 # self.spectrum_data_df.index[i], "correction_factor"
                 # ] = [0, 0]
-                self.spectrum_data_df["correction_factor"].loc[
-                    self.assigned_groups_df.index.to_list()[i]
+                self.spectrum_data_df.at[
+                    self.assigned_groups_df.index.to_list()[i], "correction_factor"
                 ] = np.array([0, 0], dtype=object)
                 cf.log_message(
                     "Spectrum data found for device "
@@ -742,15 +747,15 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 cf.log_message("Selected spectrum file does not have a valid name")
                 continue
 
-            self.spectrum_data_df["wavelength"].loc[
-                self.assigned_groups_df.index.to_list()[i]
-            ] = raw_spectrum["wavelength"].to_list()
+            self.spectrum_data_df.at[self.assigned_groups_df.index[i], "wavelength"] = (
+                raw_spectrum["wavelength"].to_list()
+            )
             # self.spectrum_data_df.loc[
             # self.assigned_groups_df.index.to_list()[i], "wavelength"
             # ] = raw_spectrum["wavelength"].to_list()
-            self.spectrum_data_df["background"].loc[
-                self.assigned_groups_df.index.to_list()[i]
-            ] = raw_spectrum["background"].to_list()
+            self.spectrum_data_df.at[self.assigned_groups_df.index[i], "background"] = (
+                raw_spectrum["background"].to_list()
+            )
             # self.spectrum_data_df.loc[
             #     self.assigned_groups_df.index.to_list()[i], "background"
             # ] = raw_spectrum["background"].to_list()
@@ -767,8 +772,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 spectrometer_calibration,
             )["intensity"].to_numpy()
 
-            self.spectrum_data_df["calibrated_intensity"].loc[
-                self.assigned_groups_df.index.to_list()[i]
+            self.spectrum_data_df.at[
+                self.assigned_groups_df.index[i], "calibrated_intensity"
             ] = calibrated_spectrum / np.max(calibrated_spectrum)
 
         if only_negative_angles:
@@ -856,7 +861,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.show_group_dialog = ShowGroup(parameters, self)
         self.show_group_dialog.show()
-        button = self.show_group_dialog.exec_()
+        button = self.show_group_dialog.exec()
 
     @QtCore.Slot(int)
     def plot_from_device_number(self, device_number):
@@ -912,7 +917,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # self.eval_ax1.tick_params(axis="x", direction="in", length=8)
 
         # Generate random colors
-        cmap = mpl.cm.get_cmap("Dark2", df_to_plot.shape[0])
+        cmap = mpl.colormaps["Dark2"]
         device_color = np.array(
             [mpl.colors.rgb2hex(cmap(i)) for i in range(cmap.N)], dtype=object
         )
@@ -927,7 +932,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                     df_to_plot.iloc[index]["voltage"],
                     np.abs(df_to_plot.iloc[index]["current_density"]),
                     label=df_to_plot.index[index],
-                    color=device_color[index],
+                    color=device_color[index % 8],
                 )
             )
             self.luminence_lines.append(
@@ -936,7 +941,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                     df_to_plot.iloc[index]["luminance"],
                     linestyle="--",
                     label=df_to_plot.index[index],
-                    color=device_color[index],
+                    color=device_color[index % 8],
                 )
             )
 
@@ -966,7 +971,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.lineLabel[legline] = linelabel
 
             # If the line was already masked, mask it on plot
-            if self.data_df.loc[self.data_df.index == linelabel, "masked"][0]:
+            if self.data_df.loc[self.data_df.index == linelabel, "masked"].iloc[0]:
                 legline.set_alpha(0.2)
                 lumline[0].set_visible(False)
                 curline[0].set_visible(False)
@@ -1005,7 +1010,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.eval_ax[1, 0].cla()
             self.eval_ax[1, 1].cla()
 
-        cmap = mpl.cm.get_cmap("Dark2", len(identifiers))
+        cmap = mpl.colormaps["Dark2"]
         colors = np.array(
             [mpl.colors.rgb2hex(cmap(i)) for i in range(cmap.N)], dtype=object
         )
@@ -1025,34 +1030,34 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 ].to_list()[0]
             else:
                 # Else generate random colors
-                color = colors[i]
+                color = colors[i % 8]
 
             spectrum_data = temp_df.join(self.spectrum_data_df, on="device_number")
 
             # Loop to plot data
             self.eval_ax[0, 0].plot(
-                temp_df["voltage"][0],
-                np.abs(temp_df["current_density"][0]),
+                temp_df["voltage"].iloc[0],
+                np.abs(temp_df["current_density"].iloc[0]),
                 color=color,
             )
             self.eval_ax5.plot(
-                temp_df["voltage"][0],
-                temp_df["luminance"][0],
+                temp_df["voltage"].iloc[0],
+                temp_df["luminance"].iloc[0],
                 linestyle="--",
                 color=color,
             )
             self.eval_ax[0, 1].plot(
-                temp_df["current_density"][0], temp_df["eqe"][0], color=color
+                temp_df["current_density"].iloc[0], temp_df["eqe"].iloc[0], color=color
             )
             self.eval_ax[1, 0].plot(
-                temp_df["voltage"][0],
-                temp_df["power_density"][0],
+                temp_df["voltage"].iloc[0],
+                temp_df["power_density"].iloc[0],
                 color=color,
                 label=identifier,
             )
             self.eval_ax[1, 1].plot(
-                spectrum_data["wavelength"][0],
-                np.array(spectrum_data["calibrated_intensity"][0]),
+                spectrum_data["wavelength"].iloc[0],
+                np.array(spectrum_data["calibrated_intensity"].iloc[0]),
                 color=color,
             )
             i += 1
@@ -1158,7 +1163,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.statusbar.showMessage("Plot Statistics")
         self.show_group_dialog = Statistics(self)
         self.show_group_dialog.show()
-        button = self.show_group_dialog.exec_()
+        button = self.show_group_dialog.exec()
 
     def show_statistics(self, groupby):
         """
@@ -1286,7 +1291,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         # Current at 4 V
         self.eval_ax[0, 0].boxplot(
-            current_density_4v, labels=labels.astype(str).tolist(), showfliers=False
+            current_density_4v,
+            tick_labels=labels.astype(str).tolist(),
+            showfliers=False,
         )
         for i in range(len(current_density_4v)):
             try:
@@ -1301,14 +1308,14 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             temp_y = current_density_4v[i]
             temp_x = np.random.normal(1 + i, 0.04, size=len(temp_y))
 
-            self.eval_ax[0, 0].plot(temp_x, temp_y, "b.", color=color)
+            self.eval_ax[0, 0].plot(temp_x, temp_y, ".", color=color)
         self.eval_ax[0, 0].set_ylabel(
             "Current Density @ " + str(evaluation_voltage) + "V (mA cm$^{-2}$)",
         )
 
         # Luminance at 4 V
         self.eval_ax[0, 1].boxplot(
-            luminance_4v, labels=labels.astype(str).tolist(), showfliers=False
+            luminance_4v, tick_labels=labels.astype(str).tolist(), showfliers=False
         )
         for i in range(len(luminance_4v)):
             try:
@@ -1323,7 +1330,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             temp_y = luminance_4v[i]
             temp_x = np.random.normal(1 + i, 0.04, size=len(temp_y))
 
-            self.eval_ax[0, 1].plot(temp_x, temp_y, "b.", color=color)
+            self.eval_ax[0, 1].plot(temp_x, temp_y, ".", color=color)
 
         self.eval_ax[0, 1].set_ylabel(
             "Luminance @" + str(evaluation_voltage) + "V (cd m$^{-2}$)"
@@ -1331,7 +1338,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         # EQE at 4 V
         self.eval_ax[1, 0].boxplot(
-            eqe_4v, labels=labels.astype(str).tolist(), showfliers=False
+            eqe_4v, tick_labels=labels.astype(str).tolist(), showfliers=False
         )
         for i in range(len(eqe_4v)):
             try:
@@ -1346,13 +1353,13 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             temp_y = eqe_4v[i]
             temp_x = np.random.normal(1 + i, 0.04, size=len(temp_y))
 
-            self.eval_ax[1, 0].plot(temp_x, temp_y, "b.", color=color)
+            self.eval_ax[1, 0].plot(temp_x, temp_y, ".", color=color)
 
         self.eval_ax[1, 0].set_ylabel("Max. EQE (%)")
 
         # Power Density at 4 V
         self.eval_ax[1, 1].boxplot(
-            power_density_4v, labels=labels.astype(str).tolist(), showfliers=False
+            power_density_4v, tick_labels=labels.astype(str).tolist(), showfliers=False
         )
         for i in range(len(power_density_4v)):
             try:
@@ -1367,7 +1374,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             temp_y = power_density_4v[i]
             temp_x = np.random.normal(1 + i, 0.04, size=len(temp_y))
 
-            self.eval_ax[1, 1].plot(temp_x, temp_y, "b.", color=color)
+            self.eval_ax[1, 1].plot(temp_x, temp_y, ".", color=color)
 
         self.eval_ax[1, 1].set_ylabel(
             "Power Density @ " + str(evaluation_voltage) + "V (mA mm$^{-2}$)",
@@ -1393,7 +1400,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.show_heros_dialog = ShowHeros(parameters, self)
         self.show_heros_dialog.show()
-        button = self.show_heros_dialog.exec_()
+        button = self.show_heros_dialog.exec()
 
     # -------------------------------------------------------------------- #
     # ----------------------------- Spectrum ----------------------------- #
@@ -1411,7 +1418,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.show_group_dialog = EvaluateSpectrum(parameters, self)
         self.show_group_dialog.show()
-        button = self.show_group_dialog.exec_()
+        button = self.show_group_dialog.exec()
 
     def plot_spectrum(self, group):
         """
@@ -1504,7 +1511,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
             ri = temp_calibrated.apply(ef.calculate_ri, axis=0)
 
-            non_lambertian_spectrum = ri / ri[np.where(angles == 0)[0][0]]
+            non_lambertian_spectrum = ri / ri.iloc[np.where(angles == 0)[0][0]]
 
             # ax = fig.add_subplot(111, polar=True)
             self.eval_ax1.plot(angles, non_lambertian_spectrum, color=color)
@@ -1875,7 +1882,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 ).set_index("wavelength")
                 angles = np.radians(temp_calibrated.columns.to_numpy(float))
                 ri = temp_calibrated.apply(ef.calculate_ri, axis=0)
-                non_lambertian_spectrum = ri / ri[np.where(angles == 0)[0][0]]
+                non_lambertian_spectrum = ri / ri.iloc[np.where(angles == 0)[0][0]]
                 radiant_intensity_df = pd.DataFrame(
                     {
                         "Angle (°)": np.rad2deg(angles),
@@ -1953,6 +1960,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """
         function to allow display of both coordinates for figures with two axis
         """
+
         # current and other are axes
         def format_coord(x, y):
             # x, y are data coordinates
@@ -1967,10 +1975,12 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             )
 
         return format_coord
+
     def make_format_colorplot(self, Z):
         """
         Function to allow display of both coordinates for figures with two axes.
         """
+
         def format_coord(x, y):
             try:
                 # Convert index and columns to numpy arrays
@@ -1984,12 +1994,12 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 # Get the corresponding z value
                 z = Z.at[closest_x, str(closest_y)]
 
-                return f'x={closest_x:1.4f}, y={closest_y:1.4f}, z={z:1.0f}'
+                return f"x={closest_x:1.4f}, y={closest_y:1.4f}, z={z:1.0f}"
             except Exception as e:
-                return f'x={x:1.4f}, y={y:1.4f}, error: {e}'
+                return f"x={x:1.4f}, y={y:1.4f}, error: {e}"
 
         return format_coord
-    
+
     def show_settings(self):
         """
         Shows the settings
@@ -2095,4 +2105,4 @@ if __name__ == "__main__":
     app.setWindowIcon(app_icon)
 
     ui.show()
-    sys.exit(app.exec_())
+    sys.exit(app.exec())

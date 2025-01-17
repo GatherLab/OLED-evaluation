@@ -1,16 +1,6 @@
-# coding: utf-8
-# General Modules
-# import os, shutil
-# import re, string
-import os
-import re
-import math
 import numpy as np
 import pandas as pd
-import datetime as dt
 import copy
-
-
 import scipy.constants as sc  # natural constants
 
 
@@ -132,9 +122,9 @@ def calibrate_spectrum(spectrum, calibration):
     # interpolate spectrometer calibration factor onto correct axis (so that it
     # can be multiplied with the spectrum itself)
     interpolated_calibration = np.interp(
-        spectrum["wavelength"].to_numpy(dtype=np.float),
-        calibration["wavelength"].to_numpy(dtype=np.float),
-        calibration["sensitivity"].to_numpy(dtype=np.float),
+        spectrum["wavelength"].to_numpy(dtype=float),
+        calibration["wavelength"].to_numpy(dtype=float),
+        calibration["sensitivity"].to_numpy(dtype=float),
     )
 
     # Now subtract background and multiply with calibration

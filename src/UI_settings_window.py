@@ -1,8 +1,4 @@
-# -*- coding: utf-8 -*-
-from PySide2 import QtCore, QtGui, QtWidgets
-
-import json
-import core_functions as cf
+from PySide6 import QtCore, QtWidgets
 
 from costum_widgets import ToggleSwitch
 

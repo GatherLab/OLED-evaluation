@@ -17,7 +17,12 @@
 Software for easy evaluation of previously taken data in the format of
 https://github.com/GatherLab/OLED-jvl-measurement. It is essential that the raw
 EL data (JV and photodiode voltage) are collected, as well as spectra for each
-device configuration.
+device configuration. If you are using this software or a derivative of it,
+please cite:
+
+```
+Butscher, Julian F., et al. "Open‐Source Tools for the Fabrication and Characterization of Organic Electronics." Advanced Electronic Materials (2024): 2400460.
+```
 
 ## Setup
 

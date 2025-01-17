@@ -1,22 +1,10 @@
-# -*- coding: utf-8 -*-
+from PySide6 import QtCore, QtGui, QtWidgets
 
-# Initial gui design with QtCreator then translated into python code and adjusted
-
-# from UI_settings_window import Ui_Settings
-from UI_toggle_switch import ToggleSwitch
-
-from PySide2 import QtCore, QtGui, QtWidgets
-
-import matplotlib.pylab as plt
-import matplotlib as mpl
 from matplotlib.backends.backend_qt5agg import (
     FigureCanvasQTAgg as FigureCanvas,
     NavigationToolbar2QT as NavigationToolbar,
 )
 from matplotlib.figure import Figure
-import matplotlib.backends.backend_qt5
-
-import time
 
 
 # ---------------------------------------------------------------------------- #
@@ -662,31 +650,31 @@ class Ui_MainWindow(object):
         MainWindow.setMenuBar(self.menubar)
 
         # Define actions for menubar
-        self.actionOpen_Logs = QtWidgets.QAction(MainWindow)
+        self.actionOpen_Logs = QtGui.QAction(MainWindow)
         self.actionOpen_Logs.setObjectName("actionOpen_Logs")
         # self.actionOpen_Logfile_on_Machine = QtWidgets.QAction(MainWindow)
         # self.actionOpen_Logfile_on_Machine.setObjectName(
         # "actionOpen_Logfile_on_Machine"
         # )
 
-        self.actionChange_Path = QtWidgets.QAction(MainWindow)
+        self.actionChange_Path = QtGui.QAction(MainWindow)
         self.actionChange_Path.setObjectName("actionChange_Path")
 
-        self.actionOptions = QtWidgets.QAction(MainWindow)
+        self.actionOptions = QtGui.QAction(MainWindow)
         self.actionOptions.setObjectName("actionOptions")
 
-        self.actionDocumentation = QtWidgets.QAction(MainWindow)
+        self.actionDocumentation = QtGui.QAction(MainWindow)
         self.actionDocumentation.setObjectName("actionDocumentation")
 
-        self.actionLoad_Measurement_Parameters = QtWidgets.QAction(MainWindow)
+        self.actionLoad_Measurement_Parameters = QtGui.QAction(MainWindow)
         self.actionLoad_Measurement_Parameters.setObjectName(
             "actionLoad_Measurement_Parameters"
         )
-        self.actionSave_Measurement_Parameters = QtWidgets.QAction(MainWindow)
+        self.actionSave_Measurement_Parameters = QtGui.QAction(MainWindow)
         self.actionSave_Measurement_Parameters.setObjectName(
             "actionSave_Measurement_Parameters"
         )
-        self.actionOpen_Log = QtWidgets.QAction(MainWindow)
+        self.actionOpen_Log = QtGui.QAction(MainWindow)
         self.actionOpen_Log.setObjectName("actionOpen_Log")
         # self.menudfg.addAction(self.actionLoad_Measurement_Parameters)
         # self.menudfg.addAction(self.actionSave_Measurement_Parameters)
@@ -866,13 +854,10 @@ class Ui_MainWindow(object):
     # ----------------- User Defined UI related Functions -------------------- #
     # ------------------------------------------------------------------------ #
     def center(self):
-        # position and size of main window
-
-        # self.showFullScreen()
-        qc = self.frameGeometry()
-        # desktopWidget = QtWidgets.QApplication.desktop()
-        # PCGeometry = desktopWidget.screenGeometry()
-        # self.resize(PCGeometry.height(), PCGeometry.height())
-        cp = QtWidgets.QDesktopWidget().availableGeometry().center()
-        qc.moveCenter(cp)
-        self.move(qc.topLeft())
+        # Position and size of main window
+        screen = QtGui.QGuiApplication.primaryScreen()
+        screen_geometry = screen.availableGeometry()
+        center_point = screen_geometry.center()
+        frame_geometry = self.frameGeometry()
+        frame_geometry.moveCenter(center_point)
+        self.move(frame_geometry.topLeft())

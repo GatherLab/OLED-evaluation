@@ -1,8 +1,5 @@
-# -*- coding: utf-8 -*-
-from PySide2 import QtCore, QtGui, QtWidgets
+from PySide6 import QtCore, QtWidgets
 
-import json
-import core_functions as cf
 import numpy as np
 
 

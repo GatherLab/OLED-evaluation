@@ -1,9 +1,4 @@
-# -*- coding: utf-8 -*-
-from PySide2 import QtCore, QtGui, QtWidgets
-
-import json
-import core_functions as cf
-import numpy as np
+from PySide6 import QtCore, QtWidgets
 
 
 class Ui_Statistics(object):
