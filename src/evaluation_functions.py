@@ -127,12 +127,29 @@ def calibrate_spectrum(spectrum, calibration):
         calibration["sensitivity"].to_numpy(dtype=float),
     )
 
-    # Now subtract background and multiply with calibration
-    spectrum_corrected = (
-        spectrum.loc[:, ~np.isin(spectrum.columns, ["background", "wavelength"])]
-        .subtract(spectrum["background"], axis=0)
-        .multiply(interpolated_calibration, axis=0)
-    )
+    # If any of the columns contains the string "_bg" a background measurement
+    # was carried out before each spectral measurement. Therefore, we have to
+    # subtract the backgrounds separately for each angle.
+    if any("_bg" in col for col in spectrum.columns):
+        bg_cols = ["wavelength"]
+        for col in spectrum.columns:
+            if "_bg" in col:
+                bg_cols.append(col)
+                spectrum[col.replace("_bg", "")] = spectrum[
+                    col.replace("_bg", "")
+                ] - spectrum[col].to_numpy(dtype=float)
+
+        spectrum_corrected = spectrum.loc[
+            :, ~np.isin(spectrum.columns, bg_cols)
+        ].multiply(interpolated_calibration, axis=0)
+    else:
+        # Only a single background measurement was done that should be
+        # subtracted from all columns
+        spectrum_corrected = (
+            spectrum.loc[:, ~np.isin(spectrum.columns, ["background", "wavelength"])]
+            .subtract(spectrum["background"], axis=0)
+            .multiply(interpolated_calibration, axis=0)
+        )
 
     spectrum_corrected["wavelength"] = spectrum["wavelength"]
 
@@ -241,7 +258,7 @@ def calculate_e_correction(df):
     return np.sum(
         relevant_e_factors
         * np.sin(np.deg2rad(relevant_angles))
-        * np.deg2rad(np.diff(relevant_angles)[0])
+        * np.deg2rad(abs(np.diff(relevant_angles)[0]))
     )
 
 
@@ -311,7 +328,7 @@ def calculate_v_correction(df, photopic_response):
     return np.sum(
         relevant_v_factor
         * np.sin(np.deg2rad(relevant_angles))
-        * np.deg2rad(np.diff(relevant_angles)[0])
+        * np.deg2rad(abs(np.diff(relevant_angles)[0]))
     )
 
 

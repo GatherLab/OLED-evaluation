@@ -653,26 +653,39 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 # self.spectrum_data_df.loc[
                 #     self.assigned_groups_df.index.to_list()[i], "intensity"
                 # ] = raw_spectrum["0.0"].to_list()
+                # self.spectrum_data_df["intensity"].loc[
+                # self.assigned_groups_df.index.to_list()[i]
+                # ] = raw_spectrum["0.0"].to_list()
                 self.spectrum_data_df.at[
-                    self.assigned_groups_df.index.to_list()[i], "intensity"
-                ] = raw_spectrum["0.0"].to_list()
+                    self.assigned_groups_df.index[i], "intensity"
+                ] = raw_spectrum["0.0"].tolist()
+
+                if "0.0_bg" in raw_spectrum.columns:
+                    self.spectrum_data_df.at[
+                        self.assigned_groups_df.index[i], "background"
+                    ] = raw_spectrum["0.0_bg"].tolist()
+                else:
+                    self.spectrum_data_df.at[
+                        self.assigned_groups_df.index[i], "background"
+                    ] = raw_spectrum["background"].tolist()
+
+                # Interpolate and correct spectrum
+                interpolate_spectrum = ef.interpolate_spectrum(
+                    raw_spectrum, photopic_response
+                )
+                calibrated_spectrum = ef.calibrate_spectrum(
+                    interpolate_spectrum, spectrometer_calibration
+                )
 
                 # Check if there are angles > 0 that can be used for the evaluation
                 # (otherwise take the negative spectra by inverting them and changing sign)
-                if not np.any(raw_spectrum.columns[2:].astype("float") > 0):
+                if not np.any(
+                    calibrated_spectrum.loc[
+                        :, calibrated_spectrum.columns != "wavelength"
+                    ].astype("float")
+                    > 0
+                ):
                     only_negative_angles = True
-
-                    # raw_spectrum = raw_spectrum[
-                    #     np.append(
-                    #         raw_spectrum.columns[0:2], np.flip(raw_spectrum.columns[2:])
-                    #     )
-                    # ]
-
-                    # # Rename columns so that they take positive values (for the evaluation)
-                    # renamed_columns = np.abs(raw_spectrum.columns[2:].astype(float))
-                    # raw_spectrum.columns = np.append(
-                    #     raw_spectrum.columns[0:2],renamed_columns.astype(str)
-                    # )
 
                 # Interpolate and correct spectrum
                 interpolate_spectrum = ef.interpolate_spectrum(
@@ -730,6 +743,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                     self.assigned_groups_df.index.to_list()[i], "intensity"
                 ] = raw_spectrum["intensity"].to_list()
 
+                self.spectrum_data_df.at[
+                    self.assigned_groups_df.index[i], "background"
+                ] = raw_spectrum["background"].to_list()
+
                 # self.spectrum_data_df["correction_factor"].iloc[i] = [0, 0]
                 # self.spectrum_data_df.loc[
                 # self.spectrum_data_df.index[i], "correction_factor"
@@ -737,6 +754,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.spectrum_data_df.at[
                     self.assigned_groups_df.index.to_list()[i], "correction_factor"
                 ] = np.array([0, 0], dtype=object)
+
                 cf.log_message(
                     "Spectrum data found for device "
                     + str(self.assigned_groups_df.index[i])
@@ -753,9 +771,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             # self.spectrum_data_df.loc[
             # self.assigned_groups_df.index.to_list()[i], "wavelength"
             # ] = raw_spectrum["wavelength"].to_list()
-            self.spectrum_data_df.at[self.assigned_groups_df.index[i], "background"] = (
-                raw_spectrum["background"].to_list()
-            )
+
             # self.spectrum_data_df.loc[
             #     self.assigned_groups_df.index.to_list()[i], "background"
             # ] = raw_spectrum["background"].to_list()
@@ -1461,6 +1477,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 columns=[col for col in spectrum.columns if "_deg" in col]
             )
 
+            """
+            spectrum = spectrum.drop(
+                columns=[col for col in spectrum.columns if "_deg" in col]
+            )
+
             # first subtract the background from all columns but the wavelength
             temp = (
                 spectrum.drop(["wavelength"], axis=1)
@@ -1471,6 +1492,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
             # Now add the wavelength to the dataframe again
             temp["wavelength"] = spectrum["wavelength"]
+            """
 
             # Interpolate and calibrate spectrum
             global_settings = cf.read_global_settings()
@@ -1486,10 +1508,12 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 global_settings["spectrometer_calibration_path"],
             )
             # temp_interpolated = ef.interpolate_spectrum(temp, photopic_response)
-            temp_calibrated = ef.calibrate_spectrum(temp, spectrometer_calibration)
+            temp_calibrated = ef.calibrate_spectrum(spectrum, spectrometer_calibration)
+            temp_calibrated.set_index(temp_calibrated.wavelength)
+            temp_calibrated = temp_calibrated.drop(["wavelength"], axis=1)
 
             # And set the wavelength as index of the dataframe and drop the background instead now
-            temp_calibrated = temp.set_index("wavelength").drop(["background"], axis=1)
+            # temp_calibrated = spectrum.set_index("wavelength").drop(["background"], axis=1)
 
             # Plot current data
             # This is the best way I could come up with so far. There must be a better one, however.
