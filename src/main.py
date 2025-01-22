@@ -1902,7 +1902,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 )
 
                 temp_calibrated = calibrated_spectrum.drop(
-                    columns=[col for col in raw_spectrum.columns if "_deg" in col]
+                    columns=[
+                        col for col in calibrated_spectrum.columns if "_deg" in col
+                    ]
                 ).set_index("wavelength")
                 angles = np.radians(temp_calibrated.columns.to_numpy(float))
                 ri = temp_calibrated.apply(ef.calculate_ri, axis=0)
