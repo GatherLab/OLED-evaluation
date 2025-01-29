@@ -1253,9 +1253,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             index=self.data_df.loc[self.data_df["masked"] == False].index,
         )
 
-        # Convert the dataframe to numeric value and get back the mean of all
-        # numeric columns (basically, group_name can not be converted)
-        avg_values = stats_df.apply(pd.to_numeric, errors="ignore").groupby(by=groupby)
+        # Convert the dataframe to all numeric values except for the group_name column
+        stats_df.loc[:, stats_df.columns!="group_name"] = stats_df.loc[:, stats_df.columns!="group_name"].apply(pd.to_numeric)
+        # Group by the groupname
+        avg_values = stats_df.groupby(by=groupby)
         current_density_4v_grouped = (
             avg_values["current_density_4v"].apply(list).to_list()
         )
