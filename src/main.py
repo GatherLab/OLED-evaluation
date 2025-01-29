@@ -1353,7 +1353,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.eval_ax[0, 1].plot(temp_x, temp_y, ".", color=color)
 
         self.eval_ax[0, 1].set_ylabel(
-            "Luminance @" + str(evaluation_voltage) + "V (cd m$^{-2}$)"
+            "Luminance @ " + str(evaluation_voltage) + "V (cd m$^{-2}$)"
         )
 
         # EQE at 4 V
