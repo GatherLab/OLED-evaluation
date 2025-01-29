@@ -1086,6 +1086,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.eval_ax5.set_yscale("log")
         self.eval_ax[0, 0].set_xlabel("Voltage (V)")
         self.eval_ax[0, 0].set_ylabel("Abs. Current Density (mA cm$^{-2}$)")
+        self.eval_ax5.yaxis.set_label_position("right")
         self.eval_ax5.set_ylabel("Luminance (cd m$^{-2}$)")
 
         self.eval_ax5.format_coord = self.make_format(self.eval_ax5, self.eval_ax[0, 0])
@@ -1254,7 +1255,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         )
 
         # Convert the dataframe to all numeric values except for the group_name column
-        stats_df.loc[:, stats_df.columns!="group_name"] = stats_df.loc[:, stats_df.columns!="group_name"].apply(pd.to_numeric)
+        stats_df.loc[:, stats_df.columns != "group_name"] = stats_df.loc[
+            :, stats_df.columns != "group_name"
+        ].apply(pd.to_numeric)
         # Group by the groupname
         avg_values = stats_df.groupby(by=groupby)
         current_density_4v_grouped = (
