@@ -682,8 +682,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 if not np.any(
                     calibrated_spectrum.loc[
                         :, calibrated_spectrum.columns != "wavelength"
-                    ].astype("float")
-                    > 0
+                    ].columns.astype("float") > 0
                 ):
                     only_negative_angles = True
 

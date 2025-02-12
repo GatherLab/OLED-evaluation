@@ -257,7 +257,7 @@ def calculate_e_correction(df):
 
     return np.sum(
         relevant_e_factors
-        * np.sin(np.deg2rad(relevant_angles))
+        * np.sin(np.deg2rad(abs(relevant_angles)))
         * np.deg2rad(abs(np.diff(relevant_angles)[0]))
     )
 
