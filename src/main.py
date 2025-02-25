@@ -509,6 +509,40 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         else:
             cf.log_message("Group assignement aborted")
 
+    def evaluate_ar_spectrum(self, raw_spectrum):
+        global_settings = cf.read_global_settings()
+        (
+            photopic_response,
+            pd_responsivity,
+            cie_reference,
+            spectrometer_calibration,
+        ) = ef.read_calibration_files(
+            global_settings["photopic_response_path"],
+            global_settings["pd_responsivity_path"],
+            global_settings["cie_reference_path"],
+            global_settings["spectrometer_calibration_path"],
+        )
+        # Drop degradation check columns (all column names containing _deg)
+        raw_spectrum = raw_spectrum.drop(
+            columns=[col for col in raw_spectrum.columns if "_deg" in col]
+        )
+
+        # Extract the foward spectrum and save to self.spectrum_data_df
+        # self.spectrum_data_df.loc[
+        #     self.assigned_groups_df.index.to_list()[i], "intensity"
+        # ] = raw_spectrum["0.0"].to_list()
+        # self.spectrum_data_df["intensity"].loc[
+        # self.assigned_groups_df.index.to_list()[i]
+        # ] = raw_spectrum["0.0"].to_list()
+
+        # Interpolate and correct spectrum
+        interpolate_spectrum = ef.interpolate_spectrum(raw_spectrum, photopic_response)
+        calibrated_spectrum = ef.calibrate_spectrum(
+            interpolate_spectrum, spectrometer_calibration
+        )
+
+        return calibrated_spectrum
+
     def evaluate_jvl(self):
         """
         Do the jvl evaluation calculations
@@ -643,19 +677,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 # Goniometer file
                 # Read in the angle resolved file
                 raw_spectrum = pd.read_csv(spectrum_path, sep="\t", skiprows=4)
-
-                # Drop degradation check columns (all column names containing _deg)
-                raw_spectrum = raw_spectrum.drop(
-                    columns=[col for col in raw_spectrum.columns if "_deg" in col]
-                )
-
-                # Extract the foward spectrum and save to self.spectrum_data_df
-                # self.spectrum_data_df.loc[
-                #     self.assigned_groups_df.index.to_list()[i], "intensity"
-                # ] = raw_spectrum["0.0"].to_list()
-                # self.spectrum_data_df["intensity"].loc[
-                # self.assigned_groups_df.index.to_list()[i]
-                # ] = raw_spectrum["0.0"].to_list()
                 self.spectrum_data_df.at[
                     self.assigned_groups_df.index[i], "intensity"
                 ] = raw_spectrum["0.0"].tolist()
@@ -669,30 +690,26 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                         self.assigned_groups_df.index[i], "background"
                     ] = raw_spectrum["background"].tolist()
 
-                # Interpolate and correct spectrum
-                interpolate_spectrum = ef.interpolate_spectrum(
-                    raw_spectrum, photopic_response
-                )
-                calibrated_spectrum = ef.calibrate_spectrum(
-                    interpolate_spectrum, spectrometer_calibration
-                )
+                # Evaluate data
+                calibrated_spectrum = self.evaluate_ar_spectrum(raw_spectrum)
 
                 # Check if there are angles > 0 that can be used for the evaluation
                 # (otherwise take the negative spectra by inverting them and changing sign)
                 if not np.any(
                     calibrated_spectrum.loc[
                         :, calibrated_spectrum.columns != "wavelength"
-                    ].columns.astype("float") > 0
+                    ].columns.astype("float")
+                    > 0
                 ):
                     only_negative_angles = True
 
                 # Interpolate and correct spectrum
-                interpolate_spectrum = ef.interpolate_spectrum(
-                    raw_spectrum, photopic_response
-                )
-                calibrated_spectrum = ef.calibrate_spectrum(
-                    interpolate_spectrum, spectrometer_calibration
-                )
+                # interpolate_spectrum = ef.interpolate_spectrum(
+                #     raw_spectrum, photopic_response
+                # )
+                # calibrated_spectrum = ef.calibrate_spectrum(
+                #     interpolate_spectrum, spectrometer_calibration
+                # )
                 # interpolated_spectrum = ef.interpolate_and_correct_spectrum(
                 # raw_spectrum, photopic_response, calibration
                 # )
@@ -1476,11 +1493,13 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
             spectrum = pd.read_csv(file_name, sep="\t", skiprows=4)
 
+            temp_calibrated = self.evaluate_ar_spectrum(spectrum)
+
+            """
             spectrum = spectrum.drop(
                 columns=[col for col in spectrum.columns if "_deg" in col]
             )
 
-            """
             spectrum = spectrum.drop(
                 columns=[col for col in spectrum.columns if "_deg" in col]
             )
@@ -1495,7 +1514,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
             # Now add the wavelength to the dataframe again
             temp["wavelength"] = spectrum["wavelength"]
-            """
 
             # Interpolate and calibrate spectrum
             global_settings = cf.read_global_settings()
@@ -1512,8 +1530,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             )
             # temp_interpolated = ef.interpolate_spectrum(temp, photopic_response)
             temp_calibrated = ef.calibrate_spectrum(spectrum, spectrometer_calibration)
-            temp_calibrated.set_index(temp_calibrated.wavelength)
-            temp_calibrated = temp_calibrated.drop(["wavelength"], axis=1)
+            """
+            temp_calibrated = temp_calibrated.set_index(
+                temp_calibrated.wavelength
+            ).drop(["wavelength"], axis=1)
 
             # And set the wavelength as index of the dataframe and drop the background instead now
             # temp_calibrated = spectrum.set_index("wavelength").drop(["background"], axis=1)
