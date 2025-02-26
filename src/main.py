@@ -158,6 +158,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             json.dump(settings_data, json_file, indent=4)
 
         self.selected_scan = 1
+        self.wavelength_range = (0, 0)
 
         cf.log_message("Overwrite Settings set to Default")
 
@@ -516,12 +517,14 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             pd_responsivity,
             cie_reference,
             spectrometer_calibration,
+            self.wavelength_range,
         ) = ef.read_calibration_files(
             global_settings["photopic_response_path"],
             global_settings["pd_responsivity_path"],
             global_settings["cie_reference_path"],
             global_settings["spectrometer_calibration_path"],
         )
+
         # Drop degradation check columns (all column names containing _deg)
         raw_spectrum = raw_spectrum.drop(
             columns=[col for col in raw_spectrum.columns if "_deg" in col]
@@ -631,6 +634,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             pd_responsivity,
             cie_reference,
             spectrometer_calibration,
+            self.wavelength_range,
         ) = ef.read_calibration_files(
             global_settings["photopic_response_path"],
             global_settings["pd_responsivity_path"],
@@ -677,6 +681,15 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 # Goniometer file
                 # Read in the angle resolved file
                 raw_spectrum = pd.read_csv(spectrum_path, sep="\t", skiprows=4)
+
+                # Only keep the relevant wavelength range
+                raw_spectrum = raw_spectrum.loc[
+                    np.logical_and(
+                        raw_spectrum.wavelength > self.wavelength_range[0],
+                        raw_spectrum.wavelength < self.wavelength_range[1],
+                    )
+                ]
+
                 self.spectrum_data_df.at[
                     self.assigned_groups_df.index[i], "intensity"
                 ] = raw_spectrum["0.0"].tolist()
@@ -750,6 +763,14 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                     engine="python",
                     skip_blank_lines=False,
                 )
+
+                # Only keep the relevant wavelength range
+                raw_spectrum = raw_spectrum.loc[
+                    np.logical_and(
+                        raw_spectrum.wavelength > self.wavelength_range[0],
+                        raw_spectrum.wavelength < self.wavelength_range[1],
+                    )
+                ]
 
                 # self.spectrum_data_df.loc[
                 #     self.assigned_groups_df.index.to_list()[i], "intensity"
@@ -1859,18 +1880,13 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 ]
 
                 # Goniometer file
-                # Read in the angle resolved file again
-                raw_spectrum = pd.read_csv(spectrum_path, sep="\t", skiprows=3)
-
-                # Read in global settings
-                global_settings = cf.read_global_settings()
-
                 # Read in calibration files
                 (
                     photopic_response,
                     pd_responsivity,
                     cie_reference,
                     spectrometer_calibration,
+                    self.wavelength_range,
                 ) = ef.read_calibration_files(
                     global_settings["photopic_response_path"],
                     global_settings["pd_responsivity_path"],
@@ -1879,6 +1895,13 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 )
 
                 raw_spectrum = pd.read_csv(spectrum_path, sep="\t", skiprows=4)
+                # Only keep the relevant wavelength range
+                raw_spectrum = raw_spectrum.loc[
+                    np.logical_and(
+                        raw_spectrum.wavelength > self.wavelength_range[0],
+                        raw_spectrum.wavelength < self.wavelength_range[1],
+                    )
+                ]
 
                 # calibrated_spectrum = ef.calibrate_spectrum(
                 #     raw_spectrum, spectrometer_calibration

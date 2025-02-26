@@ -13,73 +13,67 @@ def read_calibration_files(
     """
     Function that wraps reading in the calibration files and returns them as dataframes
     """
+    # Read all calibration files
     photopic_response = pd.read_csv(
-        # os.path.join(
-        #     os.path.dirname(os.path.dirname(__file__)),
-        #     "library",
-        #     "Photopic_response.txt",
-        # ),
         photopic_response_path,
         sep="\t",
         names=["wavelength", "photopic_response"],
     )
 
     pd_responsivity = pd.read_csv(
-        # os.path.join(
-        #     os.path.dirname(os.path.dirname(__file__)), "library", "Responsivity_PD.txt"
-        # ),
         pd_responsivity_path,
         sep="\t",
         names=["wavelength", "pd_responsivity"],
     )
 
     cie_reference = pd.read_csv(
-        # os.path.join(
-        #     os.path.dirname(os.path.dirname(__file__)),
-        #     "library",
-        #     "NormCurves_400-800.txt",
-        # ),
         cie_reference_path,
         sep="\t",
-        names=["wavelength", "none", "x_cie", "y_cie", "z_cie"],
+        names=["wavelength", "x_cie", "y_cie", "z_cie"],
     )
 
     spectrometer_calibration = pd.read_csv(
-        # os.path.join(
-        #     os.path.dirname(os.path.dirname(__file__)), "library", "CalibrationData.txt"
-        # ),
         spectrometer_calibration_path,
         sep="\t",
         names=["wavelength", "sensitivity"],
     )
 
-    # Only take the part of the calibration files that is in the range of the
-    # spectrometer calibration file. Otherwise all future interpolations will
-    # interpolate on data that does not exist. I think it doesn't make a
-    # difference because this kind of data is set to zero anyways by the
-    # interpolate function but it is more logic to get rid of the unwanted data
-    # here already
+    # Find common wavelength range
+    min_wavelength = max(
+        photopic_response["wavelength"].min(),
+        pd_responsivity["wavelength"].min(),
+        cie_reference["wavelength"].min(),
+        spectrometer_calibration["wavelength"].min(),
+    )
+
+    max_wavelength = min(
+        photopic_response["wavelength"].max(),
+        pd_responsivity["wavelength"].max(),
+        cie_reference["wavelength"].max(),
+        spectrometer_calibration["wavelength"].max(),
+    )
+
+    wavelength_range = (min_wavelength, max_wavelength)
+
+    # Filter all dataframes to common range
     photopic_response_range = photopic_response.loc[
-        np.logical_and(
-            photopic_response["wavelength"]
-            <= spectrometer_calibration["wavelength"].max(),
-            photopic_response["wavelength"]
-            >= spectrometer_calibration["wavelength"].min(),
-        )
+        (photopic_response["wavelength"] >= min_wavelength)
+        & (photopic_response["wavelength"] <= max_wavelength)
     ]
+
     pd_responsivity_range = pd_responsivity.loc[
-        np.logical_and(
-            pd_responsivity["wavelength"]
-            <= spectrometer_calibration["wavelength"].max(),
-            pd_responsivity["wavelength"]
-            >= spectrometer_calibration["wavelength"].min(),
-        )
+        (pd_responsivity["wavelength"] >= min_wavelength)
+        & (pd_responsivity["wavelength"] <= max_wavelength)
     ]
+
     cie_reference_range = cie_reference.loc[
-        np.logical_and(
-            cie_reference["wavelength"] <= spectrometer_calibration["wavelength"].max(),
-            cie_reference["wavelength"] >= spectrometer_calibration["wavelength"].min(),
-        )
+        (cie_reference["wavelength"] >= min_wavelength)
+        & (cie_reference["wavelength"] <= max_wavelength)
+    ]
+
+    spectrometer_calibration = spectrometer_calibration.loc[
+        (spectrometer_calibration["wavelength"] >= min_wavelength)
+        & (spectrometer_calibration["wavelength"] <= max_wavelength)
     ]
 
     return (
@@ -87,6 +81,7 @@ def read_calibration_files(
         pd_responsivity_range,
         cie_reference_range,
         spectrometer_calibration,
+        wavelength_range,
     )
 
 
